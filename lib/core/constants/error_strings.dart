@@ -1,3 +1,5 @@
+// coverage:ignore-file
+
 class ErrorStrings {
   ErrorStrings._(); // Private constructor to prevent instantiation
 

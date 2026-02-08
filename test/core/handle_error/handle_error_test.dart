@@ -3,51 +3,106 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tracking_app/core/constants/error_strings.dart';
-import 'package:tracking_app/core/handle_error/handle_error.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
+import 'package:tracking_app/core/constants/error_strings.dart';
+import 'package:tracking_app/core/handle_error/handle_error.dart';
 
 void main() {
   group('ErrorHandler Test Cases', () {
-    // --- 1. Network Errors Tests ---
-    test('should return noInternet string when SocketException occurs', () {
+    // --- 1. Network & Socket Errors ---
+    test('SocketException returns noInternet', () {
       final error = const SocketException('No Internet');
-      final result = ErrorHandler.handleError(error);
-      expect(result, ErrorStrings.noInternet);
+      expect(ErrorHandler.handleError(error), ErrorStrings.noInternet);
     });
 
-    test('should return connectionTimeout string when TimeoutException occurs', () {
-      final error = TimeoutException('Time out');
-      final result = ErrorHandler.handleError(error);
-      expect(result, ErrorStrings.connectionTimeout);
+    test('HandshakeException returns badCertificate', () {
+      final error = const HandshakeException('Bad certificate');
+      expect(ErrorHandler.handleError(error), ErrorStrings.badCertificate);
     });
 
-    // --- 2. Dio Errors Tests ---
-    test('should return connectionTimeout when DioExceptionType is connectionTimeout', () {
+    test('TimeoutException returns connectionTimeout', () {
+      final error = TimeoutException('Timeout');
+      expect(ErrorHandler.handleError(error), ErrorStrings.connectionTimeout);
+    });
+
+    // --- 2. Dio Errors ---
+    test('Dio connectionTimeout returns connectionTimeout', () {
       final error = DioException(
         requestOptions: RequestOptions(path: ''),
         type: DioExceptionType.connectionTimeout,
       );
-      final result = ErrorHandler.handleError(error);
-      expect(result, ErrorStrings.connectionTimeout);
+      expect(ErrorHandler.handleError(error), ErrorStrings.connectionTimeout);
     });
 
-    test('should return correct message from backend when DioException is badResponse (400)', () {
+    test('Dio sendTimeout returns sendTimeout', () {
+      final error = DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.sendTimeout,
+      );
+      expect(ErrorHandler.handleError(error), ErrorStrings.sendTimeout);
+    });
+
+    test('Dio receiveTimeout returns receiveTimeout', () {
+      final error = DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.receiveTimeout,
+      );
+      expect(ErrorHandler.handleError(error), ErrorStrings.receiveTimeout);
+    });
+
+    test('Dio cancel returns requestCancelled', () {
+      final error = DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.cancel,
+      );
+      expect(ErrorHandler.handleError(error), ErrorStrings.requestCancelled);
+    });
+
+    test('Dio connectionError returns connectionError', () {
+      final error = DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.connectionError,
+      );
+      expect(ErrorHandler.handleError(error), ErrorStrings.connectionError);
+    });
+
+    test('Dio badCertificate returns badCertificate', () {
+      final error = DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.badCertificate,
+      );
+      expect(ErrorHandler.handleError(error), ErrorStrings.badCertificate);
+    });
+
+    test('Dio badResponse 400 extracts message', () {
       final error = DioException(
         requestOptions: RequestOptions(path: ''),
         type: DioExceptionType.badResponse,
         response: Response(
           requestOptions: RequestOptions(path: ''),
           statusCode: 400,
-          data: {'message': 'Invalid Data sent'}, // Backend message
+          data: {'message': 'Invalid data'},
         ),
       );
-      final result = ErrorHandler.handleError(error);
-      expect(result, 'Invalid Data sent');
+      expect(ErrorHandler.handleError(error), 'Invalid data');
     });
 
-    test('should return internalServerError when DioException is badResponse (500)', () {
+    test('Dio badResponse 404 returns notFound if no message', () {
+      final error = DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.badResponse,
+        response: Response(
+          requestOptions: RequestOptions(path: ''),
+          statusCode: 404,
+          data: {},
+        ),
+      );
+      expect(ErrorHandler.handleError(error), ErrorStrings.notFound);
+    });
+
+    test('Dio badResponse 500 returns internalServerError', () {
       final error = DioException(
         requestOptions: RequestOptions(path: ''),
         type: DioExceptionType.badResponse,
@@ -57,48 +112,103 @@ void main() {
           data: {},
         ),
       );
-      final result = ErrorHandler.handleError(error);
-      expect(result, ErrorStrings.internalServerError);
+      expect(ErrorHandler.handleError(error), ErrorStrings.internalServerError);
     });
 
-    // --- 3. Firebase Auth Errors Tests ---
-    test('should return firebaseUserNotFound when code is user-not-found', () {
+    test('Dio unknown with SocketException returns noInternet', () {
+      final error = DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.unknown,
+        error: const SocketException('No Internet'),
+      );
+      expect(ErrorHandler.handleError(error), ErrorStrings.noInternet);
+    });
+
+    test('Dio unknown with HandshakeException returns badCertificate', () {
+      final error = DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.unknown,
+        error: const HandshakeException('Bad certificate'),
+      );
+      expect(ErrorHandler.handleError(error), ErrorStrings.badCertificate);
+    });
+
+    test('Dio unknown with generic error returns networkError', () {
+      final error = DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.unknown,
+        error: Exception('Other'),
+      );
+      expect(ErrorHandler.handleError(error), ErrorStrings.networkError);
+    });
+
+    // --- 3. Firebase Auth Errors ---
+    test('FirebaseAuthException user-not-found', () {
       final error = FirebaseAuthException(code: 'user-not-found');
-      final result = ErrorHandler.handleError(error);
-      expect(result, ErrorStrings.firebaseUserNotFound);
+      expect(ErrorHandler.handleError(error), ErrorStrings.firebaseUserNotFound);
     });
 
-    test('should return firebaseWeakPassword when code is weak-password', () {
+    test('FirebaseAuthException weak-password', () {
       final error = FirebaseAuthException(code: 'weak-password');
-      final result = ErrorHandler.handleError(error);
-      expect(result, ErrorStrings.firebaseWeakPassword);
+      expect(ErrorHandler.handleError(error), ErrorStrings.firebaseWeakPassword);
     });
 
-    // --- 4. Other Errors Tests ---
-    test('should return hiveError when HiveError occurs', () {
+    test('FirebaseAuthException network-request-failed', () {
+      final error = FirebaseAuthException(code: 'network-request-failed');
+      expect(ErrorHandler.handleError(error), ErrorStrings.noInternet);
+    });
+
+    test('FirebaseAuthException unknown code returns message', () {
+      final error = FirebaseAuthException(code: 'some-other-code', message: 'Unknown');
+      expect(ErrorHandler.handleError(error), 'Unknown');
+    });
+
+    // --- 4. Firebase General Errors ---
+    test('FirebaseException permission-denied', () {
+      final error = FirebaseException(plugin: 'test', code: 'permission-denied');
+      expect(ErrorHandler.handleError(error), ErrorStrings.firebasePermissionDenied);
+    });
+
+    test('FirebaseException unavailable', () {
+      final error = FirebaseException(plugin: 'test', code: 'unavailable');
+      expect(ErrorHandler.handleError(error), ErrorStrings.firebaseUnavailable);
+    });
+
+    test('FirebaseException network-request-failed', () {
+      final error = FirebaseException(plugin: 'test', code: 'network-request-failed');
+      expect(ErrorHandler.handleError(error), ErrorStrings.noInternet);
+    });
+
+    test('FirebaseException unknown code returns unknownError', () {
+      final error = FirebaseException(plugin: 'test', code: 'other');
+      expect(ErrorHandler.handleError(error), ErrorStrings.unknownError);
+    });
+
+    // --- 5. Local Storage Errors ---
+    test('HiveError returns hiveError', () {
       final error = HiveError('Box closed');
-      final result = ErrorHandler.handleError(error);
-      expect(result, ErrorStrings.hiveError);
+      expect(ErrorHandler.handleError(error), ErrorStrings.hiveError);
     });
 
-    test('should return parsingError when TypeError occurs', () {
-      // TypeError is hard to instantiate directly, so we mock the behavior by passing a generic Error that implies logic failure if needed,
-      // but strictly speaking, TypeError is thrown by Dart runtime.
-      // We can create a real TypeError by casting wrong types inside a try-catch block if we want to be 100% real,
-      // but for ErrorHandler input, passing a simulated TypeError works if possible, or we just trust the logic branch.
-      // Here we will test the branch logic by passing a type that triggers the condition if possible,
-      // or simply rely on the fact that if we pass a TypeError instance (which is hard to create manually), it works.
+    test('PlatformException network_error returns noInternet', () {
+      final error = PlatformException(code: 'network_error');
+      expect(ErrorHandler.handleError(error), ErrorStrings.noInternet);
+    });
 
-      // Since TypeError is hard to instantiate, let's test FormatException instead which is similar in logic group.
+    test('PlatformException other returns platformError', () {
+      final error = PlatformException(code: 'other');
+      expect(ErrorHandler.handleError(error), ErrorStrings.platformError);
+    });
+
+    // --- 6. TypeError & FormatException ---
+    test('FormatException returns formatException', () {
       final error = const FormatException();
-      final result = ErrorHandler.handleError(error);
-      expect(result, ErrorStrings.formatException);
+      expect(ErrorHandler.handleError(error), ErrorStrings.formatException);
     });
 
-    test('should return unknownError for generic Exception', () {
-      final error = Exception('Some unknown error');
-      final result = ErrorHandler.handleError(error);
-      expect(result, ErrorStrings.unknownError);
+    test('Unknown Exception returns unknownError', () {
+      final error = Exception('Random');
+      expect(ErrorHandler.handleError(error), ErrorStrings.unknownError);
     });
   });
 }

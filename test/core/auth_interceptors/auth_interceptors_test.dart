@@ -39,7 +39,6 @@ void main() {
           // Arrange
           final options = RequestOptions(path: '/private/endpoint');
           when(mockPrefs.reload()).thenAnswer((_) async {
-            return null;
           });
           when(
             mockPrefs.getString(ApiConstants.tokenKey),
@@ -75,7 +74,6 @@ void main() {
         // Arrange
         final options = RequestOptions(path: '/private/endpoint');
         when(mockPrefs.reload()).thenAnswer((_) async {
-          return null;
         });
         when(mockPrefs.getString(ApiConstants.tokenKey)).thenReturn(null);
 
