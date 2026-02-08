@@ -55,17 +55,19 @@ class Routes {
 class AppRouter {
   static final GlobalKey<NavigatorState> rootNavigatorKey =
       GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> _homeNavigatorKey =
-      GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> _ordersNavigatorKey =
-      GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> _profileNavigatorKey =
-      GlobalKey<NavigatorState>();
+  // static final GlobalKey<NavigatorState> _homeNavigatorKey =
+  //     GlobalKey<NavigatorState>();
+  // static final GlobalKey<NavigatorState> _ordersNavigatorKey =
+  //     GlobalKey<NavigatorState>();
+  // static final GlobalKey<NavigatorState> _profileNavigatorKey =
+  //     GlobalKey<NavigatorState>();
 
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: Routes.onBoardingPath,
     redirect: (context, state) async {
+      return null;
+
       // final authRepo = getIt<AuthRepoContract>();
       // final bool isLoggedIn = await authRepo.isLoggedIn();
       // final bool isLoggingIn = state.uri.toString() == Routes.signInPath;
