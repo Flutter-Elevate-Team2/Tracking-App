@@ -1,0 +1,692 @@
+{
+  "@@locale": "en",
+  "appTitle": "Flowery ride",
+  "@appTitle": { "description": "The main title of the application" },
+  "flowery": "Flowery",
+  "@flowery": { "description": "App Name Logo Text" },
+
+
+  "onBoardingDescription": "Welcome to Flowery rider app",
+  "loginTitle": "Login",
+  "@loginTitle": {
+    "description": "Title for the login screen"
+  },
+  "applyButton": "Apply now",
+  "@applyButton": {
+    "description": " for the apply Button"
+  },
+  "applyTitle": "Apply",
+  "@applyTitle": {
+    "description": "Title for the apply screen"
+  },
+
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Label for the email input field"
+  },
+  "emailHint": "Enter your email",
+  "@emailHint": {
+    "description": "Hint text for the email input field"
+  },
+  "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Label for the password input field"
+  },
+  "passwordHint": "Enter your password",
+  "@passwordHint": {
+    "description": "Hint text for the password input field"
+  },
+
+  "rememberMe": "Remember me",
+  "@rememberMe": {
+    "description": "Label for remember me checkbox"
+  },
+  "forgotPasswordLink": "Forget password?",
+  "@forgotPasswordLink": {
+    "description": "Link text for forgot password"
+  },
+
+  "continueButton": "Continue",
+  "@continueButton": {
+    "description": " for the Continue Button"
+  },
+
+  "invalidEmailError": "This Email is not valid",
+  "@invalidEmailError": {
+    "description": "Generic error message for invalid email format"
+  },
+  "invalidPasswordError": "Invalid password",
+  "@invalidPasswordError": {
+    "description": "Generic error message for incorrect password"
+  },
+  "country": "Country",
+  "@country": {
+  "description": "Label for selecting or displaying the user's country"
+},
+  "firstNameLabel": "First legal name",
+  "@firstNameLabel": {
+    "description": "Label for the first name input field"
+  },
+  "firstNameHint": "Enter first legal name",
+  "@firstNameHint": {
+    "description": "Hint text for the first name input field"
+  },
+  "secondNameLabel": "Second legal name",
+  "@lastNameLabel": {
+    "description": "Label for the last name input field"
+  },
+  "secondNameHint": "Enter second legal name",
+  "@lastNameHint": {
+    "description": "Hint text for the second name input field"
+  },
+  "vehicleType": "Vehicle type",
+  "@vehicleType": {
+    "description": "Label for selecting or entering the type of vehicle"
+  },
+  "vehicleNumber": "Vehicle number",
+  "@vehicleNumber": {
+    "description": "Label for entering the vehicle number"
+  },
+  "vehicleLicense": "Vehicle license",
+  "@vehicleLicense": {
+    "description": "Label for entering the vehicle license"
+  },
+  "phoneLabel": "Phone number",
+  "@phoneLabel": {
+    "description": "Label for the phone number input field"
+  },
+  "phoneHint": "Enter phone number",
+  "@phoneHint": {
+    "description": "Hint text for the phone number input field"
+  },
+  "idNumberLabel": "ID number",
+  "@idNumberLabel": {
+    "description": "Label for the ID number input field"
+  },
+  "idNumberHint": "Enter national ID number",
+  "@idNumberHint": {
+    "description": "Hint text for the ID number input field"
+  },
+  "idImageLabel": "ID image",
+  "@idLabel": {
+    "description": "Label for the id image input field"
+  },
+  "idHint": "Upload ID image",
+  "@idHint": {
+    "description": "Hint text for the ID image "
+  },
+  "confirmPasswordLabel": "Confirm password",
+  "@confirmPasswordLabel": {
+    "description": "Label for the confirm password input field"
+  },
+  "confirmPasswordHint": "Confirm password",
+  "@confirmPasswordHint": {
+    "description": "Hint text for the confirm password input field"
+  },
+  "genderLabel": "Gender",
+  "@genderLabel": {
+    "description": "Label for gender selection"
+  },
+  "genderMale": "Male",
+  "@genderMale": {
+    "description": "Option for male gender"
+  },
+  "genderFemale": "Female",
+  "@genderFemale": {
+    "description": "Option for female gender"
+  },
+
+  "successApplySubTitle": "Your application has been submitted!",
+  "@successApplySubTitle": {
+    "description": "Subtitle shown after successfully submitting an application"
+  },
+
+  "successApplyDescription": "Thank you for providing your application, we will review your application and will get back to you soon.",
+  "@successApplyDescription": {
+    "description": "Message informing the user that their application will be reviewed and they will be contacted soon"
+  },
+
+
+  "nameRequired": "Name is required",
+  "@nameRequired": {
+    "description": "Validation message when name is empty"
+  },
+  "firstNameRequired": "First legal name is required",
+  "@firstNameRequired": {
+    "description": "Validation message when first name is empty"
+  },
+  "secondNameRequired": "Second legal name is required",
+  "@secondNameRequired": {
+    "description": "Validation message when second name is empty"
+  },
+  "vehicleTypeInvalid": "Vehicle type is invalid",
+  "@vehicleTypeInvalid": {
+    "description": "Error message shown when the selected or entered vehicle type is not valid"
+  },
+
+  "vehicleTypeRequired": "Vehicle type is required",
+  "@vehicleTypeRequired": {
+    "description": "Error message shown when the vehicle type field is left empty"
+  },
+
+  "vehicleNumberInvalid": "Vehicle number is invalid",
+  "@vehicleNumberInvalid": {
+    "description": "Error message shown when the entered vehicle number is not valid"
+  },
+
+  "vehicleNumberRequired": "Vehicle number is required",
+  "@vehicleNumberRequired": {
+    "description": "Error message shown when the vehicle number field is left empty"
+  },
+
+  "vehicleLicenseInvalid": "Vehicle license is invalid",
+  "@vehicleLicenseInvalid": {
+    "description": "Error message shown when the entered vehicle license is not valid"
+  },
+
+  "vehicleLicenseRequired": "Vehicle license is required",
+  "@vehicleLicenseRequired": {
+    "description": "Error message shown when the vehicle license field is left empty"
+  },
+
+  "phoneRequired": "Phone number is required",
+  "@phoneRequired": { "description": "Validation message when phone is empty" },
+  "phoneInvalid": "Ensure the number starts with +20",
+  "@phoneInvalid": { "description": "Validation message when phone format is wrong" },
+
+  "idNumberRequired": "national ID number is required",
+  "@idNumberRequired": { "description": "Validation message when ID number is empty" },
+  "idNumberInvalid": "National ID number is invalid",
+  "@idNumberInvalid": { "description": "Validation message when ID number is wrong" },
+
+  "idImageInvalid": "ID image is invalid",
+  "@idImageInvalid": {
+    "description": "Error message shown when the uploaded ID image is not valid or corrupted"
+  },
+
+  "idImageRequired": "ID image is required",
+  "@idImageRequired": {
+    "description": "Error message shown when the ID image field is left empty"
+  },
+
+  "forgotPasswordTitle": "Forget password",
+  "@forgotPasswordTitle": {
+    "description": "Title for the forgot password screen"
+  },
+  "forgotPasswordSubTitle": "Please enter your email associated to your account",
+  "@forgotPasswordSubTitle": {
+    "description": "Subtitle instructions for forgot password"
+  },
+  "confirmButton": "Confirm",
+  "@confirmButton": {
+    "description": "Label for confirm buttons"
+  },
+
+  "verificationTitle": "Email verification",
+  "@verificationTitle": {
+    "description": "Title for the email verification screen"
+  },
+  "validationEnterCompleteCode": "Please enter complete 6-digit code",
+  "@validationEnterCompleteCode": {
+    "description": "Validation message for incomplete OTP code"
+  },
+
+  "weakPasswordError": "Password must not be empty and must contain 6 characters with upper case letter and one number at least",
+  "@weakPasswordError": {
+    "description": "Generic error message for weak password validation"
+  },
+  "invalidCodeError": "Invalid code",
+  "@invalidCodeError": { "description": "Generic error message for invalid verification code" },
+
+  "verificationSubTitle": "Please enter your code that sent to your email address",
+  "@verificationSubTitle": { "description": "Subtitle instructions for email verification" },
+  "resendCode": "Didn't receive code?",
+  "@resendCode": { "description": "Button text to resend verification code" },
+  "resend": "Resend",
+  "@resend": { "description": "Button text to resend verification code" },
+
+  "resetPasswordTitle": "Reset password",
+  "@resetPasswordTitle": { "description": "Title for the reset password screen" },
+  "resetPasswordSubTitle": "Password must not be empty and must contain 6 characters with upper case letter and one number at least ",
+  "@resetPasswordSubTitle": { "description": "Subtitle instructions for reset password" },
+  "resetSuccessfully": "Password reset successfully! Please login with your new password.",
+  "@resetSuccessfully": { "description": "content of dialog" },
+  "registerSuccessfully": "Your account has been created successfully! Please login to continue ",
+  "@registerSuccessfully": { "description": "content of dialog" },
+  "success": "success",
+  "@success": { "description": "success" },
+
+  "newPasswordLabel": "New password",
+  "@newPasswordLabel": {
+    "description": "Label for the new password input field"
+  },
+  "emailRequired": "Email is required",
+  "@emailRequired": {
+    "description": "Validation message when email is empty"
+  },
+  "emailInvalid": "Please enter a valid email",
+  "@emailInvalid": {
+    "description": "Validation message when email format is wrong"
+  },
+  "passwordRequired": "Password is required",
+  "@passwordRequired": {
+    "description": "Validation message when password is empty"
+  },
+  "passwordTooShort": "Password must be at least 6 characters",
+  "@passwordTooShort": {
+    "description": "Validation message when password is short"
+  },
+  "passwordWeak": "Password must contain uppercase, lowercase, number and special character",
+  "@passwordWeak": {
+    "description": "Validation message when password complexity is low"
+  },
+  "passwordMismatch": "Passwords don't match",
+  "@passwordMismatch": {
+    "description": "Validation message when confirm password fails"
+  },
+  "cancelDialog": "cancel",
+  "@cancelDialog": {
+    "description": "Label for the cancel button in a dialog"
+  },
+
+  "vehicleInfo": "Vehicle info",
+  "@vehicleInfo": {
+    "description": "Label for entering or displaying general information about the vehicle"
+  },
+  "editProfile": "Edit profile",
+  "@editProfile": { "description": "Title for edit profile screen" },
+  "change": "Change",
+  "@change": { "description": "Button text to change password" },
+  "update": "Update",
+  "@update": { "description": "Button text to update profile or password" },
+  "editVehicleInfo": "Edit vehicle info",
+  "@editVehicleInfo": {
+    "description": "Label or button text for editing the vehicle information"
+  },
+  "logout": "Logout",
+  "@logout": { "description": "Profile menu item for logout" },
+  "logoutTitle": "LOGOUT",
+  "@logoutTitle": { "description": "Title for logout confirmation dialog" },
+  "confirmLogout": "Confirm logout!!",
+  "@confirmLogout": { "description": "Message asking user to confirm logout" },
+  "currentPasswordLabel": "Current password",
+  "@currentPasswordLabel": { "description": "Label for current password field" },
+  "currentPasswordHint": "Current password",
+  "@currentPasswordHint": { "description": "Hint for current password field" },
+
+  "ok": "Ok",
+  "@ok": { "description": "Ok" },
+
+
+  "home": "Home",
+  "@home": {
+    "description": "Label for the home navigation tab"
+  },
+  "cart": "Orders",
+  "@cart": {
+    "description": "Label for the Orders navigation tab"
+  },
+  "profile": "Profile",
+  "@profile": { "description": "Label for the profile navigation tab" },
+
+
+  "status": "Status: ",
+  "flowerOrder": "Flower order",
+  "@flowerOrder": {
+    "description": "Label for a flower order"
+  },
+
+  "pickupAddress": "Pickup address",
+  "@pickupAddress": {
+    "description": "Label for the address where the order will be picked up"
+  },
+
+  "userAddress": "User address",
+  "@userAddress": {
+    "description": "Label for the address of the user receiving the order"
+  },
+
+  "accept": "Accept",
+  "@accept": {
+    "description": "Action button text for accepting an order or request"
+  },
+
+  "reject": "Reject",
+  "@reject": {
+    "description": "Action button text for rejecting an order or request"
+  },
+
+  "orderDetails": "Order details",
+  "@orderDetails": {
+    "description": "Label for viewing detailed information of an order"
+  },
+
+  "accepted": "Accepted",
+  "@accepted": {
+    "description": "Status indicating that the order has been accepted"
+  },
+
+  "orderID": "Order ID",
+  "@orderID": {
+    "description": "Label for displaying the unique identifier of an order"
+  },
+
+  "paymentMethod": "Payment method",
+  "@paymentMethod": {
+    "description": "Label for the method used to pay for the order"
+  },
+
+  "total": "Total",
+  "@total": {
+    "description": "Label for showing the total cost of the order"
+  },
+
+  "arrivedAtPickupPointButton": "Arrived at Pickup point",
+  "@arrivedAtPickupPointButton": {
+    "description": "Status indicating the order has reached the pickup location"
+  },
+
+  "picked": "Picked",
+  "@picked": {
+    "description": "Status indicating the order has been picked up from the pickup point"
+  },
+
+  "startDeliverButton": "Start deliver",
+  "@startDeliverButton": {
+    "description": "Action or status indicating that the delivery process has started"
+  },
+
+  "outForDelivery": "Out for delivery",
+  "@outForDelivery": {
+    "description": "Status indicating that the order is on its way to the user"
+  },
+
+  "arrivedToUserButton": "Arrived to the user",
+  "@arrivedToUserButton": {
+    "description": "Status indicating that the order has arrived at the user's location"
+  },
+
+  "arrived": "Arrived",
+  "@arrived": {
+    "description": "General status indicating arrival at a location"
+  },
+
+  "deliveredToUser": "Delivered to the user",
+  "@deliveredToUser": {
+    "description": "Status indicating that the order has been successfully delivered to the user"
+  },
+
+  "delivered": "Delivered",
+  "@delivered": {
+    "description": "General status indicating delivery completed"
+  },
+
+  "yourLocation": "Your location",
+  "@yourLocation": {
+    "description": "Label indicating the user's current location"
+  },
+
+  "orderDeliveredSuccessfully": "The order delivered successfully",
+  "@orderDeliveredSuccessfully": {
+    "description": "Message shown when the order has been delivered successfully"
+  },
+
+  "done": "Done",
+  "@done": {
+    "description": "Action or status indicating a task or order is completed"
+  },
+
+  "cancelled": "Cancelled",
+  "@cancelled": {
+    "description": "Status indicating the order has been cancelled"
+  },
+
+
+  "recentOrders": "Recent orders",
+  "@recentOrders": {
+    "description": "Label for displaying the list of recent orders"
+  },
+
+  "readyForDelivery": "Ready for delivery",
+  "@readyForDelivery": {
+    "description": "Status indicating that the order is prepared and ready to be delivered"
+  },
+  "completed": "Completed",
+  "@completed": { "description": "Status label for completed orders" },
+
+  "pending": "Pending",
+  "@pending": {
+    "description": "Status indicating that the order is still pending and not yet processed"
+  },
+
+  "viewAll": "View All",
+  "@viewAll": { "description": "Button text to view all items" },
+  "deliverTo": "Deliver to",
+  "@deliverTo": { "description": "Label for delivery location" },
+  "retryButton": "Retry",
+  "@retryButton": { "description": "Button text to retry" },
+
+  "connectionTimeoutError": "Connection timeout. Please check your internet.",
+  "@connectionTimeoutError": {
+    "description": "Error message for connection timeout"
+  },
+  "sendTimeoutError": "Request timeout. Please try again.",
+  "@sendTimeoutError": {
+    "description": "Error message for send timeout"
+  },
+  "receiveTimeoutError": "Server took too long to respond.",
+  "@receiveTimeoutError": {
+    "description": "Error message for receive timeout"
+  },
+  "connectionError": "Connection error. Please check your network.",
+  "@connectionError": {
+    "description": "Generic connection error message"
+  },
+  "noInternetError": "No internet connection.",
+  "@noInternetError": {
+    "description": "Error message for no internet connection"
+  },
+  "networkError": "Network error occurred.",
+  "@networkError": {
+    "description": "Generic network error message"
+  },
+  "requestCancelledError": "Request was cancelled.",
+  "@requestCancelledError": {
+    "description": "Error message when request is cancelled"
+  },
+  "badCertificateError": "Security certificate error.",
+  "@badCertificateError": {
+    "description": "Error message for bad SSL certificate"
+  },
+  "badRequestError": "Invalid request.",
+  "@badRequestError": {
+    "description": "Error message for 400 Bad Request"
+  },
+  "unauthorizedError": "Session expired. Please login again.",
+  "@unauthorizedError": {
+    "description": "Error message for 401 Unauthorized"
+  },
+  "forbiddenError": "Access denied.",
+  "@forbiddenError": {
+    "description": "Error message for 403 Forbidden"
+  },
+  "notFoundError": "Resource not found.",
+  "@notFoundError": {
+    "description": "Error message for 404 Not Found"
+  },
+  "conflictError": "Data conflict occurred.",
+  "@conflictError": {
+    "description": "Error message for 409 Conflict"
+  },
+  "internalServerError": "Server error. Try again later.",
+  "@internalServerError": {
+    "description": "Error message for 500 Internal Server Error"
+  },
+  "serviceUnavailableError": "Service unavailable.",
+  "@serviceUnavailableError": {
+    "description": "Error message for 503 Service Unavailable"
+  },
+  "formatExceptionError": "Data format error.",
+  "@formatExceptionError": {
+    "description": "Error message for format exception"
+  },
+  "parsingError": "Error parsing data. Please try again.",
+  "@parsingError": {
+    "description": "Error message for data parsing issues"
+  },
+  "firebaseUserNotFound": "No user found for this email.",
+  "@firebaseUserNotFound": {
+    "description": "Firebase error: User not found"
+  },
+  "firebaseWrongPassword": "Wrong password.",
+  "@firebaseWrongPassword": {
+    "description": "Firebase error: Wrong password"
+  },
+  "firebaseEmailInUse": "Email already in use.",
+  "@firebaseEmailInUse": {
+    "description": "Firebase error: Email in use"
+  },
+  "firebaseInvalidEmail": "Invalid email format.",
+  "@firebaseInvalidEmail": {
+    "description": "Firebase error: Invalid email"
+  },
+  "firebaseWeakPassword": "Password is too weak.",
+  "@firebaseWeakPassword": {
+    "description": "Firebase error: Weak password"
+  },
+  "firebaseAccountDisabled": "Account disabled.",
+  "@firebaseAccountDisabled": {
+    "description": "Firebase error: Account disabled"
+  },
+  "firebaseTooManyRequests": "Too many requests. Try again later.",
+  "@firebaseTooManyRequests": {
+    "description": "Firebase error: Too many requests"
+  },
+  "firebaseAuthUnknown": "Authentication failed.",
+  "@firebaseAuthUnknown": {
+    "description": "Firebase error: Unknown auth error"
+  },
+  "firebasePermissionDenied": "Permission denied.",
+  "@firebasePermissionDenied": {
+    "description": "Firebase error: Permission denied"
+  },
+  "firebaseUnavailable": "Firebase service unavailable.",
+  "@firebaseUnavailable": {
+    "description": "Firebase error: Service unavailable"
+  },
+  "hiveError": "Database error (Hive).",
+  "@hiveError": {
+    "description": "Error message for Hive database issues"
+  },
+  "platformError": "System error occurred.",
+  "@platformError": {
+    "description": "Error message for platform exceptions"
+  },
+  "defaultError": "Something went wrong.",
+  "@defaultError": {
+    "description": "Fallback generic error message"
+  },
+  "unknownError": "An unexpected error occurred.",
+  "@unknownError": {
+    "description": "Fallback unknown error message"
+  },
+  "sessionExpiredTitle": "Session Expired",
+  "@sessionExpiredTitle": {
+    "description": "Title for the session expired dialog"
+  },
+  "sessionExpiredMessage": "Please log in again to continue.",
+  "@sessionExpiredMessage": {
+    "description": "Content message for the session expired dialog"
+  },
+
+  "includeTax": "All prices include tax",
+  "description": "Description",
+
+  "searchLabel": "Search",
+  "@searchLabel": {
+    "description": "Label for the search input field"
+  },
+  "searchHint": "Search",
+  "@searchHint": { "description": "Hint text for search bar" },
+
+  "searchNoResults": "No results found",
+  "@searchNoResults": {
+    "description": "Message displayed when no search results are found"
+  },
+  "searchFor": "Search For Any Product You Want",
+  "addToCart": "Add to Cart",
+  "@addToCart": {
+    "description": "Button text to add an item to the cart"
+  },
+
+  "notifications": "Notification",
+  "@notifications": { "description": "Profile menu item for notifications" },
+  "language": "Language",
+  "@language": { "description": "Profile menu item for language" },
+  "english": "English",
+  "@english": { "description": "Language option English" },
+  "arabic": "Arabic",
+  "@arabic": { "description": "Language option Arabic" },
+
+  "changeLanguage": "Change Language",
+  "@changeLanguage": { "description": "Title for language selection bottom sheet" },
+   "profileUpdatedSuccess": "Profile updated successfully",
+  "@profileUpdatedSuccess": { "description": "Success message after profile update" },
+  "photoUploadedSuccessfully":"Photo uploaded successfully",
+  "passwordChangedSuccess": "Password changed successfully",
+  "@passwordChangedSuccess": { "description": "Success message after password change" },
+  "appVersion": "v 6.3.0 - (446)",
+  "@appVersion": { "description": "App version display text" },
+  "failedToPickImage": "Failed to pick image: {error}",
+  "@failedToPickImage": {
+    "description": "Error message when image selection fails",
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "required": "Required",
+    "@required": { "description": "Validation message when a required field is empty" },
+
+  "tapToChange": "Tap to change",
+  "@tapToChange": { "description": "Text to indicate user can tap to change location" },
+  "addressLabel": "Address",
+  "@addressLabel": { "description": "Label for address input field" },
+
+   "pleasePickLocation": "Please pick a location on map",
+  "@pleasePickLocation": { "description": "Validation message when location is not selected" },
+  "pickLocation": "Pick Location",
+  "@pickLocation": { "description": "Title for location picker screen" },
+  "locationServicesDisabled": "Location services are disabled. Please enable them.",
+  "@locationServicesDisabled": { "description": "Message when location services are disabled" },
+  "locationPermissionsDenied": "Location permissions are denied",
+  "@locationPermissionsDenied": { "description": "Message when location permissions are denied" },
+  "locationPermissionsPermanentlyDenied": "Location permissions are permanently denied",
+  "@locationPermissionsPermanentlyDenied": { "description": "Message when location permissions are permanently denied" },
+  "currentLocationSelected": "Current location selected",
+  "@currentLocationSelected": { "description": "Message when current location is selected" },
+  "errorGettingLocation": "Error getting location: ",
+  "@errorGettingLocation": { "description": "Error message prefix when getting location fails" },
+ "cashOnDelivery": "Cash on delivery",
+  "@cashOnDelivery": { "description": "Option for cash on delivery" },
+  "creditCard": "Credit card",
+  "@creditCard": { "description": "Option for credit card payment" },
+  "deliveryAddress": "Delivery address",
+  "@deliveryAddress": { "description": "Label for delivery address" },
+  "addNew": "Add new",
+  "@addNew": { "description": "Button text to add a new address" },
+  "edit": "Edit",
+  "@edit": { "description": "Button text to edit an address" },
+ "thankYou": "Thank you!",
+  "@thankYou": { "description": "Thank you message"},
+  "goToHome": "Go to home",
+  "@goToHome": { "description": "Button text to go to home"},
+ "loading": "Loading...",
+  "@loading": { "description": "loading..." },
+ "active": "Active",
+  "@active": { "description": "Status label for active orders" },
+"trackOrder": "Track order",
+  "@trackOrder": {"description": "Button text to track an order" },
+  "deliveredOn": "Delivered on",
+  "@deliveredOn": { "description": "Label for delivery status"},
+  "noOrdersFound": "No orders found",
+  "@noOrderFound": { "description": "Message displayed when no orders are found"}
+}
