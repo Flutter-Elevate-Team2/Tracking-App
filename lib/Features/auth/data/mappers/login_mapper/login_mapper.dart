@@ -6,3 +6,4 @@ extension LoginResponseMapper on LoginResponse {
     return LoginEntity(message: message, token: token);
   }
 }
+
