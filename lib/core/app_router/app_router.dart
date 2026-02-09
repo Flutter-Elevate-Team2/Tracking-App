@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
 
 class Routes {
 
@@ -81,7 +82,7 @@ class AppRouter {
       GoRoute(
         path: Routes.onBoardingPath,
         name: Routes.onBoardingName,
-        builder: (context, state) => Container(),
+        builder: (context, state) => OnBoardingScreen(),
       ),
       GoRoute(
         path: Routes.loginPath,

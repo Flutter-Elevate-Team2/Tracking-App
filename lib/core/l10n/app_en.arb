@@ -7,6 +7,9 @@
 
 
   "onBoardingDescription": "Welcome to Flowery rider app",
+  "welcomeTo": "Welcome to",
+  "floweryRiderApp": "Flowery rider app",
+
   "loginTitle": "Login",
   "@loginTitle": {
     "description": "Title for the login screen"

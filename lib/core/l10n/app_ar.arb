@@ -5,7 +5,9 @@
   "flowery": "Flowery",
   "@flowery": { "description": "نص شعار اسم التطبيق" },
 
-  "onBoardingDescription": "مرحبًا بك في تطبيق رايدر Flowery",
+  "onBoardingDescription": "مرحبًا بك في تطبيق rider Flowery",
+  "welcomeTo": "مرحبًا بك في",
+  "floweryRiderApp": "تطبيق rider Flowery",
   "loginTitle": "تسجيل الدخول",
   "@loginTitle": { "description": "عنوان شاشة تسجيل الدخول" },
   "applyButton": "قدّم الآن",

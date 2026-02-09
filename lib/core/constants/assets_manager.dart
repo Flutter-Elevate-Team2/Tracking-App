@@ -1,3 +1,5 @@
 class AssetsManager {
   static const String testPhoto="assets/images/flower.png";
+  static const String onBoarding="assets/lottie/Delivery Service-Delivery man.png";
+
 }
