@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:injectable/injectable.dart';
 import 'package:tracking_app/Features/profile/data/mapper/change_password_mapper.dart';
 import 'package:tracking_app/Features/profile/data/mapper/driver_mapper.dart';
@@ -5,6 +7,7 @@ import 'package:tracking_app/Features/profile/data/models/change_password_reques
 import 'package:tracking_app/Features/profile/data/models/edit_profile_request.dart';
 import 'package:tracking_app/Features/profile/data/models/edit_profile_response/change_password_response/change_password_response.dart';
 import 'package:tracking_app/Features/profile/data/models/edit_profile_response/edit_profile_response.dart';
+import 'package:tracking_app/Features/profile/data/models/upload_photo/upload_photo_response.dart';
 import 'package:tracking_app/Features/profile/data/remote_data_source_contract/profile_remote_data_source_contract.dart';
 import 'package:tracking_app/Features/profile/domain/entities/change_password_entity.dart';
 import 'package:tracking_app/Features/profile/domain/entities/driver_entity.dart';
@@ -29,6 +32,14 @@ class ProfileRepoImple with ApiExecutionMixin implements ProfileRepoContract {
       action: ()async => await _remoteDataSource.editProfile(request),
       mapper: (response) => response.toEntity()   );
 
+  }
+
+  @override
+   Future<BaseResponse<String>> uploadPhoto(File file) async {
+    return execute<UploadPhotoResponse, String>(
+      action: () async => await _remoteDataSource.uploadPhoto(file),
+      mapper: (response) => response.message,
+    );
   }
   
 

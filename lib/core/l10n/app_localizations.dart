@@ -200,6 +200,18 @@ abstract class AppLocalizations {
   /// **'First legal name'**
   String get firstNameLabel;
 
+  /// Label for the first name input field
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get firstNamelabel;
+
+  /// Label for the last name input field
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get lastNameLabel;
+
   /// Hint text for the first name input field
   ///
   /// In en, this message translates to:

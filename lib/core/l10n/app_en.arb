@@ -67,6 +67,14 @@
   "@firstNameLabel": {
     "description": "Label for the first name input field"
   },
+  "firstNamelabel": "First Name",
+  "@firstNamelabel": {
+    "description": "Label for the first name input field"
+  },
+  "lastNameLabel": "Last Name",
+  "@lastNameLabell": {
+    "description": "Label for the last name input field"
+  },
   "firstNameHint": "Enter first legal name",
   "@firstNameHint": {
     "description": "Hint text for the first name input field"

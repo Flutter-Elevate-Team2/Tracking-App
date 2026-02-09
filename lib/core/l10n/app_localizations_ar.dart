@@ -60,6 +60,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get firstNameLabel => 'الاسم الأول القانوني';
 
   @override
+  String get firstNamelabel => 'First Name';
+
+  @override
+  String get lastNameLabel => 'Last Name';
+
+  @override
   String get firstNameHint => 'أدخل الاسم الأول القانوني';
 
   @override
