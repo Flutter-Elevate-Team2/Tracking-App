@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
+// coverage:ignore-file
 
 class Routes {
 
