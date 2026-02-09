@@ -37,6 +37,9 @@ class EditProfileViewModel extends Cubit<EditProfileStates> {
     final result = await editProfileUseCase(request);
     switch (result) {
       case SuccessResponse<DriverEntity>():
+       
+        getIt<SessionController>().saveUser(result.data);
+
         emit(
           state.copyWith(
             editProfileState: BaseState(isLoading: false, data: result.data),

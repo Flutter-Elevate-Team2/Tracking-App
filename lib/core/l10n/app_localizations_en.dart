@@ -514,10 +514,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get changeLanguage => 'Change Language';
 
   @override
-  String get profileUpdatedSuccess => 'Profile updated successfully';
+  String get profileUpdatedSuccess => 'Profile updated successfully!';
 
   @override
-  String get photoUploadedSuccessfully => 'Photo uploaded successfully';
+  String get photoUploadedSuccessfully => 'Photo uploaded successfully!';
 
   @override
   String get passwordChangedSuccess => 'Password changed successfully';
@@ -597,4 +597,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noOrdersFound => 'No orders found';
+
+  @override
+  String get chooseImageSource => 'Choose Image Source';
+
+  @override
+  String get camera => 'Camera';
+
+  @override
+  String get gallery => 'Gallery';
 }

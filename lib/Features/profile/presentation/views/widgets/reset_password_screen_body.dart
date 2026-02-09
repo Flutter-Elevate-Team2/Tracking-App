@@ -58,31 +58,41 @@ class _ResetPasswordScreenBodyState extends State<ResetPasswordScreenBody> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<ChangePasswordViewModel, ChangePasswordStates>(
-      listener: (context, state) {
-        if (state.changePasswordState?.isLoading??false) {
-          // Show loading indicator
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        } else if (state.changePasswordState?.data != null) {
-         
-          Navigator.of(context).pop(); // Hide loading dialog
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.l10n.passwordChangedSuccess)),
-          );
-          Navigator.of(context).pop(); 
-        } else if (state.changePasswordState?.errorMessage != null) {
-         
-          Navigator.of(context).pop(); // Hide loading dialog
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.changePasswordState?.errorMessage ?? context.l10n.unknownError)),
-          );
-        }
-      },
+      listenWhen: (previous, current) {
+    return previous.changePasswordState != current.changePasswordState;
+  },
+  listener: (context, state) {
+    final changePassState = state.changePasswordState;
+
+    if (changePassState?.isLoading ?? false) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else {
+      Navigator.of(context).pop(); 
+
+      if (changePassState?.data != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.passwordChangedSuccess),
+            backgroundColor: Colors.green, 
+          ),
+        );
+        Navigator.of(context).pop();
+      } else if (changePassState?.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(changePassState!.errorMessage!),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: SingleChildScrollView(

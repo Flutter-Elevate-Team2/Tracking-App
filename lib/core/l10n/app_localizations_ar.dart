@@ -595,4 +595,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noOrdersFound => 'لا توجد طلبات';
+
+  @override
+  String get chooseImageSource => 'Choose Image Source';
+
+  @override
+  String get camera => 'Camera';
+
+  @override
+  String get gallery => 'Gallery';
 }
