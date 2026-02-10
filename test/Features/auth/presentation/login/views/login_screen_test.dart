@@ -77,8 +77,8 @@ void main() {
     );
 
     await tester.pumpWidget(createWidgetUnderTest());
-    await tester.pump(); // أول frame
-    await tester.pump(); // BlocListener triggers
+    await tester.pump();
+    await tester.pump();
 
     expect(find.text('Login Failed'), findsOneWidget);
   });

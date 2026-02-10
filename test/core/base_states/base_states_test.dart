@@ -28,12 +28,11 @@ void main() {
     test('copyWith should keep old values if null is passed', () {
       const state = BaseState<String>(isLoading: true, data: 'Old Data');
 
-      // هنا بنبعت بس الـ errorMessage ونسيب الباقي
       final updatedState = state.copyWith(errorMessage: 'New Error');
 
-      expect(updatedState.isLoading, true); // لسه قديم
-      expect(updatedState.data, 'Old Data'); // لسه قديم
-      expect(updatedState.errorMessage, 'New Error'); // الجديد
+      expect(updatedState.isLoading, true);
+      expect(updatedState.data, 'Old Data');
+      expect(updatedState.errorMessage, 'New Error');
     });
 
     test('Equality test (Equatable)', () {
@@ -41,8 +40,8 @@ void main() {
       const state2 = BaseState<int>(isLoading: true, data: 10);
       const state3 = BaseState<int>(isLoading: false, data: 10);
 
-      expect(state1, equals(state2)); // لازم يكونوا متطابقين
-      expect(state1, isNot(equals(state3))); // لازم يكونوا مختلفين
+      expect(state1, equals(state2));
+      expect(state1, isNot(equals(state3)));
     });
     test('props should contain all fields in order', () {
       const state = BaseState<int>(
@@ -51,7 +50,6 @@ void main() {
         data: 5,
       );
 
-      // السطر ده بيجبر التيست يقرأ الـ props اللي هي أساس الـ Equatable
       expect(state.props, [true, 'failed', 5]);
     });
 
