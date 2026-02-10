@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracking_app/Features/home/presentation/views/screens/home_screen.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/change_password/change_password_view_model.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/edit_profile/edit_profile_view_model.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/edit_profile_screen.dart';
@@ -49,16 +50,16 @@ class Routes {
 class AppRouter {
   static final GlobalKey<NavigatorState> rootNavigatorKey =
       GlobalKey<NavigatorState>();
-  // static final GlobalKey<NavigatorState> _homeNavigatorKey =
-  //     GlobalKey<NavigatorState>();
-  // static final GlobalKey<NavigatorState> _ordersNavigatorKey =
-  //     GlobalKey<NavigatorState>();
-  // static final GlobalKey<NavigatorState> _profileNavigatorKey =
-  //     GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> _homeNavigatorKey =
+      GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> _ordersNavigatorKey =
+      GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> _profileNavigatorKey =
+      GlobalKey<NavigatorState>();
 
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: Routes.editProfilePath,
+    initialLocation: Routes.homePath,
     redirect: (context, state) async {
       return null;
 
@@ -129,49 +130,58 @@ class AppRouter {
         builder: (context, state) => Container(),
       ),
 
-      /// ====== MAIN SHELL ROUTE (BOTTOM NAV BAR) ======
-      // StatefulShellRoute.indexedStack(
-      //   builder: (context, state, navigationShell) {
-      //     return HomeScreen(navigationShell: navigationShell);
-      //   },
-      //   branches: [
-      //     // Branch 1: Home
-      //     StatefulShellBranch(
-      //       navigatorKey: _homeNavigatorKey,
-      //       routes: [
-      //         GoRoute(
-      //           path: Routes.homePath,
-      //           name: Routes.homeName,
-      //           builder: (context, state) =>  Container(),
-      //         ),
-      //       ],
-      //     ),
-      //
-      //     // Branch 2: Orders
-      //     StatefulShellBranch(
-      //       navigatorKey: _ordersNavigatorKey,
-      //       routes: [
-      //         GoRoute(
-      //           path: Routes.ordersPath,
-      //           name: Routes.ordersName,
-      //           builder: (context, state) =>  Container(),
-      //         ),
-      //       ],
-      //     ),
-      //
-      //     // Branch 3: Profile
-      //     StatefulShellBranch(
-      //       navigatorKey: _profileNavigatorKey,
-      //       routes: [
-      //         GoRoute(
-      //           path: Routes.profilePath,
-      //           name: Routes.profileName,
-      //           builder: (context, state) =>  Container(),
-      //         ),
-      //       ],
-      //     ),
-      //   ],
-      // ),
-    ],
-  );
+      // / ====== MAIN SHELL ROUTE (BOTTOM NAV BAR) ======
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return HomeScreen(navigationShell: navigationShell);
+        },
+        branches: [
+          // Branch 1: Home
+          StatefulShellBranch(
+            navigatorKey: _homeNavigatorKey,
+            routes: [
+              GoRoute(
+                path: Routes.homePath,
+                name: Routes.homeName,
+                builder: (context, state) =>  Container(),
+              ),
+            ],
+          ),
+        
+      
+        
+      
+          // Branch 2: Orders
+          StatefulShellBranch(
+            navigatorKey: _ordersNavigatorKey,
+            routes: [
+              GoRoute(
+                path: Routes.ordersPath,
+                name: Routes.ordersName,
+                builder: (context, state) =>  Container(),
+              ),
+            ],
+          ),
+      
+          // Branch 3: Profile
+          StatefulShellBranch(
+            navigatorKey: _profileNavigatorKey,
+            routes: [
+              GoRoute(
+                path: Routes.profilePath,
+                name: Routes.profileName,
+                builder: (context, state) =>  Container(),
+              ),
+            ],
+          ),
+        ]
+      )
+    ]
+        
+      );
+    
+  
+    
+  
+
 }
