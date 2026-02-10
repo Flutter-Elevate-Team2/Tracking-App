@@ -1,11 +1,22 @@
-import 'package:tracking_app/core/controller/session_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tracking_app/core/constants/api_constants.dart';
+import 'package:tracking_app/core/controller/session_controller.dart';
+
+@GenerateMocks([SharedPreferences])
+import 'session_controller_test.mocks.dart';
 
 void main() {
   late SessionController sessionController;
+  late MockSharedPreferences mockPrefs;
 
   setUp(() {
-    sessionController = SessionController();
+    mockPrefs = MockSharedPreferences();
+    when(mockPrefs.remove(any)).thenAnswer((_) async => true);
+    when(mockPrefs.setString(any, any)).thenAnswer((_) async => true);
+    sessionController = SessionController(mockPrefs);
   });
 
   tearDown(() {
@@ -13,9 +24,10 @@ void main() {
   });
 
   group('SessionController', () {
-    test('expireSession emits event', () async {
+    test('expireSession emits event and removes token', () async {
       expectLater(sessionController.onSessionExpired, emits(null));
-      sessionController.expireSession();
+      await sessionController.expireSession();
+      verify(mockPrefs.remove(ApiConstants.tokenKey)).called(1);
     });
 
     test('notifyLogin emits event', () async {
@@ -23,9 +35,12 @@ void main() {
       sessionController.notifyLogin();
     });
 
-    test('notifyLogout emits reason', () async {
+    test('notifyLogout emits reason and removes token', () async {
       expectLater(sessionController.onLogout, emits(SessionEndReason.logout));
-      sessionController.notifyLogout(SessionEndReason.logout);
+
+      await sessionController.notifyLogout(SessionEndReason.logout);
+
+      verify(mockPrefs.remove(ApiConstants.tokenKey)).called(1);
     });
 
     test('multiple listeners receive events (broadcast)', () async {

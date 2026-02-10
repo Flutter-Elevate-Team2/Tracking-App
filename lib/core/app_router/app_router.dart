@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracking_app/Features/profile/presentation/screens/profile_screen.dart';
 
 class Routes {
 
@@ -33,6 +34,8 @@ class Routes {
   static const String homeName = 'home';
 
 
+  static const String mainProfilePath = '/mainprofile';
+  static const String mainProfileName = 'mainProfile';
   static const String profilePath = '/profile';
   static const String profileName = 'profile';
 
@@ -50,6 +53,7 @@ class Routes {
   static const String ordersName = 'orders';
 
 
+
 }
 
 class AppRouter {
@@ -64,7 +68,7 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: Routes.onBoardingPath,
+    initialLocation: Routes.mainProfilePath,
     redirect: (context, state) async {
       return null;
 
@@ -126,6 +130,12 @@ class AppRouter {
         path: Routes.editVehiclePath,
         name: Routes.editVehicleName,
         builder: (context, state) => Container(),
+      ),
+
+      GoRoute(
+        path: Routes.mainProfilePath,
+        name: Routes.mainProfileName,
+        builder: (context, state) => ProfileScreen(),
       ),
 
 
