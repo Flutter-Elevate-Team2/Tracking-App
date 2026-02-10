@@ -3,4 +3,5 @@ import 'package:tracking_app/core/base_response/base_response.dart';
 
 abstract class ProfileRepoContract {
   Future<BaseResponse<DriverEntity>> getDriverProfile();
+  Future<BaseResponse<String>> logout();
 }
