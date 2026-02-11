@@ -106,13 +106,9 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
-<<<<<<< HEAD
-   - .env
-#    - assets/
-=======
     - .env
-    - assets/
->>>>>>> feature/TEAM2-76-login-presentation-layer
+    - assets/fonts/
+    - assets/images/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

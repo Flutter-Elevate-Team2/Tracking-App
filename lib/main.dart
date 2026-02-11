@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
+import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/controller/session_controller.dart';
 import 'package:tracking_app/core/di/di.dart';
 import 'package:tracking_app/core/helpers/session_expired_handler.dart';
@@ -17,6 +19,12 @@ Future<void> main() async {
 
   await dotenv.load(fileName: ".env");
   await configureDependencies();
+  // final prefs = getIt<SharedPreferences>();
+
+  // const String fixedToken =
+  //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcml2ZXIiOiI2OTg4ZDY2N2UzNjRlZjYxNDA1MWQyYjMiLCJpYXQiOjE3NzA4MjEwNzV9.2yWNqYpMcY4Qt6uMp7oX992Eskb1DcD2qGRMZFUOcs8";
+
+  // await prefs.setString(ApiConstants.tokenKey, fixedToken);
 
   runApp(const MyApp());
 }

@@ -4,6 +4,7 @@ import 'package:retrofit/retrofit.dart';
 import 'package:tracking_app/Features/profile/data/models/driver_profile_response.dart';
 import 'package:tracking_app/Features/profile/data/models/lib/Features/profile/data/models/logout_response.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
+
 part 'api_client.g.dart';
 
 @lazySingleton
@@ -14,6 +15,7 @@ abstract class ProfileApi {
 
   @GET(ApiConstants.getDriverProfile)
   Future<DriverProfileResponse> getDriverProfile();
+
   @GET(ApiConstants.logout)
   Future<LogoutResponse> logout();
 }

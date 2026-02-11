@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tracking_app/Features/auth/domain/auth_repo_contract/auth_repo_contract.dart';
-import 'package:tracking_app/Features/auth/presentation/login/views/login_screen.dart';
-import 'package:tracking_app/Features/profile/presentation/screens/profile_screen.dart';
-import 'package:tracking_app/core/di/di.dart';
+import 'package:tracking_app/Features/profile/presentation/views/screens/profile_screen.dart';
 
 class Routes {
   static const String onBoardingPath = '/onBoarding';
@@ -58,17 +55,17 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: Routes.loginPath,
-    redirect: (context, state) async {
-      final authRepo = getIt<AuthRepoContract>();
-      final bool isLoggedIn = await authRepo.isLoggedIn();
-      final bool isLoggingIn = state.uri.toString() == Routes.loginPath;
+    initialLocation: Routes.mainProfilePath,
+    // redirect: (context, state) async {
+    //   final authRepo = getIt<AuthRepoContract>();
+    //   final bool isLoggedIn = await authRepo.isLoggedIn();
+    //   final bool isLoggingIn = state.uri.toString() == Routes.loginPath;
 
-      if (isLoggedIn && isLoggingIn) {
-        return Routes.mainProfilePath;
-      }
-      return null;
-    },
+    //   if (isLoggedIn && isLoggingIn) {
+    //     return Routes.mainProfilePath;
+    //   }
+    //   return null;
+    // },
     routes: [
       GoRoute(
         path: Routes.onBoardingPath,
@@ -78,7 +75,7 @@ class AppRouter {
       GoRoute(
         path: Routes.loginPath,
         name: Routes.loginName,
-        builder: (context, state) => const LoginScreen(),
+        builder: (context, state) => Container(),
       ),
       GoRoute(
         path: Routes.applyPath,

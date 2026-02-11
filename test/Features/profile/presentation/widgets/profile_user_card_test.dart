@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tracking_app/Features/profile/domain/entities/driver_entity.dart';
-import 'package:tracking_app/Features/profile/presentation/widgets/profile_user_card.dart';
+import 'package:tracking_app/Features/profile/presentation/views/widgets/profile_user_card.dart';
 
 void main() {
   final driver = DriverEntity(
