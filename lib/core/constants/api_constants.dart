@@ -6,11 +6,11 @@ class ApiConstants {
   static String apiBaseUrl = dotenv.env['BASE_URL'] ?? "";
 
   // ================= Auth Endpoints =================
-  static const String signIn = "/auth/login";
-  static const String signUp = "/auth/signup";
-  static const String forgetPassword = "/auth/forgotPassword";
-  static const String resetPassword = "/auth/resetPassword";
-  static const String verifyResetCode = "/auth/verifyResetCode";
+  static const String login = "/drivers/signin";
+  static const String apply = "/drivers/apply";
+  static const String forgetPassword = "/drivers/forgotPassword";
+  static const String resetPassword = "/drivers/resetPassword";
+  static const String verifyResetCode = "/drivers/verifyResetCode";
   static const String home = "/home";
   static const String getProfile = "/auth/profile-data";
   static const String editProfile = "/auth/editProfile";
@@ -22,7 +22,23 @@ class ApiConstants {
   // ================= Token  =================
 
   static const String tokenKey = "user_token";
+  static const String rememberMeKey = "is_remember_me";
 
   // ================= Notifications Endpoints =================
   static const String notifications = "notifications/user";
+
+// ================= Apply Fields =================
+  static const country = 'country';
+  static const firstName = 'firstName';
+  static const lastName = 'lastName';
+  static const vehicleType = 'vehicleType';
+  static const vehicleNumber = 'vehicleNumber';
+  static const nid = 'NID';
+  static const email = 'email';
+  static const password = 'password';
+  static const rePassword = 'rePassword';
+  static const gender = 'gender';
+  static const phone = 'phone';
+  static const vehicleLicense = 'vehicleLicense';
+  static const nidImg = 'NIDImg';
 }
