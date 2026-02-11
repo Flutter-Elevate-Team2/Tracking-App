@@ -23,7 +23,7 @@ abstract class AppTheme {
     ),
     textTheme: TextTheme(
       titleMedium: getTextStyle(fontSize: 16, fontWeight: FontWeight.normal , color: AppColors.gray),
-      bodySmall: getTextStyle(fontSize: 14 , fontWeight: FontWeight.w400),
+      bodySmall: getTextStyle(fontSize: 14 , fontWeight: FontWeight.normal),
       bodyMedium: getTextStyle(fontSize: 16, fontWeight: FontWeight.w400),
       bodyLarge: getTextStyle(fontSize: 20, fontWeight: FontWeight.w600),
       headlineMedium: getTextStyle(fontSize: 18, fontWeight: FontWeight.w500),
@@ -37,11 +37,15 @@ abstract class AppTheme {
     inputDecorationTheme: InputDecorationTheme(
       floatingLabelBehavior: FloatingLabelBehavior.always,
       alignLabelWithHint: true,
-
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: AppColors.gray, width: 1)
+      ),
       filled: true,
       fillColor: AppColors.white,
       contentPadding: EdgeInsets.only(left: 16, top: 20, bottom: 20),
       hintStyle: getTextStyle(
+        fontSize: 12,
         color: AppColors.white[70],
         fontFamily: ConstKeys.robotoFont,
         fontWeight: FontWeight.w400,
@@ -59,7 +63,6 @@ abstract class AppTheme {
         return getTextStyle(color: AppColors.gray, fontSize: 16);
       }),
       errorStyle: getTextStyle(color: AppColors.red),
-      border: getOutlineInputBorder(color: AppColors.gray),
       focusedBorder: getOutlineInputBorder(color: AppColors.gray),
       enabledBorder: getOutlineInputBorder(color: AppColors.gray),
       errorBorder: getOutlineInputBorder(color: AppColors.red),
@@ -101,6 +104,7 @@ abstract class AppTheme {
       titleTextStyle: getTextStyle(fontSize: 22, fontWeight: FontWeight.w600),
       contentTextStyle: getTextStyle(fontSize: 16, fontWeight: FontWeight.w500),
     ),
+
   );
 
   static InputBorder getOutlineInputBorder({required Color color}) {
