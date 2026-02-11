@@ -1,7 +1,9 @@
-sealed class ProfileEvents {
-  const ProfileEvents();
-}
+sealed class ProfileEvents {}
 
 class GetDriverProfileEvent extends ProfileEvents {
-  const GetDriverProfileEvent();
+  GetDriverProfileEvent();
+}
+
+class LogoutEvent extends ProfileEvents {
+  LogoutEvent();
 }

@@ -26,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          getIt<ProfileViewModel>()..doIntent(const GetDriverProfileEvent()),
+          getIt<ProfileViewModel>()..doIntent(GetDriverProfileEvent()),
       child: Scaffold(
         appBar: AppBar(
           centerTitle: false,
@@ -36,7 +36,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.notifications_none_outlined, size: 28),
-                  onPressed: () {},
+                  onPressed: () {
+                    // Navigate to notifications
+                  },
                 ),
                 Positioned(
                   right: 12,
@@ -50,9 +52,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Text(
                       '3',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.white,
-                        fontSize: 10,
-                      ),
+                            color: Colors.white,
+                            fontSize: 10,
+                          ),
                     ),
                   ),
                 ),
@@ -60,73 +62,124 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
-        body: BlocBuilder<ProfileViewModel, ProfileStates>(
-          builder: (context, state) {
-            final profileState = state.profileState;
-
-            if (profileState?.isLoading == true) {
-              return _buildShimmerLoading();
-            }
-
-            if (profileState?.errorMessage != null) {
-              return Center(
-                child: Text(
-                  profileState!.errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
+        body: BlocListener<ProfileViewModel, ProfileStates>(
+          listenWhen: (previous, current) =>
+              previous.logoutState != current.logoutState,
+          listener: (context, state) {
+            if (state.logoutState?.isLoading == true) {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => const Center(child: CircularProgressIndicator()),
               );
-            }
+            } else {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
 
-            if (profileState?.data != null) {
-              final driver = profileState!.data!;
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ProfileUserCard(
-                      driver: driver,
-                      onTap: () {
-                        context.pushNamed(Routes.editProfileName);
-                      },
-                    ),
-                    ProfileVehicleCard(
-                      driver: driver,
-                      onTap: () {
-                        context.pushNamed(Routes.editVehicleName);
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    ProfileSettingsTile(
-                      icon: Icons.translate, // Or generic icon
-                      title: 'Language',
-                      trailing: Text(
-                        'English',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.mainColor,
-                        ),
-                      ),
-                      onTap: () {
-                        _showLanguageDialog(context);
-                      },
-                    ),
-                    ProfileSettingsTile(
-                      icon: Icons.logout,
-                      title: AppLocalizations.of(context)?.logout ?? 'Logout',
-                      trailing: Icon(Icons.exit_to_app, color: AppColors.black),
-                      onTap: () {
-                        _showLogoutDialog(context);
-                      },
-                    ),
-                    const SizedBox(height: 24),
-                    const ProfileVersionFooter(),
-                    const SizedBox(height: 24),
-                  ],
-                ),
-              );
+              if (state.logoutState?.errorMessage != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.logoutState!.errorMessage!),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
             }
-
-            return const SizedBox.shrink();
           },
+          child: BlocBuilder<ProfileViewModel, ProfileStates>(
+            buildWhen: (previous, current) =>
+                previous.profileState != current.profileState,
+            builder: (context, state) {
+              final profileState = state.profileState;
+
+              if (profileState?.isLoading == true) {
+                return _buildShimmerLoading();
+              }
+
+              if (profileState?.errorMessage != null) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        profileState!.errorMessage!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          context
+                              .read<ProfileViewModel>()
+                              .doIntent(GetDriverProfileEvent());
+                        },
+                        child: const Text('Retry'),
+                      )
+                    ],
+                  ),
+                );
+              }
+
+              if (profileState?.data != null) {
+                final driver = profileState!.data!;
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ProfileUserCard(
+                        driver: driver,
+                        onTap: () {
+                          context.pushNamed(Routes.editProfileName);
+                        },
+                      ),
+
+                      ProfileVehicleCard(
+                        driver: driver,
+                        onTap: () {
+                          context.pushNamed(Routes.editVehicleName);
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      ProfileSettingsTile(
+                        icon: Icons.translate,
+                        title: AppLocalizations.of(context)?.language ?? 'Language',
+                        trailing: Text(
+                          'English',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: AppColors.mainColor,
+                              ),
+                        ),
+                        onTap: () {
+                          _showLanguageDialog(context);
+                        },
+                      ),
+
+                      Builder(builder: (innerContext) {
+                        return ProfileSettingsTile(
+                          icon: Icons.logout,
+                          title: AppLocalizations.of(context)?.logout ?? 'Logout',
+                          iconColor: AppColors.red,
+                          titleColor: AppColors.red,
+                          trailing: const Icon(Icons.exit_to_app,
+                              color: AppColors.red, size: 20),
+                          onTap: () {
+                            _showLogoutDialog(innerContext);
+                          },
+                        );
+                      }),
+
+                      const SizedBox(height: 24),
+                      const ProfileVersionFooter(),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
+                );
+              }
+
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       ),
     );
@@ -161,14 +214,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: const Text('English'),
               onTap: () {
                 Navigator.pop(context);
-                // Handle language change
               },
             ),
             ListTile(
               title: const Text('Arabic'),
               onTap: () {
                 Navigator.pop(context);
-                // Handle language change
               },
             ),
           ],
@@ -180,21 +231,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(AppLocalizations.of(context)?.logoutTitle ?? 'LOGOUT'),
         content: Text(
           AppLocalizations.of(context)?.confirmLogout ?? 'Confirm logout!!',
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: Text(AppLocalizations.of(context)?.cancelDialog ?? 'Cancel'),
           ),
           TextButton(
             onPressed: () {
-              // Handle logout
-              Navigator.pop(context);
+              Navigator.pop(dialogContext);
+              context.read<ProfileViewModel>().doIntent(LogoutEvent());
             },
+            style: TextButton.styleFrom(foregroundColor: AppColors.red),
             child: Text(AppLocalizations.of(context)?.logout ?? 'Logout'),
           ),
         ],

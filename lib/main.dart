@@ -18,7 +18,7 @@ Future<void> main() async {
   final prefs = getIt<SharedPreferences>();
 
   const String fixedToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcml2ZXIiOiI2OTg4ZDY2N2UzNjRlZjYxNDA1MWQyYjMiLCJpYXQiOjE3NzA2ODg3ODN9.yAbgkZsZltgXgjqMbj56ghDLbxwXFkyNMnflzdF7aBk";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcml2ZXIiOiI2OTg4ZDY2N2UzNjRlZjYxNDA1MWQyYjMiLCJpYXQiOjE3NzA3MDA4Nzd9.VsQuz1UaqR_p-K0lRnPCLKCtOHev5fIdv0V3GdC83Gk";
 
   await prefs.setString(ApiConstants.tokenKey, fixedToken);
 
@@ -44,6 +44,11 @@ class _MyAppState extends State<MyApp> {
 
       AppRouter.router.goNamed(Routes.mainProfileName);
     });
+    _sessionController.onLogout.listen((_) {
+    print("👋 User performed Logout");
+    // وديه على صفحة تسجيل الدخول
+    AppRouter.router.goNamed(Routes.mainProfileName);
+  });
   }
 
   @override
