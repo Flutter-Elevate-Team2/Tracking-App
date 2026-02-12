@@ -30,9 +30,15 @@ void main() {
     lastName: 'Doe',
     email: 'john@test.com',
     phone: '+201234567890',
-    photoUrl: 'https://example.com/photo.jpg',
+    photo: 'https://example.com/photo.jpg',
     role: 'driver',
     gender: 'male',
+    country: 'Egypt',
+    vehicleType: 'car',
+    vehicleNumber: 'ABC123',
+    vehicleLicense: 'license.jpg',
+    nid: '12345',
+    nidImg: 'nid.jpg',
   );
 
   setUp(() {
@@ -205,7 +211,7 @@ void main() {
         mockSessionController.saveUser(captureAny),
       ).captured;
       final savedUser = captured.last as DriverEntity;
-      expect(savedUser.photoUrl, 'https://new-url.com');
+      expect(savedUser.photo, 'https://new-url.com');
       expect(savedUser.id, driverEntity.id);
       expect(savedUser.firstName, driverEntity.firstName);
 

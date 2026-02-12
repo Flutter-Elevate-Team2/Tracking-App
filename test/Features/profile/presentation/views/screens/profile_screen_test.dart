@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mockito/annotations.dart';
@@ -53,11 +54,16 @@ void main() {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('en'),
-      home: const ProfileScreen(),
+      home: BlocProvider<ProfileViewModel>.value(
+        value: mockViewModel,
+        child: const ProfileScreen(),
+      ),
     );
   }
 
-  testWidgets('ProfileScreen shows shimmer when loading', (WidgetTester tester) async {
+  testWidgets('ProfileScreen shows shimmer when loading', (
+    WidgetTester tester,
+  ) async {
     // Arrange
     final loadingState = ProfileStates(
       profileState: BaseState(isLoading: true),
@@ -79,7 +85,9 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
-  testWidgets('ProfileScreen shows error message when error occurs', (WidgetTester tester) async {
+  testWidgets('ProfileScreen shows error message when error occurs', (
+    WidgetTester tester,
+  ) async {
     // Arrange
     const errorMessage = 'Something went wrong';
     final errorState = ProfileStates(
@@ -103,7 +111,9 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
-  testWidgets('ProfileScreen displays user and vehicle data when successful', (WidgetTester tester) async {
+  testWidgets('ProfileScreen displays user and vehicle data when successful', (
+    WidgetTester tester,
+  ) async {
     // Arrange
     final driver = DriverEntity(
       id: '1',

@@ -33,9 +33,15 @@ final _testUser = DriverEntity(
   lastName: 'Doe',
   email: 'john@test.com',
   phone: '+201234567890',
-  photoUrl: '',
+  photo: '',
   role: 'driver',
   gender: 'male',
+  country: 'Egypt',
+  vehicleType: 'car',
+  vehicleNumber: 'ABC123',
+  vehicleLicense: 'license.jpg',
+  nid: '12345',
+  nidImg: 'nid.jpg',
 );
 
 late MockSessionController _mockSessionController;
@@ -280,9 +286,15 @@ void main() {
         lastName: 'Doe',
         email: 'john@test.com',
         phone: '+201234567890',
-        photoUrl: '',
+        photo: '',
         role: 'driver',
         gender: 'male',
+        country: 'Egypt',
+        vehicleType: 'car',
+        vehicleNumber: 'ABC123',
+        vehicleLicense: 'license.jpg',
+        nid: '12345',
+        nidImg: 'nid.jpg',
       );
 
       viewModel.emitState(

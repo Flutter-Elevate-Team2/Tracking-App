@@ -24,7 +24,7 @@ Future<void> main() async {
   final prefs = getIt<SharedPreferences>();
 
   const String fixedToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcml2ZXIiOiI2OThkODgyZmUzNjRlZjYxNDA1NDNkMzEiLCJpYXQiOjE3NzA4ODMxMTl9.Nc6tKQ8YlAtl17g3SetL8NDpoc2-d_zNADY2KnlAEmw";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcml2ZXIiOiI2OThkOTFjYWUzNjRlZjYxNDA1NDNkYjUiLCJpYXQiOjE3NzA4ODU1Nzh9._KydCtmQS5aGtJR-KYk_MyLYTPcgUVO7wVOBUINYZdk";
 
   await prefs.setString(ApiConstants.tokenKey, fixedToken);
 

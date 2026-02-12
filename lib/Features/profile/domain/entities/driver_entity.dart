@@ -1,5 +1,4 @@
 class DriverEntity {
-  final String? token;
   final String id;
   final String firstName;
   final String lastName;
@@ -16,7 +15,6 @@ class DriverEntity {
   final String nidImg;
 
   DriverEntity({
-    this.token,
     required this.id,
     required this.firstName,
     required this.lastName,
@@ -34,7 +32,6 @@ class DriverEntity {
   });
 
   DriverEntity copyWith({
-    String? token,
     String? id,
     String? firstName,
     String? lastName,
@@ -51,7 +48,6 @@ class DriverEntity {
     String? nidImg,
   }) {
     return DriverEntity(
-      token: token ?? this.token,
       id: id ?? this.id,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,

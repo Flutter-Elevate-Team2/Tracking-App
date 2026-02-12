@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/profile_events.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/profile_view_model.dart';
 import 'package:tracking_app/Features/profile/presentation/views/widgets/edit_profile_screen_body.dart';
-import 'package:tracking_app/core/app_router/app_router.dart';
 
 class EditProfileScreen extends StatelessWidget {
   const EditProfileScreen({super.key});

@@ -158,7 +158,7 @@ void main() {
     streamController.add(successState);
     await tester.pump();
 
-    expect(find.text('Profile updated successfully'), findsOneWidget);
+    expect(find.text('Profile updated successfully!'), findsOneWidget);
 
     // Allow pop to happen
     await tester.pumpAndSettle();

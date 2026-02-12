@@ -38,9 +38,7 @@ class SessionController {
 
   Future<void> updateSessionAuth(String newToken) async {
     await _prefs.setString(ApiConstants.tokenKey, newToken);
-    if (_currentUser != null) {
-       _currentUser = _currentUser!.copyWith(token: newToken);
-    }
+   
     
    
   }

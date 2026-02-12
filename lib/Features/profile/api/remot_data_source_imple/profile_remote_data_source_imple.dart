@@ -4,7 +4,6 @@ import 'package:tracking_app/Features/profile/api/api_client/api_client.dart';
 import 'package:tracking_app/Features/profile/data/models/change_password_request/change_password_request.dart';
 import 'package:tracking_app/Features/profile/data/models/edit_profile_request.dart';
 import 'package:tracking_app/Features/profile/data/models/edit_profile_response/change_password_response/change_password_response.dart';
-import 'package:tracking_app/Features/profile/data/models/edit_profile_response/edit_profile_response.dart';
 import 'package:tracking_app/Features/profile/data/models/upload_photo/upload_photo_response.dart';
 import 'package:tracking_app/Features/profile/data/models/driver_profile_response.dart';
 import 'package:tracking_app/Features/profile/data/models/logout_response.dart';

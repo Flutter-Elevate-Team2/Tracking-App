@@ -32,7 +32,7 @@ class ChangePasswordViewModel extends Cubit<ChangePasswordStates> {
     
     switch (result) {
       case SuccessResponse<ChangePasswordEntity>():
-        if (result.data.token != null && result.data.token.isNotEmpty) {
+        if (result.data.token.isNotEmpty) {
            await _sessionController.updateSessionAuth(result.data.token);
         }
 

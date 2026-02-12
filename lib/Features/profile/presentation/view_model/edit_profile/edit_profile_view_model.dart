@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:tracking_app/Features/profile/data/models/edit_profile_request.dart';
@@ -37,7 +36,6 @@ class EditProfileViewModel extends Cubit<EditProfileStates> {
     final result = await editProfileUseCase(request);
     switch (result) {
       case SuccessResponse<DriverEntity>():
-       
         getIt<SessionController>().saveUser(result.data);
 
         emit(
@@ -69,16 +67,7 @@ class EditProfileViewModel extends Cubit<EditProfileStates> {
         // Update SessionController with new photo URL
         final currentUser = getIt<SessionController>().user;
         if (currentUser != null) {
-          final updatedUser = DriverEntity(
-            id: currentUser.id,
-            firstName: currentUser.firstName,
-            lastName: currentUser.lastName,
-            email: currentUser.email,
-            phone: currentUser.phone,
-            photo: response.data, // New photo URL from backend
-            role: currentUser.role,
-            gender: currentUser.gender, country: '', vehicleType: '', vehicleNumber: '', vehicleLicense: '', nid: '', nidImg: '',
-          );
+          final updatedUser = currentUser.copyWith(photo: response.data);
           getIt<SessionController>().saveUser(updatedUser);
         }
 

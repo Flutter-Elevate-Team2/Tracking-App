@@ -35,9 +35,15 @@ void main() {
       lastName: 'Doe',
       email: 'john@test.com',
       phone: '+201234567890',
-      photoUrl: 'url',
+      photo: 'url',
       role: 'driver',
       gender: 'male',
+      country: 'Egypt',
+      vehicleType: 'car',
+      vehicleNumber: 'ABC123',
+      vehicleLicense: 'license.jpg',
+      nid: '12345',
+      nidImg: 'nid.jpg',
     );
 
     test('returns SuccessResponse when repo succeeds', () async {

@@ -13,7 +13,6 @@ import 'package:tracking_app/Features/profile/presentation/views/widgets/profile
 import 'package:tracking_app/Features/profile/presentation/views/widgets/profile_version_footer.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
 import 'package:tracking_app/core/constants/app_colors.dart';
-import 'package:tracking_app/core/di/di.dart';
 import 'package:tracking_app/core/l10n/app_localizations.dart';
 import 'package:tracking_app/gen/assets.gen.dart';
 
