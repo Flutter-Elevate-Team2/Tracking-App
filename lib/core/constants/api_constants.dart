@@ -11,10 +11,6 @@ class ApiConstants {
   static const String forgetPassword = "/drivers/forgotPassword";
   static const String resetPassword = "/drivers/resetPassword";
   static const String verifyResetCode = "/drivers/verifyResetCode";
-  static const String home = "/home";
-  static const String getProfile = "/auth/profile-data";
-  static const String uploadPhoto = "auth/upload-photo";
-  static const String changePassword = "/auth/change-password";
   //=========================EditDriverInfo======================================//
   static const String editDriverProfile = "drivers/editProfile";
   static const String changeDriverPassword = "drivers/change-password";

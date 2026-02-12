@@ -140,9 +140,9 @@ class AppRouter {
             navigatorKey: _profileNavigatorKey,
             routes: [
               GoRoute(
-                path: Routes.profilePath,
-                name: Routes.profileName,
-                builder: (context, state) =>  ProfileScreen(),
+                path: Routes.mainProfilePath,
+                name: Routes.mainProfileName,
+                builder: (context, state) => const ProfileScreen(),
               ),
             ],
           ),

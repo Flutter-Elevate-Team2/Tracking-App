@@ -1,4 +1,5 @@
 class DriverEntity {
+  final String? token;
   final String id;
   final String firstName;
   final String lastName;
@@ -15,6 +16,7 @@ class DriverEntity {
   final String nidImg;
 
   DriverEntity({
+    this.token,
     required this.id,
     required this.firstName,
     required this.lastName,
@@ -30,4 +32,40 @@ class DriverEntity {
     required this.nid,
     required this.nidImg,
   });
+
+  DriverEntity copyWith({
+    String? token,
+    String? id,
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? phone,
+    String? photo,
+    String? role,
+    String? gender,
+    String? country,
+    String? vehicleType,
+    String? vehicleNumber,
+    String? vehicleLicense,
+    String? nid,
+    String? nidImg,
+  }) {
+    return DriverEntity(
+      token: token ?? this.token,
+      id: id ?? this.id,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      photo: photo ?? this.photo,
+      role: role ?? this.role,
+      gender: gender ?? this.gender,
+      country: country ?? this.country,
+      vehicleType: vehicleType ?? this.vehicleType,
+      vehicleNumber: vehicleNumber ?? this.vehicleNumber,
+      vehicleLicense: vehicleLicense ?? this.vehicleLicense,
+      nid: nid ?? this.nid,
+      nidImg: nidImg ?? this.nidImg,
+    );
+  }
 }

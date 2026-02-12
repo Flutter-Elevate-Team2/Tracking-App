@@ -24,97 +24,93 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return BlocProvider(
-      create: (context) =>
-          getIt<ProfileViewModel>()..doIntent(GetDriverProfileEvent()),
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: false,
-          leading: IconButton(
-            icon: Assets.images.arrowBackLeft.image(width: 24, height: 24),
-            onPressed: () {
-              if (Navigator.canPop(context)) {
-                Navigator.pop(context);
-              }
-            },
-          ),
-          title: Text(
-            l10n?.profile ?? 'Profile',
-            style: Theme.of(context).appBarTheme.titleTextStyle,
-          ),
-          actions: const [_NotificationAction()],
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        leading: IconButton(
+          icon: Assets.images.arrowBackLeft.image(width: 24, height: 24),
+          onPressed: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
+          },
         ),
-        body: BlocListener<ProfileViewModel, ProfileStates>(
-          listenWhen: (previous, current) =>
-              previous.logoutState != current.logoutState,
-          listener: _handleLogoutState,
-          child: BlocBuilder<ProfileViewModel, ProfileStates>(
-            buildWhen: (previous, current) =>
-                previous.profileState != current.profileState,
-            builder: (context, state) {
-              final profileState = state.profileState;
-
-              if (profileState?.isLoading == true) {
-                return const ProfileShimmerLoading();
-              }
-
-              if (profileState?.errorMessage != null) {
-                return _ErrorStateWidget(
-                  errorMessage: profileState!.errorMessage!,
-                  onRetry: () {
-                    context.read<ProfileViewModel>().doIntent(
-                      GetDriverProfileEvent(),
-                    );
-                  },
-                );
-              }
-
-              if (profileState?.data != null) {
-                final driver = profileState!.data!;
-                return SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      ProfileUserCard(
-                        driver: driver,
-                        onTap: () {
-                          context.pushNamed(Routes.editProfileName);
-                        },
+        title: Text(
+          l10n?.profile ?? 'Profile',
+          style: Theme.of(context).appBarTheme.titleTextStyle,
+        ),
+        actions: const [_NotificationAction()],
+      ),
+      body: BlocListener<ProfileViewModel, ProfileStates>(
+        listenWhen: (previous, current) =>
+            previous.logoutState != current.logoutState,
+        listener: _handleLogoutState,
+        child: BlocBuilder<ProfileViewModel, ProfileStates>(
+          buildWhen: (previous, current) =>
+              previous.profileState != current.profileState,
+          builder: (context, state) {
+            final profileState = state.profileState;
+    
+            if (profileState?.isLoading == true) {
+              return const ProfileShimmerLoading();
+            }
+    
+            if (profileState?.errorMessage != null) {
+              return _ErrorStateWidget(
+                errorMessage: profileState!.errorMessage!,
+                onRetry: () {
+                  context.read<ProfileViewModel>().doIntent(
+                    GetDriverProfileEvent(),
+                  );
+                },
+              );
+            }
+    
+            if (profileState?.data != null) {
+              final driver = profileState!.data!;
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ProfileUserCard(
+                      driver: driver,
+                      onTap: () {
+                        context.pushNamed(Routes.editProfileName);
+                      },
+                    ),
+                    ProfileVehicleCard(
+                      driver: driver,
+                      onTap: () {
+                        context.pushNamed(Routes.editVehicleName);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    ProfileSettingsTile(
+                      icon: Icons.translate,
+                      title: l10n?.language ?? 'Language',
+                      trailing: Text(
+                        l10n?.english ?? 'English',
+                        style: Theme.of(context).textTheme.bodyMedium
+                            ?.copyWith(color: AppColors.mainColor),
                       ),
-                      ProfileVehicleCard(
-                        driver: driver,
-                        onTap: () {
-                          context.pushNamed(Routes.editVehicleName);
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      ProfileSettingsTile(
-                        icon: Icons.translate,
-                        title: l10n?.language ?? 'Language',
-                        trailing: Text(
-                          l10n?.english ?? 'English',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: AppColors.mainColor),
-                        ),
-                        onTap: () => _showLanguageDialog(context),
-                      ),
-                      ProfileSettingsTile(
-                        icon: Icons.logout,
-                        title: l10n?.logout ?? 'Logout',
-                        onTap: () => _showLogoutDialog(context),
-                      ),
-                      const SizedBox(height: 24),
-                      const ProfileVersionFooter(),
-                      const SizedBox(height: 24),
-                    ],
-                  ),
-                );
-              }
-
-              return const SizedBox.shrink();
-            },
-          ),
+                      onTap: () => _showLanguageDialog(context),
+                    ),
+                    ProfileSettingsTile(
+                      icon: Icons.logout,
+                      title: l10n?.logout ?? 'Logout',
+                      onTap: () => _showLogoutDialog(context),
+                    ),
+                    const SizedBox(height: 24),
+                    const ProfileVersionFooter(),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              );
+            }
+    
+            return const SizedBox.shrink();
+          },
         ),
       ),
     );

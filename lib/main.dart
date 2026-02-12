@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tracking_app/Features/profile/presentation/view_model/profile_events.dart';
+import 'package:tracking_app/Features/profile/presentation/view_model/profile_view_model.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/controller/session_controller.dart';
@@ -22,7 +24,7 @@ Future<void> main() async {
   final prefs = getIt<SharedPreferences>();
 
   const String fixedToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcml2ZXIiOiI2OTg4ZDY2N2UzNjRlZjYxNDA1MWQyYjMiLCJpYXQiOjE3NzA4Njk0NzR9.wV-apuz9pSLycvVUCaODoHfCNuHKwTnTxz2w4c7k5SI";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcml2ZXIiOiI2OThkODgyZmUzNjRlZjYxNDA1NDNkMzEiLCJpYXQiOjE3NzA4ODMxMTl9.Nc6tKQ8YlAtl17g3SetL8NDpoc2-d_zNADY2KnlAEmw";
 
   await prefs.setString(ApiConstants.tokenKey, fixedToken);
 
@@ -61,7 +63,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => LanguageCubit())],
+      providers: [BlocProvider(create: (_) => LanguageCubit()),BlocProvider(create: (_) => getIt<ProfileViewModel>()..doIntent(GetDriverProfileEvent()))],
       child: BlocBuilder<LanguageCubit, Locale>(
         builder: (context, locale) {
           return MaterialApp.router(

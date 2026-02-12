@@ -23,9 +23,10 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
-    bool isPublicPath =
-        _publicPaths.any((path) => options.path.endsWith(path));
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    bool isPublicPath = _publicPaths.any((path) => options.path.endsWith(path));
 
     if (!isPublicPath) {
       await _prefs.reload();
@@ -34,7 +35,9 @@ class AuthInterceptor extends Interceptor {
 
       if (kDebugMode) {
         print("🚀 AuthInterceptor: Sending Request to ${options.path}");
-        print("🔑 Token being sent: ${token != null ? '${token.substring(0, 10)}...' : 'NULL'}");
+        print(
+          "🔑 Token being sent: ${token != null ? '${token.substring(0, 10)}...' : 'NULL'}",
+        );
       }
 
       if (token != null && token.isNotEmpty) {
@@ -52,7 +55,7 @@ class AuthInterceptor extends Interceptor {
       );
 
       bool isChangePassword = err.requestOptions.path.endsWith(
-        ApiConstants.changePassword,
+        ApiConstants.changeDriverPassword,
       );
 
       if (!isPublicPath && !isChangePassword) {

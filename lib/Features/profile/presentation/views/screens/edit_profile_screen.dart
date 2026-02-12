@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tracking_app/Features/profile/presentation/view_model/profile_events.dart';
+import 'package:tracking_app/Features/profile/presentation/view_model/profile_view_model.dart';
 import 'package:tracking_app/Features/profile/presentation/views/widgets/edit_profile_screen_body.dart';
+import 'package:tracking_app/core/app_router/app_router.dart';
 
 class EditProfileScreen extends StatelessWidget {
   const EditProfileScreen({super.key});
@@ -13,7 +18,10 @@ class EditProfileScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(context).pop();
+            context.read<ProfileViewModel>().doIntent(GetDriverProfileEvent());
+            if (context.canPop()) {
+              context.pop();
+            }
           },
         ),
       ),

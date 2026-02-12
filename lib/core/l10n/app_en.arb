@@ -91,6 +91,10 @@
   "@vehicleType": {
     "description": "Label for selecting or entering the type of vehicle"
   },
+  "selectVehicleType": "Select type",
+  "@selectVehicleType": {
+    "description": "Hint text for the vehicle type dropdown"
+  },
   "vehicleNumber": "Vehicle number",
   "@vehicleNumber": {
     "description": "Label for entering the vehicle number"

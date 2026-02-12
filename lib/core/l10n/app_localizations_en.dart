@@ -78,6 +78,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vehicleType => 'Vehicle type';
 
   @override
+  String get selectVehicleType => 'Select type';
+
+  @override
   String get vehicleNumber => 'Vehicle number';
 
   @override

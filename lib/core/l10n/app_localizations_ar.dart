@@ -78,6 +78,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get vehicleType => 'نوع المركبة';
 
   @override
+  String get selectVehicleType => 'اختر نوع المركبة';
+
+  @override
   String get vehicleNumber => 'رقم المركبة';
 
   @override

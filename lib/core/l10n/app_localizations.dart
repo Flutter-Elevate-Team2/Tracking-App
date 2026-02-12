@@ -236,6 +236,12 @@ abstract class AppLocalizations {
   /// **'Vehicle type'**
   String get vehicleType;
 
+  /// Hint text for the vehicle type dropdown
+  ///
+  /// In en, this message translates to:
+  /// **'Select type'**
+  String get selectVehicleType;
+
   /// Label for entering the vehicle number
   ///
   /// In en, this message translates to:

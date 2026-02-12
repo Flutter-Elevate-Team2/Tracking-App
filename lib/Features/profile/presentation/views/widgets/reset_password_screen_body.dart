@@ -57,178 +57,185 @@ class _ResetPasswordScreenBodyState extends State<ResetPasswordScreenBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ChangePasswordViewModel, ChangePasswordStates>(
+    return BlocConsumer<ChangePasswordViewModel, ChangePasswordStates>(
       listenWhen: (previous, current) {
-    return previous.changePasswordState != current.changePasswordState;
-  },
-  listener: (context, state) {
-    final changePassState = state.changePasswordState;
+        return previous.changePasswordState != current.changePasswordState;
+      },
+      listener: (context, state) {
+        final changePassState = state.changePasswordState;
 
-    if (changePassState?.isLoading ?? false) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    } else {
-      Navigator.of(context).pop(); 
+        // Skip loading state — handled by builder
+        if (changePassState?.isLoading ?? false) return;
 
-      if (changePassState?.data != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.passwordChangedSuccess),
-            backgroundColor: Colors.green, 
-          ),
-        );
-        Navigator.of(context).pop();
-      } else if (changePassState?.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(changePassState!.errorMessage!),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            autovalidateMode: _autovalidateMode,
-            child: Column(
-              children: [
-                SizedBox(height: 32),
-                ProfileTextField(
-                  validator: (value) =>
-                      FormValidators.validatePassword(context, value),
-                  controller: currentPasswordController,
-                  label: context.l10n.currentPasswordLabel,
-                  hintText: context.l10n.currentPasswordHint,
-                  trailing: _obscureCurrentPassword
-                      ? IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _obscureCurrentPassword =
-                                  !_obscureCurrentPassword;
-                            });
-                          },
-                          icon: Icon(Icons.visibility_off_outlined),
-                        )
-                      : IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _obscureCurrentPassword =
-                                  !_obscureCurrentPassword;
-                            });
-                          },
-                          icon: Icon(Icons.visibility_outlined),
-                        ),
-                  isObscure: _obscureCurrentPassword,
-                ),
-                SizedBox(height: 24),
-                ProfileTextField(
-                  validator: (value) =>
-                      FormValidators.validatePassword(context, value),
-                  controller: newPasswordController,
-                  label: context.l10n.newPasswordLabel,
-                  hintText: context.l10n.newPasswordLabel,
-                  trailing: _obscureNewPassword
-                      ? IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _obscureNewPassword = !_obscureNewPassword;
-                            });
-                          },
-                          icon: Icon(Icons.visibility_off_outlined),
-                        )
-                      : IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _obscureNewPassword = !_obscureNewPassword;
-                            });
-                          },
-                          icon: Icon(Icons.visibility_outlined),
-                        ),
-                  isObscure: _obscureNewPassword,
-                ),
-                SizedBox(height: 24),
-                ProfileTextField(
-                  validator: (value) => FormValidators.validateConfirmPassword(
-                    context,
-                    value,
-                    newPasswordController.text,
-                  ),
-                  controller: confirmPasswordController,
-                  label: context.l10n.confirmPasswordLabel,
-                  hintText: context.l10n.confirmPasswordHint,
-                  trailing: _obscureConfirmPassword
-                      ? IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _obscureConfirmPassword =
-                                  !_obscureConfirmPassword;
-                            });
-                          },
-                          icon: Icon(Icons.visibility_off_outlined),
-                        )
-                      : IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _obscureConfirmPassword =
-                                  !_obscureConfirmPassword;
-                            });
-                          },
-                          icon: Icon(Icons.visibility_outlined),
-                        ),
-                  isObscure: _obscureConfirmPassword,
-                ),
-
-                SizedBox(height: 48),
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton(
-                    onPressed: _isButtonEnabled
-                        ? () {
-                            if (_formKey.currentState!.validate()) {
-                              context.read<ChangePasswordViewModel>().doIntent(
-                                ChangePasswordEvent(request:
-                                ChangePasswordRequest(
-                                  password: currentPasswordController.text,
-                                  newPassword: newPasswordController.text,
-                                )
-                                  
-                                ),
-                              );
+        if (changePassState?.data != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(context.l10n.passwordChangedSuccess),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Navigator.of(context).pop();
+        } else if (changePassState?.errorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(changePassState!.errorMessage!),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      buildWhen: (previous, current) {
+        return previous.changePasswordState != current.changePasswordState;
+      },
+      builder: (context, state) {
+        final isLoading = state.changePasswordState?.isLoading ?? false;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              autovalidateMode: _autovalidateMode,
+              child: Column(
+                children: [
+                  SizedBox(height: 32),
+                  ProfileTextField(
+                    validator: (value) =>
+                        FormValidators.validatePassword(context, value),
+                    controller: currentPasswordController,
+                    label: context.l10n.currentPasswordLabel,
+                    hintText: context.l10n.currentPasswordHint,
+                    trailing: _obscureCurrentPassword
+                        ? IconButton(
+                            onPressed: () {
                               setState(() {
-                                _autovalidateMode = AutovalidateMode.always;
+                                _obscureCurrentPassword =
+                                    !_obscureCurrentPassword;
                               });
-                            }
-                          }
-                        : null,
-
-                    style: ElevatedButton.styleFrom(
-                      disabledBackgroundColor: Colors.grey,
-                      disabledForegroundColor: Colors.white,
-
-                      backgroundColor: AppTheme.lightTheme.primaryColor,
-
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                    ),
-                    child: Text(context.l10n.update),
+                            },
+                            icon: Icon(Icons.visibility_off_outlined),
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscureCurrentPassword =
+                                    !_obscureCurrentPassword;
+                              });
+                            },
+                            icon: Icon(Icons.visibility_outlined),
+                          ),
+                    isObscure: _obscureCurrentPassword,
                   ),
-                ),
-              ],
+                  SizedBox(height: 24),
+                  ProfileTextField(
+                    validator: (value) =>
+                        FormValidators.validatePassword(context, value),
+                    controller: newPasswordController,
+                    label: context.l10n.newPasswordLabel,
+                    hintText: context.l10n.newPasswordLabel,
+                    trailing: _obscureNewPassword
+                        ? IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscureNewPassword = !_obscureNewPassword;
+                              });
+                            },
+                            icon: Icon(Icons.visibility_off_outlined),
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscureNewPassword = !_obscureNewPassword;
+                              });
+                            },
+                            icon: Icon(Icons.visibility_outlined),
+                          ),
+                    isObscure: _obscureNewPassword,
+                  ),
+                  SizedBox(height: 24),
+                  ProfileTextField(
+                    validator: (value) =>
+                        FormValidators.validateConfirmPassword(
+                          context,
+                          value,
+                          newPasswordController.text,
+                        ),
+                    controller: confirmPasswordController,
+                    label: context.l10n.confirmPasswordLabel,
+                    hintText: context.l10n.confirmPasswordHint,
+                    trailing: _obscureConfirmPassword
+                        ? IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscureConfirmPassword =
+                                    !_obscureConfirmPassword;
+                              });
+                            },
+                            icon: Icon(Icons.visibility_off_outlined),
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscureConfirmPassword =
+                                    !_obscureConfirmPassword;
+                              });
+                            },
+                            icon: Icon(Icons.visibility_outlined),
+                          ),
+                    isObscure: _obscureConfirmPassword,
+                  ),
+
+                  SizedBox(height: 48),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton(
+                      onPressed: (_isButtonEnabled && !isLoading)
+                          ? () {
+                              if (_formKey.currentState!.validate()) {
+                                context
+                                    .read<ChangePasswordViewModel>()
+                                    .doIntent(
+                                      ChangePasswordEvent(
+                                        request: ChangePasswordRequest(
+                                          password:
+                                              currentPasswordController.text,
+                                          newPassword:
+                                              newPasswordController.text,
+                                        ),
+                                      ),
+                                    );
+                                setState(() {
+                                  _autovalidateMode = AutovalidateMode.always;
+                                });
+                              }
+                            }
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        disabledBackgroundColor: Colors.grey,
+                        disabledForegroundColor: Colors.white,
+                        backgroundColor: AppTheme.lightTheme.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                      ),
+                      child: isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.5,
+                              ),
+                            )
+                          : Text(context.l10n.update),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
