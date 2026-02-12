@@ -5,7 +5,7 @@ import 'package:tracking_app/core/constants/app_colors.dart';
 import 'package:tracking_app/core/extension/context_extension.dart';
 
 class LicenseField extends StatefulWidget {
-  final ValueChanged<File> onFileSelected; // هنا نرسل الملف للخارج
+  final ValueChanged<File> onFileSelected;
 
   const LicenseField({super.key , required this.onFileSelected});
 
@@ -46,6 +46,9 @@ class _LicenseFieldState extends State<LicenseField> {
             decoration: InputDecoration(
               labelText: context.l10n.vehicleLicense,
               hintText: context.l10n.uploadLicensePhoto,
+              prefixIcon: (_image != null)
+                  ?  Icon(Icons.check_circle_outline_rounded , color: AppColors.green,)
+                  :const SizedBox(height: 12),
               suffixIcon: Icon(Icons.file_upload_outlined , color: AppColors.gray,),
               border: OutlineInputBorder(),
             ),

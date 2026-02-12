@@ -14,7 +14,8 @@ import 'package:tracking_app/Features/auth/presentation/apply/widgets/license_fi
 import 'package:tracking_app/Features/auth/presentation/apply/widgets/name_fields.dart';
 import 'package:tracking_app/Features/auth/presentation/apply/widgets/password_row.dart';
 import 'package:tracking_app/Features/auth/presentation/apply/widgets/phone_field.dart';
-import 'package:tracking_app/Features/auth/presentation/apply/widgets/vehicle_field.dart';
+import 'package:tracking_app/Features/vehicle/domain/entities/vehicle_entity.dart';
+import 'package:tracking_app/Features/vehicle/presentation/views/vehicle_type_field.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
 import 'package:tracking_app/core/constants/app_colors.dart';
 import 'package:tracking_app/core/extension/context_extension.dart';
@@ -35,16 +36,16 @@ class _ApplyFormState extends State<ApplyForm> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _vehicleNumberController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _nidController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  TextEditingController();
 
+   VehicleEntity? _selectedVehicle;
   CountryEntity? _selectedCountry;
-  VehicleType? _selectedVehicleType;
   Gender? _selectedGender;
   File? _vehicleLicenseFile;
   File? _nidImageFile;
@@ -107,15 +108,26 @@ class _ApplyFormState extends State<ApplyForm> {
                   firstNameController: _firstNameController,
                   lastNameController: _lastNameController,
                 ),
-                // Vehicle Number
+                // Vehicle Type
                 VehicleTypeField(
-                  vehicleNumberController: _vehicleNumberController,
-                  initialValue: _selectedVehicleType,
-                  onChanged: (value) {
+                    selectedVehicle: _selectedVehicle,
+                  onChanged: (type) {
                     setState(() {
-                      _selectedVehicleType = value;
+                      _selectedVehicle = type;
                     });
                   },
+                ),
+                SizedBox(height: 35),
+                // Vehicle Number
+
+                TextFormField(
+                  controller: _vehicleNumberController,
+                  validator: (value) =>
+                      FormValidators.validateVehicleNumber(context, value),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.vehicleNumber,
+                    hintText: context.l10n.vehicleNumber,
+                  ),
                 ),
 
                 // Vehicle license file upload (placeholder button)
@@ -164,8 +176,8 @@ class _ApplyFormState extends State<ApplyForm> {
                   },
                   toggleConfirmPasswordVisibility: () {
                     setState(
-                      () => _isConfirmPasswordVisible =
-                          !_isConfirmPasswordVisible,
+                          () => _isConfirmPasswordVisible =
+                      !_isConfirmPasswordVisible,
                     );
                   },
                   formKey: _formKey,
@@ -188,32 +200,32 @@ class _ApplyFormState extends State<ApplyForm> {
                     onPressed: isLoading
                         ? null
                         : () {
-                            setState(() {
-                              _autovalidateMode = AutovalidateMode.always;
-                            });
-                            if (_formKey.currentState!.validate()) {
-                              context.read<ApplyViewModel>().doIntent(
-                                OnApplyClickEvent(
-                                  applyRequest: ApplyRequest(
-                                    country: _selectedCountry!.name!,
-                                    firstName: _firstNameController.text,
-                                    lastName: _lastNameController.text,
-                                    vehicleType: "676b63c99f3884b3405c149b",
-                                    vehicleNumber:
-                                        _vehicleNumberController.text,
-                                    email: _emailController.text,
-                                    phone: _phoneController.text,
-                                    nid: _nidController.text,
-                                    password: _passwordController.text,
-                                    rePassword: _confirmPasswordController.text,
-                                    gender: _selectedGender!.name,
-                                    vehicleLicense: _vehicleLicenseFile!,
-                                    nidImg: _nidImageFile!,
-                                  ),
-                                ),
-                              );
-                            }
-                          },
+                      setState(() {
+                        _autovalidateMode = AutovalidateMode.always;
+                      });
+                      if (_formKey.currentState!.validate()) {
+                        context.read<ApplyViewModel>().doIntent(
+                          OnApplyClickEvent(
+                            applyRequest: ApplyRequest(
+                              country: _selectedCountry!.name!,
+                              firstName: _firstNameController.text,
+                              lastName: _lastNameController.text,
+                              vehicleType: _selectedVehicle!.type ?? "",
+                              vehicleNumber:
+                              _vehicleNumberController.text,
+                              email: _emailController.text,
+                              phone: _phoneController.text,
+                              nid: _nidController.text,
+                              password: _passwordController.text,
+                              rePassword: _confirmPasswordController.text,
+                              gender: _selectedGender!.name,
+                              vehicleLicense: _vehicleLicenseFile!,
+                              nidImg: _nidImageFile!,
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ),
               ],

@@ -6,7 +6,7 @@ import 'package:tracking_app/core/extension/context_extension.dart';
 
 class IdImageField extends StatefulWidget {
   final ValueChanged<File> onFileSelected;
-  const IdImageField({super.key , required this.onFileSelected});
+  const IdImageField({super.key, required this.onFileSelected});
 
   @override
   State<IdImageField> createState() => _IdImageFieldState();
@@ -48,8 +48,11 @@ class _IdImageFieldState extends State<IdImageField> {
             readOnly: true,
             onTap: _pickImage,
             decoration: InputDecoration(
-              labelText: context.l10n.idImageLabel,              // 👈 localization
-              hintText: context.l10n.uploadIdImage,         // 👈 localization
+              labelText: context.l10n.idImageLabel,
+              hintText: context.l10n.uploadIdImage,
+              prefixIcon: (_image != null)
+                  ?  Icon(Icons.check_circle_outline_rounded , color: AppColors.green,)
+                  :const SizedBox(height: 12),
               suffixIcon: const Icon(
                 Icons.file_upload_outlined,
                 color: AppColors.gray,

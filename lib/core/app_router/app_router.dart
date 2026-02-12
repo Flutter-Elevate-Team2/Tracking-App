@@ -67,7 +67,7 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: Routes.applyPath,
+    initialLocation: Routes.onBoardingPath,
     redirect: (context, state) async {
       return null;
 

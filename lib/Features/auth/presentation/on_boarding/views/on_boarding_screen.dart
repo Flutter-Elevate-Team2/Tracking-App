@@ -70,6 +70,7 @@ class OnBoardingScreen extends StatelessWidget {
                 child: CustomButton(
                   title: context.l10n.applyButton,
                   onPressed: () {
+                    FocusScope.of(context).unfocus();
                     context.goNamed(Routes.applyName);
                   },
                   backgroundColor: AppColors.white,
