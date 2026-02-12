@@ -4,5 +4,5 @@ class GetAllVehiclesEvent extends VehicleEvents {}
 
 class SelectVehicleEvent extends VehicleEvents {
   final String vehicleId;
-  SelectVehicleEvent(this.vehicleId);
+  SelectVehicleEvent({required this.vehicleId});
 }

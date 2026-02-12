@@ -14,10 +14,10 @@ class VehicleTypeField extends StatelessWidget {
     required this.selectedVehicleId,
     required this.onVehicleSelected,
   });
-
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
+      key: const Key("vehicleTypeDropdown"),
       isExpanded: true,
       hint: Text(context.l10n.vehicleType),
       initialValue: selectedVehicleId,
@@ -28,16 +28,23 @@ class VehicleTypeField extends StatelessWidget {
       ),
       items: vehicles.map((v) {
         return DropdownMenuItem<String>(
+          key: Key("vehicleItem_${v.id}"),
           value: v.id,
           child: Row(
             children: [
               v.image != null && v.image!.isNotEmpty
                   ? Image.network(
-                      v.image!,
-                      width: 50,
-                      fit: BoxFit.fill,
-                    )
-                  : const Icon(Icons.directions_car, size: 40 , color: AppColors.gray,),
+                v.image!,
+                key: Key("vehicleImage_${v.id}"),
+                width: 50,
+                fit: BoxFit.fill,
+              )
+                  : Icon(
+                Icons.directions_car,
+                key: Key("vehicleIcon_${v.id}"),
+                size: 40,
+                color: AppColors.gray,
+              ),
               const SizedBox(width: 6),
               Text(v.type ?? ''),
             ],
