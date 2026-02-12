@@ -1,7 +1,10 @@
+
+import 'dart:io';
+
 import 'package:injectable/injectable.dart';
 import 'package:tracking_app/Features/profile/data/mapper/driver_profile_mapper.dart';
 import 'package:tracking_app/Features/profile/data/models/driver_profile_response.dart';
-import 'package:tracking_app/Features/profile/data/models/lib/Features/profile/data/models/logout_response.dart';
+import 'package:tracking_app/Features/profile/data/models/logout_response.dart';
 import 'package:tracking_app/Features/profile/data/remote_data_source_contract/profile_remote_data_source_contract.dart';
 import 'package:tracking_app/Features/profile/domain/entities/driver_entity.dart';
 import 'package:tracking_app/Features/profile/domain/repo/profile_repo_contract.dart';
@@ -21,11 +24,28 @@ class ProfileRepoImple with ApiExecutionMixin implements ProfileRepoContract {
       mapper: (response) => response.toEntity(),
     );
   }
+
   @override
   Future<BaseResponse<String>> logout() async {
     return execute<LogoutResponse, String>(
       action: () async => await _remoteDataSource.logout(),
       mapper: (response) => response.message,
+    );
+  }
+
+  @override
+  Future<BaseResponse<DriverEntity>> editDriverProfile({
+    String? vehicleType,
+    String? vehicleNumber,
+    File? vehicleLicense,
+  }) async {
+    return execute<DriverProfileResponse, DriverEntity>(
+      action: () async => await _remoteDataSource.editDriverProfile(
+        vehicleType: vehicleType,
+        vehicleNumber: vehicleNumber,
+        vehicleLicense: vehicleLicense,
+      ),
+      mapper: (response) => response.toEntity(),
     );
   }
 }

@@ -19,12 +19,12 @@ Future<void> main() async {
 
   await dotenv.load(fileName: ".env");
   await configureDependencies();
-  // final prefs = getIt<SharedPreferences>();
+  final prefs = getIt<SharedPreferences>();
 
-  // const String fixedToken =
-  //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcml2ZXIiOiI2OTg4ZDY2N2UzNjRlZjYxNDA1MWQyYjMiLCJpYXQiOjE3NzA4MjEwNzV9.2yWNqYpMcY4Qt6uMp7oX992Eskb1DcD2qGRMZFUOcs8";
+  const String fixedToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcml2ZXIiOiI2OTg4ZDY2N2UzNjRlZjYxNDA1MWQyYjMiLCJpYXQiOjE3NzA4NjQ0OTB9.ZMi_A8lkF7fIW8TIAI1qdNe8Ywe2lVxXQ8zJLizrYrU";
 
-  // await prefs.setString(ApiConstants.tokenKey, fixedToken);
+  await prefs.setString(ApiConstants.tokenKey, fixedToken);
 
   runApp(const MyApp());
 }

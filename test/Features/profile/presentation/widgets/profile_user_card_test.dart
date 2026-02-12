@@ -1,7 +1,9 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tracking_app/Features/profile/domain/entities/driver_entity.dart';
 import 'package:tracking_app/Features/profile/presentation/views/widgets/profile_user_card.dart';
+import 'package:tracking_app/gen/assets.gen.dart';
 
 void main() {
   final driver = DriverEntity(
@@ -38,7 +40,16 @@ void main() {
     expect(find.text('john.doe@example.com'), findsOneWidget);
     expect(find.text('+1234567890'), findsOneWidget);
     expect(find.byType(CircleAvatar), findsOneWidget);
-    expect(find.byIcon(Icons.arrow_forward_ios), findsOneWidget);
+
+    // Check for the arrow image asset instead of Icon
+    final arrowImage = find.byWidgetPredicate(
+      (widget) =>
+          widget is Image &&
+          widget.image is AssetImage &&
+          (widget.image as AssetImage).assetName ==
+              Assets.images.arrowBackIos.path,
+    );
+    expect(arrowImage, findsOneWidget);
   });
 
   testWidgets('ProfileUserCard triggers onTap callback when tapped', (

@@ -1,5 +1,7 @@
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:tracking_app/Features/profile/domain/use_cases/edit_vehicle_use_case.dart';
 import 'package:tracking_app/Features/profile/domain/use_cases/get_driver_profile_use_case.dart';
 import 'package:tracking_app/Features/profile/domain/use_cases/logout_use_case.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/profile_events.dart';
@@ -13,11 +15,13 @@ class ProfileViewModel extends Cubit<ProfileStates> {
   ProfileViewModel(
     this._getDriverProfileUseCase,
     this._logoutUseCase,
+    this._editVehicleUseCase,
     this._sessionController,
   ) : super(const ProfileStates());
 
   final GetDriverProfileUseCase _getDriverProfileUseCase;
   final LogoutUseCase _logoutUseCase;
+  final EditVehicleUseCase _editVehicleUseCase;
   final SessionController _sessionController;
 
   void doIntent(ProfileEvents event) {
@@ -27,6 +31,42 @@ class ProfileViewModel extends Cubit<ProfileStates> {
         break;
       case LogoutEvent():
         _logout();
+        break;
+      case EditVehicleEvent():
+        _editVehicle(event);
+        break;
+    }
+  }
+
+  Future<void> _editVehicle(EditVehicleEvent event) async {
+    emit(state.copyWith(editVehicleState: BaseState(isLoading: true)));
+
+    final result = await _editVehicleUseCase.call(
+      vehicleType: event.vehicleType,
+      vehicleNumber: event.vehicleNumber,
+      vehicleLicense: event.vehicleLicense,
+    );
+
+    switch (result) {
+      case SuccessResponse():
+        _sessionController.saveUser(result.data);
+        emit(
+          state.copyWith(
+            editVehicleState: BaseState(isLoading: false, data: result.data),
+            profileState: BaseState(isLoading: false, data: result.data),
+          ),
+        );
+        break;
+
+      case ErrorResponse():
+        emit(
+          state.copyWith(
+            editVehicleState: BaseState(
+              isLoading: false,
+              errorMessage: result.errorMessage,
+            ),
+          ),
+        );
         break;
     }
   }
@@ -73,9 +113,7 @@ class ProfileViewModel extends Cubit<ProfileStates> {
         await _sessionController.notifyLogout(SessionEndReason.logout);
 
         emit(
-          state.copyWith(
-            logoutState: BaseState(isLoading: false, data: null),
-          ),
+          state.copyWith(logoutState: BaseState(isLoading: false, data: null)),
         );
         break;
 
