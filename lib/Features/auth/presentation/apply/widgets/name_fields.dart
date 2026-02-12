@@ -21,6 +21,7 @@ class NameFields extends StatelessWidget {
       child: Column(
         children: [
           TextFormField(
+            key: const Key('firstNameField'),
             textInputAction: TextInputAction.next,
             controller: firstNameController,
             validator: (value) => FormValidators.validateRequired(
@@ -36,11 +37,12 @@ class NameFields extends StatelessWidget {
           ),
           SizedBox(height: 6,),
           TextFormField(
+            key: const Key('lastNameField'),
             textInputAction: TextInputAction.next,
             controller: lastNameController,
             validator: (value) => FormValidators.validateRequired(
               value,
-              context.l10n.secondNameLabel,
+              context.l10n.secondNameRequired,
             ),
             style: theme.textTheme.bodySmall,
             decoration: InputDecoration(

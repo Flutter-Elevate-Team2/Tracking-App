@@ -6,10 +6,10 @@ class ApplyScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return  SingleChildScrollView(
+      child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16 , vertical: 22),
-      child: SingleChildScrollView(
-        child: Column(
+      child: Column(
           children: const [
             SizedBox(height: 24),
             ApplyForm(),

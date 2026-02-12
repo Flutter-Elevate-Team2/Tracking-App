@@ -56,7 +56,7 @@ class _CountryDropdownLoaderState extends State<CountryField> {
     }
 
     return DropdownButtonFormField<CountryEntity>(
-      value: _selectedCountry,
+      initialValue: _selectedCountry,
       validator: (value) => value == null ? context.l10n.required : null,
       isExpanded: true,
       decoration: InputDecoration(

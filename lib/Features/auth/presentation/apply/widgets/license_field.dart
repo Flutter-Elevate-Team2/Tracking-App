@@ -53,11 +53,6 @@ class _LicenseFieldState extends State<LicenseField> {
               border: OutlineInputBorder(),
             ),
           ),
-
-          if (_image != null) ...[
-            const SizedBox(height: 12),
-            Image.file(_image!, height: 120),
-          ],
         ],
       ),
     );
