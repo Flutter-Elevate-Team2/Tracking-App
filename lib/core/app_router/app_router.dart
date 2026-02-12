@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:tracking_app/Features/auth/domain/auth_repo_contract/auth_repo_contract.dart';
 import 'package:tracking_app/Features/auth/presentation/login/views/login_screen.dart';
 import 'package:tracking_app/core/di/di.dart';
+import 'package:tracking_app/Features/auth/presentation/apply/views/apply_screen.dart';
+import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
+// coverage:ignore-file
 
 class Routes {
 
@@ -67,7 +70,7 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: Routes.loginPath,
+    initialLocation: Routes.onBoardingPath,
     redirect: (context, state) async {
       final authRepo = getIt<AuthRepoContract>();
       final bool isLoggedIn = await authRepo.isLoggedIn();
@@ -82,7 +85,7 @@ class AppRouter {
       GoRoute(
         path: Routes.onBoardingPath,
         name: Routes.onBoardingName,
-        builder: (context, state) => Container(),
+        builder: (context, state) => OnBoardingScreen(),
       ),
       GoRoute(
         path: Routes.loginPath,
@@ -92,7 +95,7 @@ class AppRouter {
       GoRoute(
         path: Routes.applyPath,
         name: Routes.applyName,
-        builder: (context, state) => Container(),
+        builder: (context, state) => ApplyScreen(),
       ),
       GoRoute(
         path: Routes.successApplyPath,

@@ -4,17 +4,16 @@ import 'package:tracking_app/core/constants/app_colors.dart';
 class CustomButton extends StatelessWidget {
   final String title;
   final VoidCallback? onPressed;
-  final Color? backgroundColor;
-  final Color? disabledColor;
+  final Color?  backgroundColor ;
+  final Color? foregroundColor ;
 
   const CustomButton({
     required this.title,
     required this.onPressed,
+    this.backgroundColor,
+    this.foregroundColor ,
     super.key,
-    this.backgroundColor ,
-    this.disabledColor,
   });
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -24,22 +23,18 @@ class CustomButton extends StatelessWidget {
         height: 48,
         child: ElevatedButton(
           onPressed: onPressed,
-          style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                  (states) {
-                if (states.contains(WidgetState.disabled)) {
-                  if (disabledColor != null) {
-                    return disabledColor!;
-                  }
-                }
-                return backgroundColor!;
-              },
-            ),
-            padding: WidgetStateProperty.all(
-              const EdgeInsets.symmetric(vertical: 14),
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: 14),
+            backgroundColor: backgroundColor,
+            foregroundColor:foregroundColor,
+            side: backgroundColor == AppColors.white
+                ? BorderSide(color: AppColors.gray)
+                : null,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(100),
             ),
           ),
-          child: Text(title, style: TextStyle(fontSize: 16 , color: AppColors.white)),
+          child: Text(title, style: TextStyle(fontSize: 16)),
         ),
       ),
     );
