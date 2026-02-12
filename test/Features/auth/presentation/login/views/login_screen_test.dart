@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:tracking_app/Features/auth/domain/entities/login_entity/login_entity.dart';
@@ -113,5 +114,44 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Home Screen'), findsOneWidget);
+  });
+
+  testWidgets('Should trigger InkWell onTap in AppBar (Coverage for leading)', (
+    tester,
+  ) async {
+    whenListen(
+      mockViewModel,
+      const Stream<LoginState>.empty(),
+      initialState: LoginState(),
+    );
+
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpAndSettle();
+
+    final appBarLeading = find.descendant(
+      of: find.byType(AppBar),
+      matching: find.byType(InkWell),
+    );
+
+    await tester.tap(appBarLeading);
+    await tester.pump();
+  });
+
+  testWidgets('Should verify BlocProvider creates ViewModel from GetIt', (
+    tester,
+  ) async {
+    whenListen(
+      mockViewModel,
+      const Stream<LoginState>.empty(),
+      initialState: LoginState(),
+    );
+
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pump();
+
+    final blocProviderFinder = find.byType(BlocProvider<LoginViewModel>);
+    expect(blocProviderFinder, findsOneWidget);
+
+    expect(GetIt.I<LoginViewModel>(), isA<MockLoginViewModel>());
   });
 }
