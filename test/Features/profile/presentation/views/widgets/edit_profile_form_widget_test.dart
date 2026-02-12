@@ -89,7 +89,7 @@ void main() {
     }
   });
 
-  TestEditProfileViewModel _createViewModel() {
+  TestEditProfileViewModel createViewModel() {
     return TestEditProfileViewModel(
       editProfileUseCase: _mockEditProfileUseCase,
       uploadPhotoUseCase: _mockUploadPhotoUseCase,
@@ -98,7 +98,7 @@ void main() {
 
   group('EditProfileForm - Rendering', () {
     testWidgets('renders all text fields with correct labels', (tester) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -112,7 +112,7 @@ void main() {
     });
 
     testWidgets('renders Update button', (tester) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -123,7 +123,7 @@ void main() {
     });
 
     testWidgets('renders Change button for password field', (tester) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -133,7 +133,7 @@ void main() {
     });
 
     testWidgets('renders Gender selection section', (tester) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -147,7 +147,7 @@ void main() {
     testWidgets('pre-fills text fields with user data from SessionController', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -164,7 +164,7 @@ void main() {
     testWidgets('Update button is disabled when no changes are made', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -177,7 +177,7 @@ void main() {
     testWidgets('Update button is enabled when user modifies a field', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -194,7 +194,7 @@ void main() {
     testWidgets('Update button is disabled when a field is cleared to empty', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -211,7 +211,7 @@ void main() {
     testWidgets(
       'Update button is disabled when field is changed back to original',
       (tester) async {
-        final viewModel = _createViewModel();
+        final viewModel = createViewModel();
         await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
         await tester.pumpAndSettle();
 
@@ -242,7 +242,7 @@ void main() {
     testWidgets(
       'shows CircularProgressIndicator when editProfileState is loading',
       (tester) async {
-        final viewModel = _createViewModel();
+        final viewModel = createViewModel();
         await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
         await tester.pumpAndSettle();
 
@@ -261,7 +261,7 @@ void main() {
     );
 
     testWidgets('shows Update text when not loading', (tester) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -276,7 +276,7 @@ void main() {
     testWidgets('shows success SnackBar when profile update succeeds', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -320,7 +320,7 @@ void main() {
     testWidgets('shows success SnackBar when photo upload succeeds', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -351,7 +351,7 @@ void main() {
     testWidgets('shows error SnackBar when profile update fails', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -379,7 +379,7 @@ void main() {
     });
 
     testWidgets('shows error SnackBar when photo upload fails', (tester) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -412,7 +412,7 @@ void main() {
       (tester) async {
         when(_mockSessionController.user).thenReturn(null);
 
-        final viewModel = _createViewModel();
+        final viewModel = createViewModel();
         await tester.pumpWidget(_pumpWidgetWithProviders(viewModel: viewModel));
         await tester.pumpAndSettle();
 

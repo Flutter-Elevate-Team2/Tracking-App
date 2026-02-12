@@ -7,6 +7,7 @@ import 'package:tracking_app/Features/profile/domain/entities/change_password_en
 import 'package:tracking_app/Features/profile/domain/use_cases/chang_password_use_case.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/change_password/change_password_states.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/change_password/change_password_view_model.dart';
+import 'package:tracking_app/Features/profile/presentation/views/screens/reset_password_screen.dart';
 import 'package:tracking_app/Features/profile/presentation/views/widgets/reset_password_screen_body.dart';
 import 'package:tracking_app/core/base_response/base_response.dart';
 import 'package:tracking_app/core/base_states/base_states.dart';
@@ -81,7 +82,7 @@ void main() {
     );
   });
 
-  TestChangePasswordViewModel _createViewModel() {
+  TestChangePasswordViewModel createViewModel() {
     return TestChangePasswordViewModel(_mockUseCase, _mockSessionController);
   }
 
@@ -89,7 +90,7 @@ void main() {
     testWidgets('renders all password fields with correct labels', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_buildTestApp(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -101,7 +102,7 @@ void main() {
     });
 
     testWidgets('renders Update button', (tester) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_buildTestApp(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -114,7 +115,7 @@ void main() {
     testWidgets('renders visibility toggle icons for all password fields', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_buildTestApp(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -128,7 +129,7 @@ void main() {
     testWidgets('Update button is disabled when all fields are empty', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_buildTestApp(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -141,7 +142,7 @@ void main() {
     testWidgets('Update button is disabled when only some fields are filled', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_buildTestApp(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -158,7 +159,7 @@ void main() {
     testWidgets('Update button is enabled when all fields are filled', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_buildTestApp(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -177,7 +178,7 @@ void main() {
     testWidgets('Update button becomes disabled when a field is cleared', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_buildTestApp(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -208,7 +209,7 @@ void main() {
     testWidgets('tapping visibility icon toggles password visibility', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_buildTestApp(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -227,7 +228,7 @@ void main() {
     testWidgets('shows loading dialog when changePasswordState is loading', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
       await tester.pumpWidget(_buildTestApp(viewModel: viewModel));
       await tester.pumpAndSettle();
 
@@ -249,7 +250,7 @@ void main() {
     testWidgets('shows success SnackBar when password change succeeds', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
 
       await tester.pumpWidget(
         _buildTestApp(viewModel: viewModel, withBackPage: true),
@@ -293,7 +294,7 @@ void main() {
     testWidgets('shows error SnackBar when password change fails', (
       tester,
     ) async {
-      final viewModel = _createViewModel();
+      final viewModel = createViewModel();
 
       await tester.pumpWidget(
         _buildTestApp(viewModel: viewModel, withBackPage: true),
@@ -325,6 +326,29 @@ void main() {
       expect(find.text('Incorrect current password'), findsOneWidget);
 
       viewModel.close();
+    });
+  });
+
+  group('ResetPasswordScreen Wrapper', () {
+    testWidgets('renders ResetPasswordScreen correctly', (tester) async {
+      final viewModel = createViewModel();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: BlocProvider<ChangePasswordViewModel>.value(
+            value: viewModel,
+            child: const ResetPasswordScreen(),
+          ),
+        ),
+      );
+
+      expect(find.byType(ResetPasswordScreen), findsOneWidget);
+      expect(
+        find.text('Reset password'),
+        findsOneWidget,
+      ); // Assuming title from l10n
     });
   });
 }
