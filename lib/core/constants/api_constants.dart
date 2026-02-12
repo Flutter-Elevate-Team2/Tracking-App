@@ -2,7 +2,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // coverage:ignore-file
 
-
 class ApiConstants {
   static String apiBaseUrl = dotenv.env['BASE_URL'] ?? "";
 
@@ -18,11 +17,15 @@ class ApiConstants {
   static const String uploadPhoto = "auth/upload-photo";
   static const String changePassword = "/auth/change-password";
   static const String logout = "/auth/logout";
+  //=========================EditDriverInfo======================================//
+  static const String editDriverProfile = "drivers/editProfile";
+  static const String changeDriverPassword = "drivers/change-password";
+  static const String uploadDriverPhoto = "/drivers/upload-photo";
 
   // ================= Token  =================
 
   static const String tokenKey = "user_token";
 
- // ================= Notifications Endpoints =================
+  // ================= Notifications Endpoints =================
   static const String notifications = "notifications/user";
 }

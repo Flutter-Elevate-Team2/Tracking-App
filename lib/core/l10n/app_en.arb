@@ -67,6 +67,14 @@
   "@firstNameLabel": {
     "description": "Label for the first name input field"
   },
+  "firstNamelabel": "First Name",
+  "@firstNamelabel": {
+    "description": "Label for the first name input field"
+  },
+  "lastNameLabel": "Last Name",
+  "@lastNameLabell": {
+    "description": "Label for the last name input field"
+  },
   "firstNameHint": "Enter first legal name",
   "@firstNameHint": {
     "description": "Hint text for the first name input field"
@@ -630,9 +638,10 @@
 
   "changeLanguage": "Change Language",
   "@changeLanguage": { "description": "Title for language selection bottom sheet" },
-   "profileUpdatedSuccess": "Profile updated successfully",
+   "profileUpdatedSuccess": "Profile updated successfully!",
   "@profileUpdatedSuccess": { "description": "Success message after profile update" },
-  "photoUploadedSuccessfully":"Photo uploaded successfully",
+  "photoUploadedSuccessfully":"Photo uploaded successfully!",
+  "@photoUploadedSuccessfully": { "description": "Success message after uploading profile photo" },
   "passwordChangedSuccess": "Password changed successfully",
   "@passwordChangedSuccess": { "description": "Success message after password change" },
   "appVersion": "v 6.3.0 - (446)",
@@ -688,5 +697,11 @@
   "deliveredOn": "Delivered on",
   "@deliveredOn": { "description": "Label for delivery status"},
   "noOrdersFound": "No orders found",
-  "@noOrderFound": { "description": "Message displayed when no orders are found"}
+  "@noOrderFound": { "description": "Message displayed when no orders are found"},
+  "chooseImageSource": "Choose Image Source",
+  "@chooseImageSource": { "description": "Title for image source selection bottom sheet" },
+  "camera": "Camera",
+  "@camera": { "description": "Label for camera option" },
+  "gallery": "Gallery",
+  "@gallery": { "description": "Label for gallery option" }
 }
