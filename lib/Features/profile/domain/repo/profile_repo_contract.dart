@@ -1,7 +1,7 @@
-
 import 'dart:io';
 
 import 'package:tracking_app/Features/profile/domain/entities/driver_entity.dart';
+import 'package:tracking_app/Features/profile/domain/entities/vehicle_entity.dart';
 import 'package:tracking_app/core/base_response/base_response.dart';
 
 abstract class ProfileRepoContract {
@@ -12,4 +12,5 @@ abstract class ProfileRepoContract {
     String? vehicleNumber,
     File? vehicleLicense,
   });
+  Future<BaseResponse<List<VehicleEntity>>> getVehicles();
 }

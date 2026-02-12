@@ -511,6 +511,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileUpdatedSuccess => 'Profile updated successfully';
 
   @override
+  String get selectVehicleType => 'Choose your vehicle type';
+
+  @override
   String get photoUploadedSuccessfully => 'Photo uploaded successfully';
 
   @override

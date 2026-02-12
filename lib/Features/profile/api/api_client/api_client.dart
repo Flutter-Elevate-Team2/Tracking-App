@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:tracking_app/Features/profile/data/models/driver_profile_response.dart';
 import 'package:tracking_app/Features/profile/data/models/logout_response.dart';
+import 'package:tracking_app/Features/profile/data/models/vehicles_response.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 
 part 'api_client.g.dart';
@@ -28,4 +29,7 @@ abstract class ProfileApi {
     @Part(name: "vehicleNumber") String? vehicleNumber,
     @Part(name: "vehicleLicense") File? vehicleLicense,
   });
+
+  @GET(ApiConstants.vehicles)
+  Future<VehiclesResponse> getVehicles();
 }

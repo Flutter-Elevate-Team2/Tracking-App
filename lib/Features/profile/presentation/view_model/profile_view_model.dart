@@ -1,8 +1,8 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:tracking_app/Features/profile/domain/use_cases/edit_vehicle_use_case.dart';
 import 'package:tracking_app/Features/profile/domain/use_cases/get_driver_profile_use_case.dart';
+import 'package:tracking_app/Features/profile/domain/use_cases/get_vehicles_use_case.dart';
 import 'package:tracking_app/Features/profile/domain/use_cases/logout_use_case.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/profile_events.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/profile_states.dart';
@@ -16,12 +16,14 @@ class ProfileViewModel extends Cubit<ProfileStates> {
     this._getDriverProfileUseCase,
     this._logoutUseCase,
     this._editVehicleUseCase,
+    this._getVehiclesUseCase,
     this._sessionController,
   ) : super(const ProfileStates());
 
   final GetDriverProfileUseCase _getDriverProfileUseCase;
   final LogoutUseCase _logoutUseCase;
   final EditVehicleUseCase _editVehicleUseCase;
+  final GetVehiclesUseCase _getVehiclesUseCase;
   final SessionController _sessionController;
 
   void doIntent(ProfileEvents event) {
@@ -34,6 +36,36 @@ class ProfileViewModel extends Cubit<ProfileStates> {
         break;
       case EditVehicleEvent():
         _editVehicle(event);
+        break;
+      case GetVehiclesEvent():
+        _getVehicles();
+        break;
+    }
+  }
+
+  Future<void> _getVehicles() async {
+    emit(state.copyWith(vehiclesState: BaseState(isLoading: true)));
+
+    final result = await _getVehiclesUseCase.call();
+
+    switch (result) {
+      case SuccessResponse():
+        emit(
+          state.copyWith(
+            vehiclesState: BaseState(isLoading: false, data: result.data),
+          ),
+        );
+        break;
+
+      case ErrorResponse():
+        emit(
+          state.copyWith(
+            vehiclesState: BaseState(
+              isLoading: false,
+              errorMessage: result.errorMessage,
+            ),
+          ),
+        );
         break;
     }
   }

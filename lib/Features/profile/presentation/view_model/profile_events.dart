@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 sealed class ProfileEvents {}
@@ -12,9 +11,7 @@ class EditVehicleEvent extends ProfileEvents {
   final String? vehicleNumber;
   final File? vehicleLicense;
 
-  EditVehicleEvent({
-    this.vehicleType,
-    this.vehicleNumber,
-    this.vehicleLicense,
-  });
+  EditVehicleEvent({this.vehicleType, this.vehicleNumber, this.vehicleLicense});
 }
+
+class GetVehiclesEvent extends ProfileEvents {}

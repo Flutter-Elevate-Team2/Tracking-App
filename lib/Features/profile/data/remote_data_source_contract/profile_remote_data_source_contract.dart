@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:tracking_app/Features/profile/data/models/driver_profile_response.dart';
 import 'package:tracking_app/Features/profile/data/models/logout_response.dart';
+import 'package:tracking_app/Features/profile/data/models/vehicles_response.dart';
 
 abstract class ProfileRemoteDataSourceContract {
   Future<DriverProfileResponse> getDriverProfile();
@@ -11,4 +12,5 @@ abstract class ProfileRemoteDataSourceContract {
     String? vehicleNumber,
     File? vehicleLicense,
   });
+  Future<VehiclesResponse> getVehicles();
 }

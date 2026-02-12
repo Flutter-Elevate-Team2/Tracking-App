@@ -353,6 +353,7 @@
   "sessionExpiredTitle": "انتهت الجلسة",
   "@sessionExpiredTitle": { "description": "عنوان نافذة انتهاء الجلسة" },
   "sessionExpiredMessage": "يرجى تسجيل الدخول مرة أخرى للمتابعة.",
+  "selectVehicleType": "اختر نوع المركبة",
   "@sessionExpiredMessage": { "description": "محتوى نافذة انتهاء الجلسة" },
 
   "includeTax": "جميع الأسعار تشمل الضرائب",

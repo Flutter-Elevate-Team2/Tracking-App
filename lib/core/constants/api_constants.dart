@@ -1,4 +1,3 @@
-
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // coverage:ignore-file
@@ -20,6 +19,7 @@ class ApiConstants {
   static const String logout = "/drivers/logout";
   static const String getDriverProfile = "/drivers/profile-data";
   static const String editDriverProfile = "/drivers/editProfile";
+  static const String vehicles = "/vehicles";
 
   // ================= Token  =================
 
