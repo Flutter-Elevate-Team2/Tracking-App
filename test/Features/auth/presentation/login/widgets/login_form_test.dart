@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:tracking_app/Features/auth/presentation/login/view_model/login_event.dart';
 import 'package:tracking_app/Features/auth/presentation/login/view_model/login_state.dart';
@@ -46,6 +47,7 @@ Widget pumpEmailField({required TextEditingController controller}) {
   );
 }
 
+@GenerateMocks([LoginViewModel])
 void main() {
   late MockLoginViewModel mockViewModel;
 
