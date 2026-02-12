@@ -51,7 +51,7 @@ jobs:
 
       # 7️⃣ Build APK release
       - name: Build APK
-        run: flutter build apk --release
+        run: flutter build apk --release --no-tree-shake-icons
 
       # 8️⃣ List APK output (optional, for debug)
       - name: List APK
