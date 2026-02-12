@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tracking_app/Features/profile/domain/entities/driver_entity.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
-import 'package:tracking_app/core/di/di.dart'; // تأكد من المسار
+import 'package:tracking_app/core/di/di.dart'; 
 import 'package:tracking_app/core/l10n/app_localizations.dart';
 import 'package:tracking_app/core/theming/app_theming.dart';
-import 'package:tracking_app/core/controller/session_controller.dart'; // import controller
-
+import 'package:tracking_app/core/controller/session_controller.dart'; 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:tracking_app/firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await dotenv.load(fileName: ".env");
 
   await configureDependencies();

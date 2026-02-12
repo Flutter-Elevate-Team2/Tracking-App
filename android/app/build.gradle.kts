@@ -1,8 +1,11 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    // لازم الفلاتر بلجن يجي بعد الـ Android و Kotlin
     id("dev.flutter.flutter-gradle-plugin")
+    // ضيف ده هنا واتاكد انك مسحت التكرار بتاع android.application
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -45,5 +48,10 @@ flutter {
 }
 
 dependencies {
+    // ضيف دول لربط الـ SDK
+    implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    
+    // السطر القديم بتاعك سيبه زي ما هو
     add("coreLibraryDesugaring", "com.android.tools:desugar_jdk_libs:2.1.4")
 }
