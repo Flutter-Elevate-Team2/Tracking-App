@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracking_app/Features/home/presentation/views/screens/home_screen.dart';
+import 'package:tracking_app/Features/profile/presentation/view_model/change_password/change_password_view_model.dart';
+import 'package:tracking_app/Features/profile/presentation/view_model/edit_profile/edit_profile_view_model.dart';
+import 'package:tracking_app/Features/profile/presentation/views/screens/edit_profile_screen.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/edit_vehicle_screen.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/profile_screen.dart';
+import 'package:tracking_app/Features/profile/presentation/views/screens/reset_password_screen.dart';
+import 'package:tracking_app/core/di/di.dart';
 
 class Routes {
   static const String onBoardingPath = '/onBoarding';
@@ -99,11 +106,47 @@ class AppRouter {
         name: Routes.verifyCodeName,
         builder: (context, state) => Container(),
       ),
-
-      GoRoute(
-        path: Routes.editProfilePath,
-        name: Routes.editProfileName,
-        builder: (context, state) => const EditVehicleScreen(),
+       // / ====== MAIN SHELL ROUTE (BOTTOM NAV BAR) ======
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return HomeScreen(navigationShell: navigationShell);
+        },
+        branches: [
+          // Branch 1: Home
+          StatefulShellBranch(
+            navigatorKey: _homeNavigatorKey,
+            routes: [
+              GoRoute(
+                path: Routes.homePath,
+                name: Routes.homeName,
+                builder: (context, state) =>  Container(),
+              ),
+            ],
+          ),
+          // Branch 2: Orders
+          StatefulShellBranch(
+            navigatorKey: _ordersNavigatorKey,
+            routes: [
+              GoRoute(
+                path: Routes.ordersPath,
+                name: Routes.ordersName,
+                builder: (context, state) =>  Container(),
+              ),
+            ],
+          ),
+      
+          // Branch 3: Profile
+          StatefulShellBranch(
+            navigatorKey: _profileNavigatorKey,
+            routes: [
+              GoRoute(
+                path: Routes.profilePath,
+                name: Routes.profileName,
+                builder: (context, state) =>  ProfileScreen(),
+              ),
+            ],
+          ),
+        ]
       ),
 
       GoRoute(
@@ -111,11 +154,23 @@ class AppRouter {
         name: Routes.editVehicleName,
         builder: (context, state) => const EditVehicleScreen(),
       ),
-
+       GoRoute(
+        path: Routes.editProfilePath,
+        name: Routes.editProfileName,
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<EditProfileViewModel>(),
+          child: const EditProfileScreen(),
+        ),
+      ),
       GoRoute(
-        path: Routes.mainProfilePath,
-        name: Routes.mainProfileName,
-        builder: (context, state) => ProfileScreen(),
+        path: Routes.resetPasswordPath,
+        name: Routes.resetPasswordName,
+        builder: (context, state) {
+          return BlocProvider(
+            create: (context) => getIt<ChangePasswordViewModel>(),
+            child: const ResetPasswordScreen(),
+          );
+        },
       ),
     ]
     );

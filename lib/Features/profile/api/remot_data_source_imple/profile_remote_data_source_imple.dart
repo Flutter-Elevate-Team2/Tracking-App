@@ -18,7 +18,7 @@ class ProfileRemoteDataSourceImple implements ProfileRemoteDataSourceContract {
   ProfileRemoteDataSourceImple(this._api);
   
   @override
-  Future<EditProfileResponse> editProfile(EditProfileRequest request) async {
+  Future<DriverProfileResponse> editProfile(EditProfileRequest request) async {
     return await _api.editProfile(request);
   }
 

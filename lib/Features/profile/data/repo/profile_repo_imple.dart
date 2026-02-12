@@ -10,7 +10,6 @@ import 'package:tracking_app/Features/profile/data/models/upload_photo/upload_ph
 import 'package:tracking_app/Features/profile/data/remote_data_source_contract/profile_remote_data_source_contract.dart';
 import 'package:tracking_app/Features/profile/domain/entities/change_password_entity.dart';
 import 'package:tracking_app/Features/profile/domain/entities/driver_entity.dart';
-import 'package:tracking_app/Features/profile/data/mapper/driver_profile_mapper.dart';
 import 'package:tracking_app/Features/profile/data/mapper/vehicles_mapper.dart';
 import 'package:tracking_app/Features/profile/data/models/driver_profile_response.dart';
 import 'package:tracking_app/Features/profile/data/models/logout_response.dart';
@@ -33,7 +32,7 @@ class ProfileRepoImple with ApiExecutionMixin implements ProfileRepoContract {
 
   @override
   Future<BaseResponse<DriverEntity>> editProfile(EditProfileRequest request) {
-    return execute<EditProfileResponse,DriverEntity>(
+    return execute<DriverProfileResponse,DriverEntity>(
       action: ()async => await _remoteDataSource.editProfile(request),
       mapper: (response) => response.toEntity()   );
 

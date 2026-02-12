@@ -39,7 +39,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
     currentUser = getIt<SessionController>().user;
     if (currentUser != null) {
       currentGender = currentUser?.gender ?? "male";
-      photoUrl = currentUser?.photoUrl ?? " ";
+      photoUrl = currentUser?.photo ?? " ";
     }
 
     firstNameController = TextEditingController(
@@ -147,7 +147,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
         child: Column(
           children: [
             const SizedBox(height: 24),
-            ProfileAvatar(photoUrl: currentUser?.photoUrl),
+            ProfileAvatar(photoUrl: currentUser?.photo),
             const SizedBox(height: 24),
             Row(
               children: [

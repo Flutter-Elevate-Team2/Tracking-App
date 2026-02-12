@@ -75,9 +75,9 @@ class EditProfileViewModel extends Cubit<EditProfileStates> {
             lastName: currentUser.lastName,
             email: currentUser.email,
             phone: currentUser.phone,
-            photoUrl: response.data, // New photo URL from backend
+            photo: response.data, // New photo URL from backend
             role: currentUser.role,
-            gender: currentUser.gender,
+            gender: currentUser.gender, country: '', vehicleType: '', vehicleNumber: '', vehicleLicense: '', nid: '', nidImg: '',
           );
           getIt<SessionController>().saveUser(updatedUser);
         }

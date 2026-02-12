@@ -38,7 +38,7 @@ abstract class ProfileApi {
   @GET(ApiConstants.vehicles)
   Future<VehiclesResponse> getVehicles();
   @PUT(ApiConstants.editDriverProfile)
-  Future<EditProfileResponse> editProfile(@Body() EditProfileRequest request);
+  Future<DriverProfileResponse> editProfile(@Body() EditProfileRequest request);
   @PATCH(ApiConstants.changeDriverPassword)
   Future<ChangePasswordResponse> changePassword(@Body() ChangePasswordRequest request);
   @PUT(ApiConstants.uploadDriverPhoto)

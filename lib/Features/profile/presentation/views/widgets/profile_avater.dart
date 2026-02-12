@@ -22,7 +22,7 @@ class ProfileAvatar extends StatelessWidget {
         final isUploading = uploadState?.isLoading ?? false;
 
         // Get current user's photo from session as fallback
-        final currentUserPhoto = getIt<SessionController>().user?.photoUrl;
+        final currentUserPhoto = getIt<SessionController>().user?.photo;
 
         // Use uploaded image URL if available, otherwise fall back to current user's photo
         final imageUrl = uploadedImageUrl ?? currentUserPhoto;
