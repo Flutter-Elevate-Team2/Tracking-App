@@ -516,6 +516,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileUpdatedSuccess => 'تم تحديث الملف الشخصي بنجاح';
 
   @override
+  String get selectVehicleType => 'اختر نوع المركبة';
+
+  @override
   String get photoUploadedSuccessfully => 'تم رفع الصورة بنجاح';
 
   @override

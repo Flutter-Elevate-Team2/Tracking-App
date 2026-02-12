@@ -19,9 +19,15 @@ void main() {
     lastName: 'Doe',
     email: 'john@test.com',
     phone: '123',
-    photoUrl: 'url',
     role: 'driver',
     gender: 'male',
+    photo: 'photo',
+    country: 'country',
+    vehicleType: 'vehicleType',
+    vehicleNumber: 'vehicleNumber',
+    vehicleLicense: 'vehicleLicense',
+    nid: 'nid',
+    nidImg: 'nidImg',
   );
 
   setUp(() {
@@ -54,9 +60,15 @@ void main() {
         lastName: 'Smith',
         email: 'jane@test.com',
         phone: '456',
-        photoUrl: 'url2',
         role: 'driver',
         gender: 'female',
+        photo: 'photo2',
+        country: 'country2',
+        vehicleType: 'vehicleType2',
+        vehicleNumber: 'vehicleNumber2',
+        vehicleLicense: 'vehicleLicense2',
+        nid: 'nid2',
+        nidImg: 'nidImg2',
       );
       sessionController.saveUser(newUser);
 
