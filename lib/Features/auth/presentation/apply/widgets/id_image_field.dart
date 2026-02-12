@@ -60,11 +60,6 @@ class _IdImageFieldState extends State<IdImageField> {
               border: const OutlineInputBorder(),
             ),
           ),
-
-          if (_image != null) ...[
-            const SizedBox(height: 12),
-            Image.file(_image!, height: 120),
-          ],
         ],
       ),
     );

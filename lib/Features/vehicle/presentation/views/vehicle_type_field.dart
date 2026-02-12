@@ -33,7 +33,10 @@ class VehicleTypeField extends StatelessWidget {
                     selectedVehicleId: state.selectedVehicle?.id,
                     onVehicleSelected:  (id) {
                       viewModel.doIntent(SelectVehicleEvent(vehicleId: id));
-                    }
+                      final selected = vehicles.firstWhere((v) => v.id == id);
+                      if (onChanged != null) {
+                        onChanged!(selected);
+                      }}
 
                 );
             }

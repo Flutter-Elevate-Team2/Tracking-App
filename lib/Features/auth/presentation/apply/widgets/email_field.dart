@@ -13,6 +13,7 @@ class EmailField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      key: const Key("email_field_input"),
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.emailAddress,
       controller: controller,

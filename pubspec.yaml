@@ -41,7 +41,6 @@ dependencies:
   firebase_messaging: ^16.1.1
   flutter_bloc: ^9.1.1
   flutter_dotenv: ^6.0.0
-  flutter_local_notifications: ^20.0.0
   flutter_localization: ^0.3.3
   flutter_svg: ^2.2.3
   geolocator: ^13.0.2
@@ -108,7 +107,7 @@ flutter:
   generate: true
   assets:
     - assets/lottie/
-    - assets/
+    - assets/images/
     - assets/json/
     - .env
   # An image asset can refer to one or more resolution-specific "variants", see

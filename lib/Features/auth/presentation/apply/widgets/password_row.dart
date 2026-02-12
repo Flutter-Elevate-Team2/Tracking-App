@@ -3,7 +3,7 @@ import 'package:tracking_app/core/constants/app_colors.dart';
 import 'package:tracking_app/core/extension/context_extension.dart';
 import 'package:tracking_app/core/helpers/form_validators.dart';
 
-class PasswordRow extends StatelessWidget {
+class PasswordRow extends StatefulWidget {
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
   final bool isPasswordVisible;
@@ -24,36 +24,62 @@ class PasswordRow extends StatelessWidget {
   });
 
   @override
+  State<PasswordRow> createState() => _PasswordRowState();
+}
+
+class _PasswordRowState extends State<PasswordRow> {
+
+  @override
+  void initState() {
+    super.initState();
+    // بنخلي الحقول تسمع لأي تغيير في النص عشان تظهر/تخفي العين لحظياً
+    widget.passwordController.addListener(_updateState);
+    widget.confirmPasswordController.addListener(_updateState);
+  }
+
+  @override
+  void dispose() {
+    // مهم جداً نشيل الـ listeners لما الويدجيت تتمسح
+    widget.passwordController.removeListener(_updateState);
+    widget.confirmPasswordController.removeListener(_updateState);
+    super.dispose();
+  }
+
+  void _updateState() {
+    if (mounted) setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
           child: TextFormField(
             textInputAction: TextInputAction.next,
-            controller: passwordController,
-            obscureText: !isPasswordVisible,
+            controller: widget.passwordController,
+            obscureText: !widget.isPasswordVisible,
             style: Theme.of(context).textTheme.bodySmall,
             validator: (value) =>
                 FormValidators.validatePassword(context, value),
             onChanged: (_) {
-              if (confirmPasswordController.text.isNotEmpty) {
-                formKey.currentState?.validate();
+              if (widget.confirmPasswordController.text.isNotEmpty) {
+                widget.formKey.currentState?.validate();
               }
             },
             decoration: InputDecoration(
-              labelText: (context).l10n.passwordLabel,
-              hintText: (context).l10n.passwordHint,
+              labelText: context.l10n.passwordLabel,
+              hintText: context.l10n.passwordHint,
               helperText: "",
-              suffixIcon: passwordController.text.isNotEmpty
+              suffixIcon: widget.passwordController.text.isNotEmpty
                   ? IconButton(
-                      onPressed: togglePasswordVisibility,
-                      icon: Icon(
-                        isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: AppColors.gray,
-                      ),
-                    )
+                onPressed: widget.togglePasswordVisibility,
+                icon: Icon(
+                  widget.isPasswordVisible
+                      ? Icons.visibility
+                      : Icons.visibility_off,
+                  color: AppColors.gray,
+                ),
+              )
                   : null,
             ),
           ),
@@ -62,28 +88,28 @@ class PasswordRow extends StatelessWidget {
         Expanded(
           child: TextFormField(
             textInputAction: TextInputAction.next,
-            controller: confirmPasswordController,
-            obscureText: !isConfirmPasswordVisible,
+            controller: widget.confirmPasswordController,
+            obscureText: !widget.isConfirmPasswordVisible,
             style: Theme.of(context).textTheme.bodySmall,
             validator: (value) => FormValidators.validateConfirmPassword(
               context,
               value,
-              passwordController.text,
+              widget.passwordController.text,
             ),
             decoration: InputDecoration(
-              labelText: (context).l10n.confirmPasswordLabel,
-              hintText: (context).l10n.confirmPasswordHint,
+              labelText: context.l10n.confirmPasswordLabel,
+              hintText: context.l10n.confirmPasswordHint,
               helperText: "",
-              suffixIcon: passwordController.text.isNotEmpty
+              suffixIcon: widget.confirmPasswordController.text.isNotEmpty
                   ? IconButton(
-                      onPressed: toggleConfirmPasswordVisibility,
-                      icon: Icon(
-                        isConfirmPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: AppColors.gray,
-                      ),
-                    )
+                onPressed: widget.toggleConfirmPasswordVisibility,
+                icon: Icon(
+                  widget.isConfirmPasswordVisible
+                      ? Icons.visibility
+                      : Icons.visibility_off,
+                  color: AppColors.gray,
+                ),
+              )
                   : null,
             ),
           ),

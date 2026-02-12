@@ -44,7 +44,7 @@ class _ApplyFormState extends State<ApplyForm> {
   final TextEditingController _confirmPasswordController =
   TextEditingController();
 
-   VehicleEntity? _selectedVehicle;
+  VehicleEntity? _selectedVehicle;
   CountryEntity? _selectedCountry;
   Gender? _selectedGender;
   File? _vehicleLicenseFile;
@@ -81,7 +81,12 @@ class _ApplyFormState extends State<ApplyForm> {
               final applyState = state.applyState;
               if (applyState?.data != null) {
                 context.pushNamed(Routes.successApplyName);
-              } else if (applyState?.errorMessage != null) {
+              } else if (state.applyState?.isLoading == true){
+                const Padding(
+                  padding: EdgeInsets.only(top: 24),
+                  child: CircularProgressIndicator(),
+                );
+              }else if (applyState?.errorMessage != null) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(applyState!.errorMessage!),
@@ -110,7 +115,7 @@ class _ApplyFormState extends State<ApplyForm> {
                 ),
                 // Vehicle Type
                 VehicleTypeField(
-                    selectedVehicle: _selectedVehicle,
+                  selectedVehicle: _selectedVehicle,
                   onChanged: (type) {
                     setState(() {
                       _selectedVehicle = type;
@@ -118,8 +123,8 @@ class _ApplyFormState extends State<ApplyForm> {
                   },
                 ),
                 SizedBox(height: 35),
-                // Vehicle Number
 
+                // Vehicle Number
                 TextFormField(
                   controller: _vehicleNumberController,
                   validator: (value) =>
@@ -143,7 +148,10 @@ class _ApplyFormState extends State<ApplyForm> {
                 EmailField(controller: _emailController),
 
                 // Phone
-                PhoneField(controller: _phoneController),
+                PhoneField(
+                  controller: _phoneController,
+                  countryCode: _selectedCountry?.phoneCode,
+                ),
 
                 // National ID
                 TextFormField(
@@ -196,37 +204,38 @@ class _ApplyFormState extends State<ApplyForm> {
                 SizedBox(
                   width: double.infinity,
                   child: CustomButton(
-                    title: context.l10n.continueButton,
-                    onPressed: isLoading
-                        ? null
-                        : () {
-                      setState(() {
-                        _autovalidateMode = AutovalidateMode.always;
-                      });
-                      if (_formKey.currentState!.validate()) {
-                        context.read<ApplyViewModel>().doIntent(
-                          OnApplyClickEvent(
-                            applyRequest: ApplyRequest(
-                              country: _selectedCountry!.name!,
-                              firstName: _firstNameController.text,
-                              lastName: _lastNameController.text,
-                              vehicleType: _selectedVehicle!.type ?? "",
-                              vehicleNumber:
-                              _vehicleNumberController.text,
-                              email: _emailController.text,
-                              phone: _phoneController.text,
-                              nid: _nidController.text,
-                              password: _passwordController.text,
-                              rePassword: _confirmPasswordController.text,
-                              gender: _selectedGender!.name,
-                              vehicleLicense: _vehicleLicenseFile!,
-                              nidImg: _nidImageFile!,
-                            ),
-                          ),
+                      title: context.l10n.continueButton,
+                      onPressed: isLoading
+                          ? null
+                          : () {
+                        setState(
+                              () => _autovalidateMode = AutovalidateMode.always,
                         );
-                      }
-                    },
-                  ),
+                        if (_formKey.currentState!.validate()) {
+                          context.read<ApplyViewModel>().doIntent(
+                            OnApplyClickEvent(
+                              applyRequest: ApplyRequest(
+                                country: _selectedCountry!.name!,
+                                firstName: _firstNameController.text,
+                                lastName: _lastNameController.text,
+                                vehicleType: _selectedVehicle!.id ?? "",
+                                vehicleNumber:
+                                _vehicleNumberController.text,
+                                email: _emailController.text,
+                                phone:
+                                "+${_selectedCountry?.phoneCode}${_phoneController
+                                    .text}",
+                                nid: _nidController.text,
+                                password: _passwordController.text,
+                                rePassword: _confirmPasswordController.text,
+                                gender: _selectedGender!.name,
+                                vehicleLicense: _vehicleLicenseFile!,
+                                nidImg: _nidImageFile!,
+                              ),
+                            ),
+                          );
+                        }
+                      }),
                 ),
               ],
             ),
