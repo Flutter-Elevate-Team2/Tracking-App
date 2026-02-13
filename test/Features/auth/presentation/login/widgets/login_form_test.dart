@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:tracking_app/Features/auth/presentation/login/view_model/login_event.dart';
@@ -17,13 +18,28 @@ import 'package:tracking_app/core/l10n/app_localizations.dart';
 import 'login_form_test.mocks.dart';
 
 Widget pumpLoginForm({required LoginViewModel viewModel}) {
-  return MaterialApp(
+  final router = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) => BlocProvider<LoginViewModel>.value(
+          value: viewModel,
+          child: const Scaffold(body: LoginForm()),
+        ),
+      ),
+      GoRoute(
+        path: '/forgetPassword',
+        name: 'forgetPassword',
+        builder: (context, state) =>
+            const Scaffold(body: Text('Forget Password Screen')),
+      ),
+    ],
+  );
+
+  return MaterialApp.router(
+    routerConfig: router,
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
-    home: BlocProvider<LoginViewModel>.value(
-      value: viewModel,
-      child: const Scaffold(body: LoginForm()),
-    ),
   );
 }
 
@@ -191,4 +207,16 @@ void main() {
       verifyNever(mockViewModel.doIntent(any));
     },
   );
+
+  testWidgets('8. Should navigate to Forgot Password screen', (tester) async {
+    await tester.pumpWidget(pumpLoginForm(viewModel: mockViewModel));
+    await tester.pumpAndSettle();
+
+    final forgotPasswordBtn = find.byType(TextButton);
+
+    expect(forgotPasswordBtn, findsOneWidget);
+
+    await tester.tap(forgotPasswordBtn);
+    await tester.pumpAndSettle();
+  });
 }

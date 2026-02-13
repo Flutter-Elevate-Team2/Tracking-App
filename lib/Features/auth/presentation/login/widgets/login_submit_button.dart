@@ -29,7 +29,7 @@ class LoginSubmitButton extends StatelessWidget {
       title: context.l10n.continueButton,
       onPressed: enabled ? onPressed : null,
       backgroundColor: AppColors.mainColor,
-      disabledColor: AppColors.black[30],
+      disabledBackgroundColor: AppColors.black[30],
     );
   }
 }

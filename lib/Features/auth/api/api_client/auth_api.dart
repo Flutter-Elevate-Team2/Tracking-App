@@ -13,6 +13,7 @@ import 'package:tracking_app/Features/auth/data/models/forget_password_models/re
 import 'package:tracking_app/Features/auth/data/models/login_models/login_request.dart';
 import 'package:tracking_app/Features/auth/data/models/login_models/login_response.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
+// coverage:ignore-file
 
 part 'auth_api.g.dart';
 

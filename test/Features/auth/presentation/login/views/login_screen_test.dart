@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:tracking_app/Features/auth/domain/entities/login_entity/login_entity.dart';
@@ -25,12 +26,17 @@ void main() {
     GetIt.I.unregister<LoginViewModel>();
   });
 
-  Widget createWidgetUnderTest() {
+  Widget createWidgetUnderTest({String initialLocation = '/login'}) {
     final router = GoRouter(
-      initialLocation: '/',
+      initialLocation: initialLocation,
       routes: [
         GoRoute(
           path: '/',
+          builder: (context, state) =>
+              const Scaffold(body: Text('Previous Screen')),
+        ),
+        GoRoute(
+          path: '/login',
           name: 'login',
           builder: (context, state) => const LoginScreen(),
         ),
@@ -57,7 +63,7 @@ void main() {
       initialState: LoginState(),
     );
 
-    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpWidget(createWidgetUnderTest(initialLocation: '/login'));
     await tester.pumpAndSettle();
 
     expect(find.byType(LoginScreen), findsOneWidget);
@@ -76,7 +82,7 @@ void main() {
       initialState: LoginState(),
     );
 
-    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpWidget(createWidgetUnderTest(initialLocation: '/login'));
     await tester.pump();
     await tester.pump();
 
@@ -90,7 +96,7 @@ void main() {
       initialState: LoginState(),
     );
 
-    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpWidget(createWidgetUnderTest(initialLocation: '/login'));
     await tester.pump();
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -109,9 +115,52 @@ void main() {
       initialState: LoginState(),
     );
 
-    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpWidget(createWidgetUnderTest(initialLocation: '/login'));
     await tester.pumpAndSettle();
 
     expect(find.text('Home Screen'), findsOneWidget);
+  });
+
+  testWidgets('Should trigger InkWell onTap in AppBar (Coverage for leading)', (
+    tester,
+  ) async {
+    whenListen(
+      mockViewModel,
+      const Stream<LoginState>.empty(),
+      initialState: LoginState(),
+    );
+
+    await tester.pumpWidget(createWidgetUnderTest(initialLocation: '/'));
+    await tester.pumpAndSettle();
+
+    final context = tester.element(find.text('Previous Screen'));
+    context.pushNamed('login');
+    await tester.pumpAndSettle();
+
+    final appBarLeading = find.descendant(
+      of: find.byType(AppBar),
+      matching: find.byType(InkWell),
+    );
+
+    await tester.tap(appBarLeading);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Previous Screen'), findsOneWidget);
+  });
+
+  testWidgets('Should verify BlocProvider creates ViewModel from GetIt', (
+    tester,
+  ) async {
+    whenListen(
+      mockViewModel,
+      const Stream<LoginState>.empty(),
+      initialState: LoginState(),
+    );
+
+    await tester.pumpWidget(createWidgetUnderTest(initialLocation: '/login'));
+    await tester.pump();
+
+    expect(find.byType(BlocProvider<LoginViewModel>), findsOneWidget);
+    expect(GetIt.I<LoginViewModel>(), isA<MockLoginViewModel>());
   });
 }
