@@ -1,13 +1,10 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/profile_events.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/profile_view_model.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
-import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/controller/session_controller.dart';
 import 'package:tracking_app/core/di/di.dart';
 import 'package:tracking_app/core/helpers/session_expired_handler.dart';
@@ -49,7 +46,7 @@ class _MyAppState extends State<MyApp> {
     });
 
     _sessionController.onLogout.listen((_) {
-      AppRouter.router.goNamed(Routes.loginName);
+      AppRouter.router.goNamed(Routes.onBoardingName);
     });
   }
 
