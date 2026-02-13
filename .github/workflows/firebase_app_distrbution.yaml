@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - development
-      - feature/TEAM2-72-edit-profile-testing
+      - release/demo
       
   pull_request:
     branches:
