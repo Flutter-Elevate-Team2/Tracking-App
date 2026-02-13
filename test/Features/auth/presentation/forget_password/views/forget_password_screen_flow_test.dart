@@ -42,12 +42,17 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
-
-      expect(
-        find.byType(BlocProvider<ForgetPasswordViewModel>),
-        findsOneWidget,
+      final blocProviderFinder = find.byType(
+        BlocProvider<ForgetPasswordViewModel>,
       );
+      expect(blocProviderFinder, findsOneWidget);
+
+      final BuildContext context = tester.element(
+        find.byType(ForgetPasswordScreenFlowBody),
+      );
+      final viewModel = BlocProvider.of<ForgetPasswordViewModel>(context);
+
+      expect(viewModel, isNotNull);
       expect(find.byType(ForgetPasswordScreenFlowBody), findsOneWidget);
     },
   );
