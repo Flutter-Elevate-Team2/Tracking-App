@@ -5,18 +5,24 @@ class CustomButton extends StatelessWidget {
   final String title;
   final VoidCallback? onPressed;
   final Color? backgroundColor;
-  final Color? disabledColor;
+  final Color? foregroundColor;
+  final Color? disabledBackgroundColor;
+  final Color? disabledForegroundColor;
 
   const CustomButton({
     required this.title,
     required this.onPressed,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.disabledBackgroundColor,
+    this.disabledForegroundColor,
     super.key,
-    this.backgroundColor ,
-    this.disabledColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final bool isDisabled = onPressed == null;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: SizedBox(
@@ -24,22 +30,34 @@ class CustomButton extends StatelessWidget {
         height: 48,
         child: ElevatedButton(
           onPressed: onPressed,
-          style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                  (states) {
-                if (states.contains(WidgetState.disabled)) {
-                  if (disabledColor != null) {
-                    return disabledColor!;
-                  }
-                }
-                return backgroundColor!;
-              },
-            ),
-            padding: WidgetStateProperty.all(
-              const EdgeInsets.symmetric(vertical: 14),
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+
+            backgroundColor: backgroundColor,
+            foregroundColor: foregroundColor,
+
+            disabledBackgroundColor:
+                disabledBackgroundColor ?? Colors.grey.shade300,
+            disabledForegroundColor:
+                disabledForegroundColor ?? Colors.grey.shade600,
+
+            side: (!isDisabled && backgroundColor == AppColors.white)
+                ? BorderSide(color: AppColors.gray)
+                : null,
+
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(100),
             ),
           ),
-          child: Text(title, style: TextStyle(fontSize: 16 , color: AppColors.white)),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              color: (!isDisabled && backgroundColor == AppColors.white)
+                  ? AppColors.mainColor
+                  : AppColors.white,
+            ),
+          ),
         ),
       ),
     );
