@@ -18,6 +18,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onBoardingDescription => 'Welcome to Flowery rider app';
 
   @override
+  String get welcomeTo => 'Welcome to';
+
+  @override
+  String get floweryRiderApp => 'Flowery rider app';
+
+  @override
   String get loginTitle => 'Login';
 
   @override
@@ -52,6 +58,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invalidPasswordError => 'Invalid password';
+
+  @override
+  String get nationalIdRequired => 'National ID is required';
+
+  @override
+  String get nationalIdInvalidLength => 'National ID must be 14 digits';
+
+  @override
+  String get nationalIdInvalidChars => 'National ID must contain only numbers';
+
+  @override
+  String get vehicleNumberLength =>
+      'Vehicle number must be between 3 and 10 characters';
+
+  @override
+  String get vehicleNumberInvalidChars =>
+      'Vehicle number must contain only letters and numbers';
+
+  @override
+  String get uploadLicensePhoto => 'Upload license image';
+
+  @override
+  String get uploadIdImage => 'Upload ID image';
+
+  @override
+  String errorLoadingCountries(Object error) {
+    return 'Error loading countries: $error';
+  }
 
   @override
   String get country => 'Country';

@@ -446,5 +446,15 @@
   "deliveredOn": "تم التوصيل في",
   "@deliveredOn": { "description": "تسمية لحالة التوصيل" },
   "noOrdersFound": "لا توجد طلبات",
-  "@noOrderFound": { "description": "رسالة عند عدم العثور على طلبات" }
+  "@noOrderFound": { "description": "رسالة عند عدم العثور على طلبات" },
+  "firstNamelabel": "الاسم الأول",
+  "@firstNamelabel": { "description": "تسمية حقل الاسم الأول" },
+  "lastNameLabel": "الاسم الأخير",
+  "@lastNameLabel2": { "description": "تسمية حقل الاسم الأخير" },
+  "chooseImageSource": "اختر مصدر الصورة",
+  "@chooseImageSource": { "description": "عنوان اختيار مصدر الصورة" },
+  "camera": "الكاميرا",
+  "@camera": { "description": "خيار الكاميرا" },
+  "gallery": "المعرض",
+  "@gallery": { "description": "خيار المعرض" }
 }

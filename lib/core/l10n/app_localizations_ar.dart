@@ -15,7 +15,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get flowery => 'Flowery';
 
   @override
-  String get onBoardingDescription => 'مرحبًا بك في تطبيق رايدر Flowery';
+  String get onBoardingDescription => 'مرحبًا بك في تطبيق rider Flowery';
+
+  @override
+  String get welcomeTo => 'مرحبًا بك في';
+
+  @override
+  String get floweryRiderApp => 'تطبيق rider Flowery';
 
   @override
   String get loginTitle => 'تسجيل الدخول';
@@ -54,16 +60,45 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invalidPasswordError => 'كلمة المرور غير صحيحة';
 
   @override
+  String get nationalIdRequired => 'الرقم القومي مطلوب';
+
+  @override
+  String get nationalIdInvalidLength => 'الرقم القومي يجب أن يكون 14 رقمًا';
+
+  @override
+  String get nationalIdInvalidChars =>
+      'الرقم القومي يجب أن يحتوي على أرقام فقط';
+
+  @override
+  String get vehicleNumberLength =>
+      'رقم المركبة يجب أن يكون بين 3 و 10 حروف أو أرقام';
+
+  @override
+  String get vehicleNumberInvalidChars =>
+      'رقم المركبة يجب أن يحتوي على حروف وأرقام فقط';
+
+  @override
+  String get uploadLicensePhoto => 'ارفع صورة الرخصة';
+
+  @override
+  String get uploadIdImage => 'ارفع صورة البطاقة';
+
+  @override
+  String errorLoadingCountries(Object error) {
+    return 'حدث خطأ أثناء تحميل الدول: $error';
+  }
+
+  @override
   String get country => 'البلد';
 
   @override
   String get firstNameLabel => 'الاسم الأول القانوني';
 
   @override
-  String get firstNamelabel => 'First Name';
+  String get firstNamelabel => 'الاسم الأول';
 
   @override
-  String get lastNameLabel => 'Last Name';
+  String get lastNameLabel => 'الاسم الأخير';
 
   @override
   String get firstNameHint => 'أدخل الاسم الأول القانوني';
@@ -600,11 +635,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noOrdersFound => 'لا توجد طلبات';
 
   @override
-  String get chooseImageSource => 'Choose Image Source';
+  String get chooseImageSource => 'اختر مصدر الصورة';
 
   @override
-  String get camera => 'Camera';
+  String get camera => 'الكاميرا';
 
   @override
-  String get gallery => 'Gallery';
+  String get gallery => 'المعرض';
 }

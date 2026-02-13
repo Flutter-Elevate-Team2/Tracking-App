@@ -116,6 +116,18 @@ abstract class AppLocalizations {
   /// **'Welcome to Flowery rider app'**
   String get onBoardingDescription;
 
+  /// No description provided for @welcomeTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to'**
+  String get welcomeTo;
+
+  /// No description provided for @floweryRiderApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Flowery rider app'**
+  String get floweryRiderApp;
+
   /// Title for the login screen
   ///
   /// In en, this message translates to:
@@ -187,6 +199,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invalid password'**
   String get invalidPasswordError;
+
+  /// No description provided for @nationalIdRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'National ID is required'**
+  String get nationalIdRequired;
+
+  /// No description provided for @nationalIdInvalidLength.
+  ///
+  /// In en, this message translates to:
+  /// **'National ID must be 14 digits'**
+  String get nationalIdInvalidLength;
+
+  /// No description provided for @nationalIdInvalidChars.
+  ///
+  /// In en, this message translates to:
+  /// **'National ID must contain only numbers'**
+  String get nationalIdInvalidChars;
+
+  /// No description provided for @vehicleNumberLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle number must be between 3 and 10 characters'**
+  String get vehicleNumberLength;
+
+  /// No description provided for @vehicleNumberInvalidChars.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle number must contain only letters and numbers'**
+  String get vehicleNumberInvalidChars;
+
+  /// No description provided for @uploadLicensePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload license image'**
+  String get uploadLicensePhoto;
+
+  /// No description provided for @uploadIdImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload ID image'**
+  String get uploadIdImage;
+
+  /// No description provided for @errorLoadingCountries.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading countries: {error}'**
+  String errorLoadingCountries(Object error);
 
   /// Label for selecting or displaying the user's country
   ///
