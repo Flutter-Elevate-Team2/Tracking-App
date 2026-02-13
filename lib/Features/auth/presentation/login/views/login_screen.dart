@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tracking_app/Features/auth/presentation/login/view_model/login_view_model.dart';
 import 'package:tracking_app/Features/auth/presentation/login/widgets/login_screen_body.dart';
 import 'package:tracking_app/core/di/di.dart';
@@ -17,7 +18,7 @@ class LoginScreen extends StatelessWidget {
         title: Text((context).l10n.loginTitle),
         leading: InkWell(
           onTap: () {
-            // Navigator.pop(context);
+            context.pop();
           },
           child: const Icon(Icons.arrow_back_ios),
         ),

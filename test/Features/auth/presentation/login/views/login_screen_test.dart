@@ -26,12 +26,17 @@ void main() {
     GetIt.I.unregister<LoginViewModel>();
   });
 
-  Widget createWidgetUnderTest() {
+  Widget createWidgetUnderTest({String initialLocation = '/login'}) {
     final router = GoRouter(
-      initialLocation: '/',
+      initialLocation: initialLocation,
       routes: [
         GoRoute(
           path: '/',
+          builder: (context, state) =>
+              const Scaffold(body: Text('Previous Screen')),
+        ),
+        GoRoute(
+          path: '/login',
           name: 'login',
           builder: (context, state) => const LoginScreen(),
         ),
@@ -58,7 +63,7 @@ void main() {
       initialState: LoginState(),
     );
 
-    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpWidget(createWidgetUnderTest(initialLocation: '/login'));
     await tester.pumpAndSettle();
 
     expect(find.byType(LoginScreen), findsOneWidget);
@@ -77,7 +82,7 @@ void main() {
       initialState: LoginState(),
     );
 
-    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpWidget(createWidgetUnderTest(initialLocation: '/login'));
     await tester.pump();
     await tester.pump();
 
@@ -91,7 +96,7 @@ void main() {
       initialState: LoginState(),
     );
 
-    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpWidget(createWidgetUnderTest(initialLocation: '/login'));
     await tester.pump();
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -110,7 +115,7 @@ void main() {
       initialState: LoginState(),
     );
 
-    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpWidget(createWidgetUnderTest(initialLocation: '/login'));
     await tester.pumpAndSettle();
 
     expect(find.text('Home Screen'), findsOneWidget);
@@ -125,7 +130,11 @@ void main() {
       initialState: LoginState(),
     );
 
-    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpWidget(createWidgetUnderTest(initialLocation: '/'));
+    await tester.pumpAndSettle();
+
+    final context = tester.element(find.text('Previous Screen'));
+    context.pushNamed('login');
     await tester.pumpAndSettle();
 
     final appBarLeading = find.descendant(
@@ -134,7 +143,9 @@ void main() {
     );
 
     await tester.tap(appBarLeading);
-    await tester.pump();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Previous Screen'), findsOneWidget);
   });
 
   testWidgets('Should verify BlocProvider creates ViewModel from GetIt', (
@@ -146,12 +157,10 @@ void main() {
       initialState: LoginState(),
     );
 
-    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpWidget(createWidgetUnderTest(initialLocation: '/login'));
     await tester.pump();
 
-    final blocProviderFinder = find.byType(BlocProvider<LoginViewModel>);
-    expect(blocProviderFinder, findsOneWidget);
-
+    expect(find.byType(BlocProvider<LoginViewModel>), findsOneWidget);
     expect(GetIt.I<LoginViewModel>(), isA<MockLoginViewModel>());
   });
 }
