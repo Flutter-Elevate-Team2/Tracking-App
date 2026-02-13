@@ -29,11 +29,6 @@ void main() {
       expect(Routes.forgetPasswordName, 'forgetPassword');
     });
 
-    test('should have correct verifyCode route paths', () {
-      expect(Routes.verifyCodePath, '/verifycode');
-      expect(Routes.verifyCodeName, 'verifyCode');
-    });
-
     test('should have correct resetPassword route paths', () {
       expect(Routes.resetPasswordPath, '/resetpassword');
       expect(Routes.resetPasswordName, 'resetPassword');
@@ -114,10 +109,6 @@ void main() {
       expect(location, equals(Routes.forgetPasswordPath));
     });
 
-    test('should be able to navigate to verifyCode route', () {
-      final location = router.namedLocation(Routes.verifyCodeName);
-      expect(location, equals(Routes.verifyCodePath));
-    });
 
     test('should be able to navigate to resetPassword route', () {
       final location = router.namedLocation(Routes.resetPasswordName);

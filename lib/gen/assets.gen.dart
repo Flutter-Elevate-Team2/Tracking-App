@@ -45,6 +45,9 @@ class $AssetsImagesGen {
   AssetGenImage get arrowBackLeft =>
       const AssetGenImage('assets/images/arrow_back_left.png');
 
+  /// File path: assets/images/bg.png
+  AssetGenImage get bg => const AssetGenImage('assets/images/bg.png');
+
   /// File path: assets/images/logouticon.png
   AssetGenImage get logouticon =>
       const AssetGenImage('assets/images/logouticon.png');
@@ -62,10 +65,35 @@ class $AssetsImagesGen {
     rectangle,
     arrowBackIos,
     arrowBackLeft,
+    bg,
     logouticon,
     onBoardingImage,
     successApplyImage,
   ];
+}
+
+class $AssetsJsonGen {
+  const $AssetsJsonGen();
+
+  /// File path: assets/json/country.json
+  String get country => 'assets/json/country.json';
+
+  /// List of all assets
+  List<String> get values => [country];
+}
+
+class $AssetsLottieGen {
+  const $AssetsLottieGen();
+
+  /// File path: assets/lottie/Check Animation.json
+  String get checkAnimation => 'assets/lottie/Check Animation.json';
+
+  /// File path: assets/lottie/Delivery Service-Delivery man.json
+  String get deliveryServiceDeliveryMan =>
+      'assets/lottie/Delivery Service-Delivery man.json';
+
+  /// List of all assets
+  List<String> get values => [checkAnimation, deliveryServiceDeliveryMan];
 }
 
 class Assets {
@@ -74,6 +102,8 @@ class Assets {
   static const String aEnv = '.env';
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
+  static const $AssetsJsonGen json = $AssetsJsonGen();
+  static const $AssetsLottieGen lottie = $AssetsLottieGen();
 
   /// List of all assets
   static List<String> get values => [aEnv];

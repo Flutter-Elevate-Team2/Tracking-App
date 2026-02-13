@@ -17,8 +17,8 @@ class ApiConstants {
   static const String editProfile = "/auth/editProfile";
   static const String uploadPhoto = "auth/upload-photo";
   static const String changePassword = "/auth/change-password";
-  static const String logout = "/auth/logout";
-  //=========================EditDriverInfo======================================//
+
+   //=========================EditDriverInfo======================================//
   static const String editDriverProfile = "drivers/editProfile";
   static const String changeDriverPassword = "drivers/change-password";
   static const String uploadDriverPhoto = "/drivers/upload-photo";

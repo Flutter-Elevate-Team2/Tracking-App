@@ -21,12 +21,12 @@ Future<void> main() async {
 
   await dotenv.load(fileName: ".env");
   await configureDependencies();
-  final prefs = getIt<SharedPreferences>();
+  // final prefs = getIt<SharedPreferences>();
+  //
+  // const String fixedToken =
+  //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcml2ZXIiOiI2OThkOTFjYWUzNjRlZjYxNDA1NDNkYjUiLCJpYXQiOjE3NzA4ODU1Nzh9._KydCtmQS5aGtJR-KYk_MyLYTPcgUVO7wVOBUINYZdk";
 
-  const String fixedToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcml2ZXIiOiI2OThkOTFjYWUzNjRlZjYxNDA1NDNkYjUiLCJpYXQiOjE3NzA4ODU1Nzh9._KydCtmQS5aGtJR-KYk_MyLYTPcgUVO7wVOBUINYZdk";
-
-  await prefs.setString(ApiConstants.tokenKey, fixedToken);
+  // await prefs.setString(ApiConstants.tokenKey, fixedToken);
 
   runApp(const MyApp());
 }
@@ -63,7 +63,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => LanguageCubit()),BlocProvider(create: (_) => getIt<ProfileViewModel>()..doIntent(GetDriverProfileEvent()))],
+      providers: [
+        BlocProvider(create: (_) => LanguageCubit()),
+        BlocProvider(
+          create: (_) =>
+              getIt<ProfileViewModel>()..doIntent(GetDriverProfileEvent()),
+        ),
+      ],
       child: BlocBuilder<LanguageCubit, Locale>(
         builder: (context, locale) {
           return MaterialApp.router(
@@ -81,4 +87,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-

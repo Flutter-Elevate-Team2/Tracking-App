@@ -39,6 +39,7 @@ class Routes {
 
   static const String mainProfilePath = '/mainprofile';
   static const String mainProfileName = 'mainProfile';
+
   static const String profilePath = '/profile';
   static const String profileName = 'profile';
 
@@ -47,6 +48,9 @@ class Routes {
 
   static const String editVehiclePath = '/editvehicle';
   static const String editVehicleName = 'editVehicle';
+
+  static const String resetPasswordPath = '/resetpassword';
+  static const String resetPasswordName = 'resetPassword';
 
   static const String ordersPath = '/orders';
   static const String ordersName = 'orders';
@@ -68,10 +72,15 @@ class AppRouter {
     redirect: (context, state) async {
       final authRepo = getIt<AuthRepoContract>();
       final bool isLoggedIn = await authRepo.isLoggedIn();
-      final bool isLoggingIn = state.uri.toString() == Routes.loginPath;
 
-      if (isLoggedIn && isLoggingIn) {
-        return Routes.homePath;
+      final isAuthRoute =
+          state.uri.toString() == Routes.onBoardingPath ||
+          state.uri.toString() == Routes.loginPath;
+
+      if (isLoggedIn) {
+        if (isAuthRoute) {
+          return Routes.homePath;
+        }
       }
       return null;
     },
@@ -84,7 +93,7 @@ class AppRouter {
       GoRoute(
         path: Routes.loginPath,
         name: Routes.loginName,
-        builder: (context, state) => Container(),
+        builder: (context, state) => LoginScreen(),
       ),
       GoRoute(
         path: Routes.applyPath,
@@ -102,7 +111,7 @@ class AppRouter {
         name: Routes.forgetPasswordName,
         builder: (context, state) => ForgetPasswordScreenFlow(),
       ),
-       // / ====== MAIN SHELL ROUTE (BOTTOM NAV BAR) ======
+      // / ====== MAIN SHELL ROUTE (BOTTOM NAV BAR) ======
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return HomeScreen(navigationShell: navigationShell);
@@ -115,7 +124,7 @@ class AppRouter {
               GoRoute(
                 path: Routes.homePath,
                 name: Routes.homeName,
-                builder: (context, state) =>  Container(),
+                builder: (context, state) => Container(),
               ),
             ],
           ),
@@ -126,7 +135,7 @@ class AppRouter {
               GoRoute(
                 path: Routes.ordersPath,
                 name: Routes.ordersName,
-                builder: (context, state) =>  Container(),
+                builder: (context, state) => Container(),
               ),
             ],
           ),
@@ -142,7 +151,7 @@ class AppRouter {
               ),
             ],
           ),
-        ]
+        ],
       ),
 
       GoRoute(
@@ -150,7 +159,7 @@ class AppRouter {
         name: Routes.editVehicleName,
         builder: (context, state) => const EditVehicleScreen(),
       ),
-       GoRoute(
+      GoRoute(
         path: Routes.editProfilePath,
         name: Routes.editProfileName,
         builder: (context, state) => BlocProvider(
@@ -168,53 +177,6 @@ class AppRouter {
           );
         },
       ),
-    ]
-    );
-
-
-      /// ====== MAIN SHELL ROUTE (BOTTOM NAV BAR) ======
-      // StatefulShellRoute.indexedStack(
-      //   builder: (context, state, navigationShell) {
-      //     return HomeScreen(navigationShell: navigationShell);
-      //   },
-      //   branches: [
-      //     // Branch 1: Home
-      //     StatefulShellBranch(
-      //       navigatorKey: _homeNavigatorKey,
-      //       routes: [
-      //         GoRoute(
-      //           path: Routes.homePath,
-      //           name: Routes.homeName,
-      //           builder: (context, state) =>  Container(),
-      //         ),
-      //       ],
-      //     ),
-      //
-      //     // Branch 2: Orders
-      //     StatefulShellBranch(
-      //       navigatorKey: _ordersNavigatorKey,
-      //       routes: [
-      //         GoRoute(
-      //           path: Routes.ordersPath,
-      //           name: Routes.ordersName,
-      //           builder: (context, state) =>  Container(),
-      //         ),
-      //       ],
-      //     ),
-      //
-      //     // Branch 3: Profile
-      //     StatefulShellBranch(
-      //       navigatorKey: _profileNavigatorKey,
-      //       routes: [
-      //         GoRoute(
-      //           path: Routes.profilePath,
-      //           name: Routes.profileName,
-      //           builder: (context, state) =>  Container(),
-      //         ),
-      //       ],
-      //     ),
-      //   ],
-      // ),
     ],
   );
 }
