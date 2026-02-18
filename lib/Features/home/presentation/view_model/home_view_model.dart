@@ -19,7 +19,7 @@ class HomeViewModel extends Cubit<HomeState> {
   void doIntent(HomeEvent event) {
     switch (event) {
       case GetPendingOrdersEvent():
-        _getPendingOrders();
+        _getPendingOrders(isRefresh: event.isRefresh);
         break;
       case AcceptOrderEvent():
         _acceptOrder(event);
@@ -30,26 +30,106 @@ class HomeViewModel extends Cubit<HomeState> {
     }
   }
 
-  Future<void> _getPendingOrders() async {
-    emit(state.copyWith(ordersState: const BaseState(isLoading: true)));
+  Future<void> _getPendingOrders({bool isRefresh = false}) async {
+    if ((state.hasReachedMax && !isRefresh) || state.isPaginationLoading) {
+      return;
+    }
 
-    final response = await _getPendingOrdersUseCase();
+    final isFirstPage =
+        isRefresh ||
+        (state.currentPage == 1 &&
+            (state.ordersState?.data == null ||
+                state.ordersState!.data!.isEmpty));
 
-    if (response is SuccessResponse<List<OrderEntity>>) {
+    if (isFirstPage) {
       emit(
         state.copyWith(
-          ordersState: BaseState(isLoading: false, data: response.data),
+          ordersState: const BaseState(isLoading: true),
+          currentPage: 1,
+          hasReachedMax: false,
         ),
       );
-    } else if (response is ErrorResponse<List<OrderEntity>>) {
-      emit(
-        state.copyWith(
-          ordersState: BaseState(
-            isLoading: false,
-            errorMessage: response.errorMessage,
+
+      // 1. First fetch to get totalPages
+      final initialResponse = await _getPendingOrdersUseCase(1);
+
+      if (initialResponse is SuccessResponse<HomeOrdersEntity>) {
+        final totalPages = initialResponse.data.totalPages;
+
+        if (totalPages <= 1) {
+          // Only one page or no pages, just use the reversed data from page 1
+          emit(
+            state.copyWith(
+              ordersState: BaseState(
+                isLoading: false,
+                data: initialResponse.data.orders.reversed.toList(),
+              ),
+              currentPage: 1,
+              hasReachedMax: true,
+            ),
+          );
+        } else {
+          // 2. Multiple pages, fetch the last page as the "first" visible page
+          final lastPageResponse = await _getPendingOrdersUseCase(totalPages);
+
+          if (lastPageResponse is SuccessResponse<HomeOrdersEntity>) {
+            emit(
+              state.copyWith(
+                ordersState: BaseState(
+                  isLoading: false,
+                  data: lastPageResponse.data.orders.reversed.toList(),
+                ),
+                currentPage: totalPages,
+                hasReachedMax: totalPages <= 1,
+              ),
+            );
+          } else if (lastPageResponse is ErrorResponse<HomeOrdersEntity>) {
+            emit(
+              state.copyWith(
+                ordersState: BaseState(
+                  isLoading: false,
+                  errorMessage: lastPageResponse.errorMessage,
+                ),
+              ),
+            );
+          }
+        }
+      } else if (initialResponse is ErrorResponse<HomeOrdersEntity>) {
+        emit(
+          state.copyWith(
+            ordersState: BaseState(
+              isLoading: false,
+              errorMessage: initialResponse.errorMessage,
+            ),
           ),
-        ),
-      );
+        );
+      }
+    } else {
+      // Pagination Logic (fetching backwards)
+      emit(state.copyWith(isPaginationLoading: true));
+
+      final pageToFetch = state.currentPage - 1;
+      final response = await _getPendingOrdersUseCase(pageToFetch);
+
+      if (response is SuccessResponse<HomeOrdersEntity>) {
+        final newOrders = response.data.orders.reversed.toList();
+        final currentOrders = List<OrderEntity>.from(
+          state.ordersState?.data ?? [],
+        );
+
+        emit(
+          state.copyWith(
+            ordersState: state.ordersState?.copyWith(
+              data: currentOrders + newOrders,
+            ),
+            isPaginationLoading: false,
+            currentPage: pageToFetch,
+            hasReachedMax: pageToFetch <= 1,
+          ),
+        );
+      } else if (response is ErrorResponse<HomeOrdersEntity>) {
+        emit(state.copyWith(isPaginationLoading: false));
+      }
     }
   }
 

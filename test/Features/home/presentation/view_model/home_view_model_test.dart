@@ -23,7 +23,9 @@ void main() {
   final tOrders = [tOrder];
 
   setUpAll(() {
-    provideDummy<BaseResponse<List<OrderEntity>>>(SuccessResponse(data: []));
+    provideDummy<BaseResponse<HomeOrdersEntity>>(
+      SuccessResponse(data: const HomeOrdersEntity(orders: [], totalPages: 1)),
+    );
     provideDummy<BaseResponse<OrderEntity>>(SuccessResponse(data: tOrder));
   });
 
@@ -39,26 +41,42 @@ void main() {
     });
 
     blocTest<HomeViewModel, HomeState>(
-      'emits [loading, success] when GetPendingOrdersEvent is successful',
+      'emits [loading, success] when GetPendingOrdersEvent is successful (reverse pagination)',
       build: () {
-        when(
-          mockGetOrders.call(),
-        ).thenAnswer((_) async => SuccessResponse(data: tOrders));
+        // Page 1 to get metadata
+        when(mockGetOrders.call(1)).thenAnswer(
+          (_) async => const SuccessResponse(
+            data: HomeOrdersEntity(orders: [], totalPages: 2),
+          ),
+        );
+        // Page 2 (last page) as entry point
+        when(mockGetOrders.call(2)).thenAnswer(
+          (_) async => SuccessResponse(
+            data: HomeOrdersEntity(orders: tOrders, totalPages: 2),
+          ),
+        );
         return viewModel;
       },
       act: (bloc) => bloc.doIntent(GetPendingOrdersEvent()),
       expect: () => [
         const HomeState(ordersState: BaseState(isLoading: true)),
-        HomeState(ordersState: BaseState(isLoading: false, data: tOrders)),
+        HomeState(
+          ordersState: BaseState(
+            isLoading: false,
+            data: tOrders.reversed.toList(),
+          ),
+          currentPage: 2,
+          hasReachedMax: false,
+        ),
       ],
     );
 
     blocTest<HomeViewModel, HomeState>(
-      'emits [loading, error] when GetPendingOrdersEvent fails',
+      'emits [loading, error] when GetPendingOrdersEvent fails at initial call',
       build: () {
         when(
-          mockGetOrders.call(),
-        ).thenAnswer((_) async => ErrorResponse(errorMessage: 'error'));
+          mockGetOrders.call(1),
+        ).thenAnswer((_) async => const ErrorResponse(errorMessage: 'error'));
         return viewModel;
       },
       act: (bloc) => bloc.doIntent(GetPendingOrdersEvent()),
@@ -97,7 +115,7 @@ void main() {
       build: () {
         when(
           mockAcceptOrder.call(any),
-        ).thenAnswer((_) async => ErrorResponse(errorMessage: 'error'));
+        ).thenAnswer((_) async => const ErrorResponse(errorMessage: 'error'));
         return viewModel;
       },
       seed: () => HomeState(ordersState: BaseState(data: tOrders)),

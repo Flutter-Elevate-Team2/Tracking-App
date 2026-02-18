@@ -13,10 +13,10 @@ class HomeRepoImpl with ApiExecutionMixin implements HomeRepoContract {
   HomeRepoImpl(this._dataSource);
 
   @override
-  Future<BaseResponse<List<OrderEntity>>> getPendingOrders() async {
+  Future<BaseResponse<HomeOrdersEntity>> getPendingOrders(int page) async {
     return await execute(
-      action: () => _dataSource.getPendingOrders(),
-      mapper: (response) => response.toEntity(),
+      action: () => _dataSource.getPendingOrders(page),
+      mapper: (response) => response.toHomeOrdersEntity(),
     );
   }
 

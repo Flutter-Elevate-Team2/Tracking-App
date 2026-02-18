@@ -4,7 +4,7 @@ import 'package:tracking_app/Features/home/data/models/orders_response_dto.dart'
 
 void main() {
   group('OrderMapper Tests', () {
-    test('OrdersResponseDto.toEntity() maps correctly', () {
+    test('OrdersResponseDto.toEntityList() maps correctly', () {
       final dto = OrdersResponseDto(
         orders: [
           OrderDto(id: '1', orderNumber: '#1'),
@@ -12,7 +12,7 @@ void main() {
         ],
       );
 
-      final entities = dto.toEntity();
+      final entities = dto.toEntityList();
 
       expect(entities.length, 2);
       expect(entities[0].id, '1');

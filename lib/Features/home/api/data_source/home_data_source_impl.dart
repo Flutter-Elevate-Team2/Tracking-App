@@ -11,8 +11,8 @@ class HomeDataSourceImpl implements HomeDataSourceContract {
   HomeDataSourceImpl(this._apiClient);
 
   @override
-  Future<OrdersResponseDto> getPendingOrders() async {
-    return await _apiClient.getPendingOrders();
+  Future<OrdersResponseDto> getPendingOrders(int page) async {
+    return await _apiClient.getPendingOrders(page);
   }
 
   @override

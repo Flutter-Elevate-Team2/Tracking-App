@@ -15,7 +15,7 @@ abstract class HomeApiClient {
   factory HomeApiClient(Dio dio) = _HomeApiClient;
 
   @GET(ApiConstants.pendingOrders)
-  Future<OrdersResponseDto> getPendingOrders();
+  Future<OrdersResponseDto> getPendingOrders(@Query("page") int page);
 
   @PUT("${ApiConstants.startOrder}{id}")
   Future<StartOrderResponseDto> startOrder(@Path("id") String id);

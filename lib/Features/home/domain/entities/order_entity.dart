@@ -137,3 +137,13 @@ class StoreEntity extends Equatable {
   @override
   List<Object?> get props => [name, image, address, phoneNumber, latLong];
 }
+
+class HomeOrdersEntity extends Equatable {
+  final List<OrderEntity> orders;
+  final int totalPages;
+
+  const HomeOrdersEntity({required this.orders, required this.totalPages});
+
+  @override
+  List<Object?> get props => [orders, totalPages];
+}

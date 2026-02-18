@@ -2,8 +2,15 @@ import 'package:tracking_app/Features/home/data/models/orders_response_dto.dart'
 import 'package:tracking_app/Features/home/domain/entities/order_entity.dart';
 
 extension OrderResponseMapper on OrdersResponseDto {
-  List<OrderEntity> toEntity() {
+  List<OrderEntity> toEntityList() {
     return orders?.map((e) => e.toEntity()).toList() ?? [];
+  }
+
+  HomeOrdersEntity toHomeOrdersEntity() {
+    return HomeOrdersEntity(
+      orders: toEntityList(),
+      totalPages: metadata?.totalPages ?? 1,
+    );
   }
 }
 
@@ -27,13 +34,15 @@ extension OrderMapper on OrderDto {
 
 extension UserMapper on UserDto {
   OrderUserEntity toEntity() {
+    const String baseUrl = "https://flower.elevateegy.com/uploads/";
+
     return OrderUserEntity(
       id: id ?? "",
       firstName: firstName ?? "",
       lastName: lastName ?? "",
       email: email ?? "",
       phone: phone ?? "",
-      photo: photo ?? "",
+      photo: (photo != null && photo!.isNotEmpty) ? "$baseUrl$photo" : "",
     );
   }
 }
