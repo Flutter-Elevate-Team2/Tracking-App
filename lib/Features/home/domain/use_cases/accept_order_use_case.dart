@@ -3,11 +3,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracking_app/Features/home/data/models/order_tracking_firebase_model.dart';
 import 'package:tracking_app/Features/home/domain/entities/order_entity.dart';
 import 'package:tracking_app/Features/home/domain/use_cases/start_order_use_case.dart';
+import 'package:tracking_app/Features/profile/domain/entities/driver_entity.dart';
+import 'package:tracking_app/Features/profile/domain/use_cases/get_driver_profile_use_case.dart';
 import 'package:tracking_app/core/base_response/base_response.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/controller/session_controller.dart';
 import 'package:tracking_app/core/services/firebase_order_service.dart';
 import 'package:tracking_app/core/services/location_service.dart';
+import 'package:tracking_app/core/services/push_notification_service.dart';
 
 @injectable
 class AcceptOrderUseCase {
@@ -15,6 +18,7 @@ class AcceptOrderUseCase {
   final FirebaseOrderService _firebaseService;
   final SessionController _sessionController;
   final LocationService _locationService;
+  final GetDriverProfileUseCase _getDriverProfileUseCase;
   final SharedPreferences _prefs;
 
   AcceptOrderUseCase(
@@ -22,6 +26,7 @@ class AcceptOrderUseCase {
     this._firebaseService,
     this._sessionController,
     this._locationService,
+    this._getDriverProfileUseCase,
     this._prefs,
   );
 
@@ -36,7 +41,17 @@ class AcceptOrderUseCase {
 
     if (response is SuccessResponse<OrderEntity>) {
       // 3. Upload tracking object to firebase
-      final driver = _sessionController.user;
+      var driver = _sessionController.user;
+
+      // If driver is null, try to fetch profile
+      if (driver == null) {
+        final profileResult = await _getDriverProfileUseCase.call();
+        if (profileResult is SuccessResponse<DriverEntity>) {
+          driver = profileResult.data;
+          _sessionController.saveUser(driver);
+        }
+      }
+
       final position = await _locationService.getCurrentLocation();
 
       final trackingModel = OrderTrackingFirebaseModel(
@@ -54,8 +69,10 @@ class AcceptOrderUseCase {
           'shippingAddress': {
             'street': order.shippingAddress?.street,
             'city': order.shippingAddress?.city,
-            'lat': order.shippingAddress?.lat,
-            'long': order.shippingAddress?.long,
+            'location': {
+              'lat': double.tryParse(order.shippingAddress?.lat ?? '') ?? 0.0,
+              'long': double.tryParse(order.shippingAddress?.long ?? '') ?? 0.0,
+            },
           },
         },
         driverData: {
@@ -65,6 +82,7 @@ class AcceptOrderUseCase {
               : null,
           'driverPhone': driver?.phone,
           'vehicleNumber': driver?.vehicleNumber,
+          'driverToken': PushNotificationService.deviceToken,
         },
         trackingLocation: {
           'lat': position?.latitude,

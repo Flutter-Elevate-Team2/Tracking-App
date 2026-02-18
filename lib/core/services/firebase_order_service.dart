@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 
 @singleton
 class FirebaseOrderService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
 
   /// Gets user data (userId, deviceToken) from Firestore based on orderId.
   /// This assumes the commerce app has uploaded the order info to the 'order_data' collection.

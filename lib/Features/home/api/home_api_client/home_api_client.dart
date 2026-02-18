@@ -7,10 +7,12 @@ import 'package:tracking_app/core/constants/api_constants.dart';
 
 part 'home_api_client.g.dart';
 
+@lazySingleton
+@injectable
 @RestApi()
 abstract class HomeApiClient {
   @factoryMethod
-  factory HomeApiClient(Dio dio, {String baseUrl}) = _HomeApiClient;
+  factory HomeApiClient(Dio dio) = _HomeApiClient;
 
   @GET(ApiConstants.pendingOrders)
   Future<OrdersResponseDto> getPendingOrders();

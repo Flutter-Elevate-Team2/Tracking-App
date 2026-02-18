@@ -7,6 +7,7 @@ import 'package:tracking_app/Features/home/domain/entities/order_entity.dart';
 import 'package:tracking_app/Features/home/domain/use_cases/accept_order_use_case.dart';
 import 'package:tracking_app/Features/home/domain/use_cases/start_order_use_case.dart';
 import 'package:tracking_app/Features/profile/domain/entities/driver_entity.dart';
+import 'package:tracking_app/Features/profile/domain/use_cases/get_driver_profile_use_case.dart';
 import 'package:tracking_app/core/base_response/base_response.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/controller/session_controller.dart';
@@ -20,6 +21,7 @@ import 'accept_order_use_case_test.mocks.dart';
   FirebaseOrderService,
   SessionController,
   LocationService,
+  GetDriverProfileUseCase,
   SharedPreferences,
 ])
 void main() {
@@ -27,6 +29,7 @@ void main() {
   late MockFirebaseOrderService mockFirebase;
   late MockSessionController mockSession;
   late MockLocationService mockLocation;
+  late MockGetDriverProfileUseCase mockGetProfile;
   late MockSharedPreferences mockPrefs;
   late AcceptOrderUseCase useCase;
 
@@ -63,6 +66,7 @@ void main() {
   setUpAll(() {
     provideDummy<BaseResponse<OrderEntity>>(SuccessResponse(data: tOrder));
     provideDummy<BaseResponse<List<OrderEntity>>>(SuccessResponse(data: []));
+    provideDummy<BaseResponse<DriverEntity>>(SuccessResponse(data: tDriver));
   });
 
   setUp(() {
@@ -70,6 +74,7 @@ void main() {
     mockFirebase = MockFirebaseOrderService();
     mockSession = MockSessionController();
     mockLocation = MockLocationService();
+    mockGetProfile = MockGetDriverProfileUseCase();
     mockPrefs = MockSharedPreferences();
 
     useCase = AcceptOrderUseCase(
@@ -77,6 +82,7 @@ void main() {
       mockFirebase,
       mockSession,
       mockLocation,
+      mockGetProfile,
       mockPrefs,
     );
   });
@@ -91,6 +97,9 @@ void main() {
         mockStartOrder.call(any),
       ).thenAnswer((_) async => SuccessResponse(data: tOrder));
       when(mockSession.user).thenReturn(tDriver);
+      when(
+        mockGetProfile.call(),
+      ).thenAnswer((_) async => SuccessResponse(data: tDriver));
       when(
         mockLocation.getCurrentLocation(),
       ).thenAnswer((_) async => tPosition);

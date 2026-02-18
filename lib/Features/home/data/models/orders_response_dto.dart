@@ -31,6 +31,7 @@ class MetadataDto {
 class OrderDto {
   @JsonKey(name: '_id')
   final String? id;
+  @JsonKey(fromJson: _userFromJson)
   final UserDto? user;
   final List<OrderItemDto>? orderItems;
   final int? totalPrice;
@@ -62,6 +63,12 @@ class OrderDto {
 
   factory OrderDto.fromJson(Map<String, dynamic> json) =>
       _$OrderDtoFromJson(json);
+
+  static UserDto? _userFromJson(dynamic json) {
+    if (json is String) return UserDto(id: json);
+    if (json is Map<String, dynamic>) return UserDto.fromJson(json);
+    return null;
+  }
 }
 
 @JsonSerializable()
@@ -91,6 +98,7 @@ class UserDto {
 
 @JsonSerializable()
 class OrderItemDto {
+  @JsonKey(fromJson: _productFromJson)
   final ProductDto? product;
   final int? price;
   final int? quantity;
@@ -101,6 +109,12 @@ class OrderItemDto {
 
   factory OrderItemDto.fromJson(Map<String, dynamic> json) =>
       _$OrderItemDtoFromJson(json);
+
+  static ProductDto? _productFromJson(dynamic json) {
+    if (json is String) return ProductDto(id: json);
+    if (json is Map<String, dynamic>) return ProductDto.fromJson(json);
+    return null;
+  }
 }
 
 @JsonSerializable()

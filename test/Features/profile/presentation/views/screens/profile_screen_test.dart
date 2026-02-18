@@ -102,7 +102,8 @@ void main() {
 
     // Also add to stream to trigger any BlocListeners
     streamController.add(errorState);
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
 
     // Assert
     expect(find.text(errorMessage), findsOneWidget);
@@ -142,7 +143,8 @@ void main() {
     await tester.pumpWidget(createWidgetUnderTest());
 
     streamController.add(successState);
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
 
     // Assert
     expect(find.text('John Doe'), findsOneWidget);
