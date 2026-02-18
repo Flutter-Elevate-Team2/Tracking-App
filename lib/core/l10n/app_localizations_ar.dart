@@ -642,4 +642,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get gallery => 'المعرض';
+
+  @override
+  String get egp => 'ج.م';
+
+  @override
+  String get homeBrandName => 'Flowery rider';
+
+  @override
+  String get floweryStore => 'متجر الزهور';
+
+  @override
+  String get sampleUserName => 'نور محمد';
+
+  @override
+  String get sampleAddress => 'شارع 20، الشيخ زايد، الجيزة';
 }

@@ -643,4 +643,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gallery => 'Gallery';
+
+  @override
+  String get egp => 'EGP';
+
+  @override
+  String get homeBrandName => 'Flowery rider';
+
+  @override
+  String get floweryStore => 'Flowery store';
+
+  @override
+  String get sampleUserName => 'Nour mohamed';
+
+  @override
+  String get sampleAddress => '20th st, Sheikh Zayed, Giza';
 }

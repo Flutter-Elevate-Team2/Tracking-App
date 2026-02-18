@@ -1333,6 +1333,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Gallery'**
   String get gallery;
+
+  /// Currency abbreviation for Egyptian Pound
+  ///
+  /// In en, this message translates to:
+  /// **'EGP'**
+  String get egp;
+
+  /// Brand name shown in the home header
+  ///
+  /// In en, this message translates to:
+  /// **'Flowery rider'**
+  String get homeBrandName;
+
+  /// Sample store name
+  ///
+  /// In en, this message translates to:
+  /// **'Flowery store'**
+  String get floweryStore;
+
+  /// Sample user name
+  ///
+  /// In en, this message translates to:
+  /// **'Nour mohamed'**
+  String get sampleUserName;
+
+  /// Sample address
+  ///
+  /// In en, this message translates to:
+  /// **'20th st, Sheikh Zayed, Giza'**
+  String get sampleAddress;
 }
 
 class _AppLocalizationsDelegate

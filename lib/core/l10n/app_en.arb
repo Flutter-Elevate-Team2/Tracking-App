@@ -723,5 +723,15 @@
   "camera": "Camera",
   "@camera": { "description": "Label for camera option" },
   "gallery": "Gallery",
-  "@gallery": { "description": "Label for gallery option" }
+  "@gallery": { "description": "Label for gallery option" },
+  "egp": "EGP",
+  "@egp": { "description": "Currency abbreviation for Egyptian Pound" },
+  "homeBrandName": "Flowery rider",
+  "@homeBrandName": { "description": "Brand name shown in the home header" },
+  "floweryStore": "Flowery store",
+  "@floweryStore": { "description": "Sample store name" },
+  "sampleUserName": "Nour mohamed",
+  "@sampleUserName": { "description": "Sample user name" },
+  "sampleAddress": "20th st, Sheikh Zayed, Giza",
+  "@sampleAddress": { "description": "Sample address" }
 }

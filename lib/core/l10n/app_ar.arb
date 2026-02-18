@@ -456,5 +456,10 @@
   "camera": "الكاميرا",
   "@camera": { "description": "خيار الكاميرا" },
   "gallery": "المعرض",
-  "@gallery": { "description": "خيار المعرض" }
+  "@gallery": { "description": "خيار المعرض" },
+  "egp": "ج.م",
+  "homeBrandName": "Flowery rider",
+  "floweryStore": "متجر الزهور",
+  "sampleUserName": "نور محمد",
+  "sampleAddress": "شارع 20، الشيخ زايد، الجيزة"
 }

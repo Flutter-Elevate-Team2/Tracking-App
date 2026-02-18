@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracking_app/Features/auth/domain/auth_repo_contract/auth_repo_contract.dart';
+import 'package:tracking_app/Features/auth/presentation/apply/views/apply_screen.dart';
+import 'package:tracking_app/Features/auth/presentation/apply/views/success_apply_screen.dart';
+import 'package:tracking_app/Features/auth/presentation/forget_password/views/forget_password_screen_flow.dart';
+import 'package:tracking_app/Features/auth/presentation/login/views/login_screen.dart';
+import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
 import 'package:tracking_app/Features/home/presentation/views/screens/home_screen.dart';
+import 'package:tracking_app/Features/home/presentation/views/screens/home_view.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/change_password/change_password_view_model.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/edit_profile/edit_profile_view_model.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/edit_profile_screen.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/edit_vehicle_screen.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/profile_screen.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/reset_password_screen.dart';
-import 'package:tracking_app/Features/auth/domain/auth_repo_contract/auth_repo_contract.dart';
-import 'package:tracking_app/Features/auth/presentation/forget_password/views/forget_password_screen_flow.dart';
-import 'package:tracking_app/Features/auth/presentation/login/views/login_screen.dart';
 import 'package:tracking_app/core/di/di.dart';
-import 'package:tracking_app/Features/auth/presentation/apply/views/apply_screen.dart';
-import 'package:tracking_app/Features/auth/presentation/apply/views/success_apply_screen.dart';
-import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
 // coverage:ignore-file
 
 class Routes {
@@ -124,7 +125,7 @@ class AppRouter {
               GoRoute(
                 path: Routes.homePath,
                 name: Routes.homeName,
-                builder: (context, state) => Container(),
+                builder: (context, state) => const HomeView(),
               ),
             ],
           ),
