@@ -1,0 +1,32 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class OrderTrackingFirebaseModel {
+  final Map<String, dynamic> userData;
+  final Map<String, dynamic> orderData;
+  final Map<String, dynamic> driverData;
+  final Map<String, dynamic> trackingLocation;
+  final String status;
+  final DateTime? updatedAt;
+
+  OrderTrackingFirebaseModel({
+    required this.userData,
+    required this.orderData,
+    required this.driverData,
+    required this.trackingLocation,
+    required this.status,
+    this.updatedAt,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'userData': userData,
+      'orderData': orderData,
+      'driverData': driverData,
+      'trackingLocation': trackingLocation,
+      'status': status,
+      'updatedAt': updatedAt != null
+          ? Timestamp.fromDate(updatedAt!)
+          : FieldValue.serverTimestamp(),
+    };
+  }
+}
