@@ -58,7 +58,7 @@ void main() {
       test('does not add Authorization header for public paths', () async {
         // Arrange
         final options = RequestOptions(
-          path: ApiConstants.signIn,
+          path: ApiConstants.login,
         ); // Public path
 
         // Act
@@ -117,7 +117,8 @@ void main() {
 
       test('does not trigger logout on 401 for public path', () async {
         // Arrange
-        final requestOptions = RequestOptions(path: ApiConstants.signIn);
+        final requestOptions = RequestOptions(path: ApiConstants.login
+        );
         final response = Response(
           requestOptions: requestOptions,
           statusCode: 401,

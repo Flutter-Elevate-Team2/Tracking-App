@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracking_app/Features/order/presentation/orders/views/order_screen.dart';
 
 class Routes {
 
@@ -54,7 +55,7 @@ class Routes {
 
 class AppRouter {
   static final GlobalKey<NavigatorState> rootNavigatorKey =
-      GlobalKey<NavigatorState>();
+  GlobalKey<NavigatorState>();
   // static final GlobalKey<NavigatorState> _homeNavigatorKey =
   //     GlobalKey<NavigatorState>();
   // static final GlobalKey<NavigatorState> _ordersNavigatorKey =
@@ -64,10 +65,13 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: Routes.onBoardingPath,
-    redirect: (context, state) async {
-      return null;
-
+    initialLocation: Routes.ordersPath, // "/orders"
+    routes: [
+      GoRoute(
+        path: Routes.ordersPath,
+        name: Routes.ordersName,
+        builder: (context, state) => const DebugOrdersScreen(),
+      ),
       // final authRepo = getIt<AuthRepoContract>();
       // final bool isLoggedIn = await authRepo.isLoggedIn();
       // final bool isLoggingIn = state.uri.toString() == Routes.signInPath;
@@ -76,8 +80,7 @@ class AppRouter {
       //   return Routes.homePath;
       // }
       // return null;
-    },
-    routes: [
+
       GoRoute(
         path: Routes.onBoardingPath,
         name: Routes.onBoardingName,
@@ -127,7 +130,6 @@ class AppRouter {
         name: Routes.editVehicleName,
         builder: (context, state) => Container(),
       ),
-
 
       /// ====== MAIN SHELL ROUTE (BOTTOM NAV BAR) ======
       // StatefulShellRoute.indexedStack(

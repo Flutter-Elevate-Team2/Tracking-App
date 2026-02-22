@@ -14,8 +14,8 @@ class AuthInterceptor extends Interceptor {
   AuthInterceptor(this._prefs, this._sessionController);
 
   final _publicPaths = [
-    ApiConstants.signIn,
-    ApiConstants.signUp,
+    ApiConstants.login,
+    ApiConstants.apply,
     ApiConstants.forgetPassword,
     ApiConstants.verifyResetCode,
     ApiConstants.resetPassword,
