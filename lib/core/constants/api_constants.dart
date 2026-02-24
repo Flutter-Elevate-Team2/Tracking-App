@@ -59,4 +59,19 @@ class ApiConstants {
   static const String pending = "pending";
   static const String completed = "completed";
   static const String cancelled = "cancelled";
+
+// ================= Apply Fields =================
+  static const country = 'country';
+  static const firstName = 'firstName';
+  static const lastName = 'lastName';
+  static const vehicleType = 'vehicleType';
+  static const vehicleNumber = 'vehicleNumber';
+  static const nid = 'NID';
+  static const email = 'email';
+  static const password = 'password';
+  static const rePassword = 'rePassword';
+  static const gender = 'gender';
+  static const phone = 'phone';
+  static const vehicleLicense = 'vehicleLicense';
+  static const nidImg = 'NIDImg';
 }

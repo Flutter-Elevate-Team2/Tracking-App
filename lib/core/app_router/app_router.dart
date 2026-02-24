@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tracking_app/Features/order/presentation/orders/views/order_screen.dart';
+import 'package:tracking_app/Features/auth/domain/auth_repo_contract/auth_repo_contract.dart';
+import 'package:tracking_app/Features/auth/presentation/forget_password/views/forget_password_screen_flow.dart';
+import 'package:tracking_app/Features/auth/presentation/login/views/login_screen.dart';
+import 'package:tracking_app/core/di/di.dart';
+import 'package:tracking_app/Features/auth/presentation/apply/views/apply_screen.dart';
+import 'package:tracking_app/Features/auth/presentation/apply/views/success_apply_screen.dart';
+import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
+// coverage:ignore-file
 
 class Routes {
-
   static const String onBoardingPath = '/onBoarding';
   static const String onBoardingName = 'onBoarding';
-
 
   static const String loginPath = '/login';
   static const String loginName = 'login';
 
   static const String applyPath = '/apply';
   static const String applyName = 'apply';
-
 
   static const String successApplyPath = '/successapply';
   static const String successApplyName = 'successApply';
@@ -33,24 +38,17 @@ class Routes {
   static const String homePath = '/home';
   static const String homeName = 'home';
 
-
   static const String profilePath = '/profile';
   static const String profileName = 'profile';
-
-
 
   static const String editProfilePath = '/editprofile';
   static const String editProfileName = 'editProfile';
 
-
   static const String editVehiclePath = '/editvehicle';
   static const String editVehicleName = 'editVehicle';
 
-
   static const String ordersPath = '/orders';
   static const String ordersName = 'orders';
-
-
 }
 
 class AppRouter {
@@ -84,28 +82,28 @@ class AppRouter {
       GoRoute(
         path: Routes.onBoardingPath,
         name: Routes.onBoardingName,
-        builder: (context, state) => Container(),
+        builder: (context, state) => OnBoardingScreen(),
       ),
       GoRoute(
         path: Routes.loginPath,
         name: Routes.loginName,
-        builder: (context, state) =>  Container(),
+        builder: (context, state) => LoginScreen(),
       ),
       GoRoute(
         path: Routes.applyPath,
         name: Routes.applyName,
-        builder: (context, state) => Container(),
+        builder: (context, state) => ApplyScreen(),
       ),
       GoRoute(
         path: Routes.successApplyPath,
         name: Routes.successApplyName,
-        builder: (context, state) => Container(),
+        builder: (context, state) => SuccessApplyScreen(),
       ),
 
       GoRoute(
         path: Routes.forgetPasswordPath,
         name: Routes.forgetPasswordName,
-        builder: (context, state) => Container(),
+        builder: (context, state) => ForgetPasswordScreenFlow(),
       ),
       GoRoute(
         path: Routes.verifyCodePath,
