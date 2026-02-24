@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tracking_app/Features/order/presentation/orders/views/order_screen.dart';
-import 'package:tracking_app/Features/auth/domain/auth_repo_contract/auth_repo_contract.dart';
 import 'package:tracking_app/Features/auth/presentation/forget_password/views/forget_password_screen_flow.dart';
 import 'package:tracking_app/Features/auth/presentation/login/views/login_screen.dart';
-import 'package:tracking_app/core/di/di.dart';
+import 'package:tracking_app/Features/order/presentaion/order_screen.dart';
 import 'package:tracking_app/Features/auth/presentation/apply/views/apply_screen.dart';
 import 'package:tracking_app/Features/auth/presentation/apply/views/success_apply_screen.dart';
 import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
@@ -68,7 +66,7 @@ class AppRouter {
       GoRoute(
         path: Routes.ordersPath,
         name: Routes.ordersName,
-        builder: (context, state) => const DebugOrdersScreen(),
+        builder: (context, state) =>  DebugOrdersScreen(),
       ),
       // final authRepo = getIt<AuthRepoContract>();
       // final bool isLoggedIn = await authRepo.isLoggedIn();
