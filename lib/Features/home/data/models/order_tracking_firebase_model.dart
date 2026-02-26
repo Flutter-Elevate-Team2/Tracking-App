@@ -29,4 +29,15 @@ class OrderTrackingFirebaseModel {
           : FieldValue.serverTimestamp(),
     };
   }
+
+  factory OrderTrackingFirebaseModel.fromJson(Map<String, dynamic> json) {
+    return OrderTrackingFirebaseModel(
+      userData: json['userData'] ?? {},
+      orderData: json['orderData'] ?? {},
+      driverData: json['driverData'] ?? {},
+      trackingLocation: json['trackingLocation'] ?? {},
+      status: json['status'] ?? 'accepted',
+      updatedAt: (json['updatedAt'] as Timestamp?)?.toDate(),
+    );
+  }
 }

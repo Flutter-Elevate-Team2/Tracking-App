@@ -733,5 +733,40 @@
   "sampleUserName": "Nour mohamed",
   "@sampleUserName": { "description": "Sample user name" },
   "sampleAddress": "20th st, Sheikh Zayed, Giza",
-  "@sampleAddress": { "description": "Sample address" }
+  "@sampleAddress": { "description": "Sample address" },
+  "orderUpdated": "Order Updated",
+  "@orderUpdated": { "description": "Order updated"},
+  "notificationArrivedPickup": "The driver has arrived at the pickup location.",
+  "@notificationArrivedPickup": {
+    "description": "Notification body shown to the user when the driver arrives at the pickup location."
+  },
+
+  "notificationStartDeliver": "Your order is on the way to you!",
+  "@notificationStartDeliver": {
+    "description": "Notification body shown to the user when the driver starts delivering the order."
+  },
+
+  "notificationArrivedUser": "The driver is at your location.",
+  "@notificationArrivedUser": {
+    "description": "Notification body shown to the user when the driver arrives at the user's address."
+  },
+
+  "notificationDelivered": "Order delivered successfully. Enjoy!",
+  "@notificationDelivered": {
+    "description": "Notification body shown to the user when the order is marked as delivered."
+  },
+
+  "notificationStatusUpdated": "Your order status has been updated.",
+  "@notificationStatusUpdated": {
+    "description": "Fallback notification body shown when the order status changes but no specific message is defined."
+  },
+  "orderNotFound": "Order not found",
+  "noAddressFound": "No Address Found",
+  "notApplicable": "N/A",
+  "exitDeliveredOrderWarning": "You can't exit until the order is delivered!",
+  "orderAcceptedBody": "Your order has been accepted.",
+  "acceptingOrder": "Accepting order...",
+  "@acceptingOrder": {
+    "description": "Fallback notification body shown when the order is accepted"
+  }
 }

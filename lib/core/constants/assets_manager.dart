@@ -4,5 +4,6 @@ class AssetsManager {
   static const String countries ="assets/json/country.json";
   static const String successApply="assets/lottie/Check Animation.json";
   static const String successApplyBackground="assets/images/bg.png";
+  static const String whatsapp = "assets/images/whatsappIcon.png";
 
 }
