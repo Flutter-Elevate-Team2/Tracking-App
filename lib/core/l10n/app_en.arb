@@ -338,6 +338,10 @@
   "@home": {
     "description": "Label for the home navigation tab"
   },
+  "myOrders": "My orders",
+  "@myOrders": {
+    "description": "Label for the My Orders navigation tab"
+  },
   "cart": "Orders",
   "@cart": {
     "description": "Label for the Orders navigation tab"
@@ -452,7 +456,7 @@
     "description": "Action or status indicating a task or order is completed"
   },
 
-  "cancelled": "Cancelled",
+  "cancelled": "Canceled",
   "@cancelled": {
     "description": "Status indicating the order has been cancelled"
   },
@@ -704,5 +708,11 @@
   "deliveredOn": "Delivered on",
   "@deliveredOn": { "description": "Label for delivery status"},
   "noOrdersFound": "No orders found",
-  "@noOrderFound": { "description": "Message displayed when no orders are found"}
+  "@noOrderFound": { "description": "Message displayed when no orders are found"},
+  "floweryStore": "Flowery store",
+  "@floweryStore": { "description": "Sample store name" },
+  "sampleUserName": "Nour mohamed",
+  "@sampleUserName": { "description": "Sample user name" },
+  "sampleAddress": "20th st, Sheikh Zayed, Giza",
+  "@sampleAddress": { "description": "Sample address" }
 }
