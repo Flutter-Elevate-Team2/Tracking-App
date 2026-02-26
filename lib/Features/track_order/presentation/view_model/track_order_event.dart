@@ -1,4 +1,4 @@
-import 'package:tracking_app/Features/track_order/domain/entities/track_order_status.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/order_status.dart';
 
 sealed class TrackOrderStatusEvent {}
 

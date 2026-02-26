@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:tracking_app/Features/track_order/domain/entities/track_order_status.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/order_status.dart';
 import 'package:tracking_app/core/constants/app_colors.dart';
 import 'package:tracking_app/core/extension/context_extension.dart';
 
@@ -29,7 +29,7 @@ class OrderStatusHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${context.l10n.status} : ${status.firebaseValue}',
+            '${context.l10n.status} : ${status.getDisplayName(context)}',
             style: const TextStyle(
               color: AppColors.green,
               fontWeight: FontWeight.bold,

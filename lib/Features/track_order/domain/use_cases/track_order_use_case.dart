@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:tracking_app/Features/track_order/domain/entities/track_order_status.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/order_status.dart';
 import 'package:tracking_app/core/services/firebase_order_service.dart';
 import 'package:tracking_app/core/services/push_notification_service.dart';
 

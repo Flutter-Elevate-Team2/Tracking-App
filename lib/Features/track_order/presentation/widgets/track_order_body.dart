@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tracking_app/Features/track_order/domain/entities/track_order_status.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/order_status.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_view_model.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/bottom_order_button.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/order_addresses_section.dart';

@@ -30,6 +30,7 @@ class OrderItemsSection extends StatelessWidget {
             title: item.name,
             price: item.price,
             quantity: item.quantity,
+            image: item.image,
           ),
         ),
       ],

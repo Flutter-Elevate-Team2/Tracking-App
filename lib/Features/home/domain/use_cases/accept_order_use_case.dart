@@ -106,7 +106,7 @@ class AcceptOrderUseCase {
               },
             )
             .toList(),
-        status: 'inProgress',
+        status: 'accepted',
         updatedAt: DateTime.now(),
       );
 

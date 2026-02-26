@@ -13,10 +13,10 @@ extension OrderTrackingMapper on OrderTrackingFirebaseModel {
       totalPrice: (orderData['totalPrice'] as num?)?.toDouble() ?? 0.0,
       paymentType: orderData['paymentType'] ?? '',
       store: StoreEntity(
-        storeName: orderData['storeName'] ?? '',
-        storeAddress: orderData['storeAddress'] ?? '',
-        storeImage: orderData['storeImage'] ?? '',
-        storePhone: orderData['storePhone'] ?? '',
+        storeName: storeData['storeName'] ?? '',
+        storeAddress: storeData['storeAddress'] ?? '',
+        storeImage: storeData['storeImage'] ?? '',
+        storePhone: storeData['storePhone'] ?? '',
       ),
       user: UserEntity(
         userName: userData['userName'] ?? '',
@@ -24,11 +24,12 @@ extension OrderTrackingMapper on OrderTrackingFirebaseModel {
         userPhone: userData['userPhone'] ?? '',
         deviceToken: userData['deviceToken'] ?? '',
       ),
-      items: (orderData['items'] as List<dynamic>? ?? []).map((item) {
+      items: orderItems.map((item) {
         return OrderItemEntity(
-          name: item['name'] ?? '',
-          price: item['price']?.toString() ?? '0',
-          quantity: (item['quantity'] as num?)?.toInt() ?? 1,
+          name: item['productTitle'] ?? '',
+          price: item['productPrice']?.toString() ?? '0',
+          quantity: (item['productQuantity'] as num?)?.toInt() ?? 1,
+          image: item['productImage'] ?? '',
         );
       }).toList(),
       shippingAddress: _formatShippingAddress(orderData['shippingAddress']),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tracking_app/core/constants/app_colors.dart';
 import 'package:tracking_app/core/extension/context_extension.dart';
@@ -6,19 +7,22 @@ class OrderItemTile extends StatelessWidget {
   final String title;
   final String price;
   final int quantity;
+  final String image;
 
   const OrderItemTile({
     super.key,
     required this.title,
     required this.price,
     required this.quantity,
+    required this.image,
   });
 
   @override
   Widget build(BuildContext context) {
+    final String fullImageUrl = "https://flower.elevateegy.com/uploads/$image";
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(10),
@@ -27,19 +31,24 @@ class OrderItemTile extends StatelessWidget {
           BoxShadow(
             color: AppColors.gray.withValues(alpha: 0.1),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Row(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              width: 60,
-              height: 60,
-              color: AppColors.white,
-              child: const Icon(Icons.image),
+            borderRadius: BorderRadius.circular(25),
+            child: CachedNetworkImage(
+              imageUrl: fullImageUrl,
+              width: 44,
+              height: 44,
+              fit: BoxFit.cover,
+              errorWidget: (_, _, _) => const CircleAvatar(
+                radius: 25,
+                backgroundColor: AppColors.lightGray,
+                child: Icon(Icons.photo, color: AppColors.gray),
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -47,9 +56,30 @@ class OrderItemTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 16, color: AppColors.gray),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      child: Text(
+                        "X$quantity",
+                        style: TextStyle(
+                          color: AppColors.mainColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -60,14 +90,6 @@ class OrderItemTile extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-          ),
-          Text(
-            "X$quantity",
-            style: TextStyle(
-              color: AppColors.mainColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
             ),
           ),
         ],

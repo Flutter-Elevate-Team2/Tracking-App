@@ -38,12 +38,18 @@ class OrderTrackingFirebaseModel {
 
   factory OrderTrackingFirebaseModel.fromJson(Map<String, dynamic> json) {
     return OrderTrackingFirebaseModel(
-      userData: json['userData'] ?? {},
-      orderData: json['orderData'] ?? {},
-      driverData: json['driverData'] ?? {},
-      trackingLocation: json['trackingLocation'] ?? {},
-      status: json['status'] ?? 'accepted',
+      userData: json['userData'] as Map<String, dynamic>? ?? {},
+      orderData: json['orderData'] as Map<String, dynamic>? ?? {},
+      driverData: json['driverData'] as Map<String, dynamic>? ?? {},
+      trackingLocation: json['trackingLocation'] as Map<String, dynamic>? ?? {},
+      status: json['status'] as String? ?? 'accepted',
       updatedAt: (json['updatedAt'] as Timestamp?)?.toDate(),
+      orderItems:
+          (json['orderItems'] as List<dynamic>?)
+              ?.map((e) => e as Map<String, dynamic>)
+              .toList() ??
+          [],
+      storeData: json['storeData'] as Map<String, dynamic>? ?? {},
     );
   }
 }

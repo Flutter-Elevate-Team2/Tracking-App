@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tracking_app/Features/track_order/domain/entities/track_order_status.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/order_status.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/get_order_details_use_case.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/track_order_use_case.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_event.dart';
@@ -89,7 +89,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
         orderId: orderId,
         status: status,
         userToken: userToken,
-        body: _getNotificationBody(context, status),
+        body: status.getNotificationBody(context),
       );
 
       if (status == OrderStatus.delivered) {
@@ -110,21 +110,6 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
           ),
         ),
       );
-    }
-  }
-
-  String _getNotificationBody(BuildContext context, OrderStatus status) {
-    switch (status) {
-      case OrderStatus.accepted:
-        return context.l10n.orderAcceptedBody;
-      case OrderStatus.arrivedPickup:
-        return context.l10n.notificationArrivedPickup;
-      case OrderStatus.startDeliver:
-        return context.l10n.notificationStartDeliver;
-      case OrderStatus.arrivedUser:
-        return context.l10n.notificationArrivedUser;
-      case OrderStatus.delivered:
-        return context.l10n.notificationDelivered;
     }
   }
 }
