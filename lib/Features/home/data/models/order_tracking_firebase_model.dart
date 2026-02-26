@@ -5,6 +5,8 @@ class OrderTrackingFirebaseModel {
   final Map<String, dynamic> orderData;
   final Map<String, dynamic> driverData;
   final Map<String, dynamic> trackingLocation;
+  final Map<String, dynamic> storeData;
+  final List<Map<String, dynamic>> orderItems;
   final String status;
   final DateTime? updatedAt;
 
@@ -13,6 +15,8 @@ class OrderTrackingFirebaseModel {
     required this.orderData,
     required this.driverData,
     required this.trackingLocation,
+    required this.storeData,
+    required this.orderItems,
     required this.status,
     this.updatedAt,
   });
@@ -23,6 +27,8 @@ class OrderTrackingFirebaseModel {
       'orderData': orderData,
       'driverData': driverData,
       'trackingLocation': trackingLocation,
+      'storeData': storeData,
+      'orderItems': orderItems,
       'status': status,
       'updatedAt': updatedAt != null
           ? Timestamp.fromDate(updatedAt!)

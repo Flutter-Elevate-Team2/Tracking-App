@@ -60,6 +60,7 @@ class AcceptOrderUseCase {
           'deviceToken': userDataFirestore?['deviceToken'],
           'userName': order.user?.fullName,
           'userPhone': order.user?.phone,
+          'userImage': order.user?.photo,
         },
         orderData: {
           'orderId': order.id,
@@ -88,6 +89,23 @@ class AcceptOrderUseCase {
           'lat': position?.latitude,
           'long': position?.longitude,
         },
+        storeData: {
+          'storeName': order.store?.name,
+          'storeAddress': order.store?.address,
+          'storePhone': order.store?.phoneNumber,
+          'storeImage': order.store?.image,
+        },
+        orderItems: (order.orderItems ?? [])
+            .map(
+              (item) => {
+                'productId': item.product?.id,
+                'productTitle': item.product?.title,
+                'productQuantity': item.quantity,
+                'productPrice': item.price,
+                'productImage': item.product?.imgCover,
+              },
+            )
+            .toList(),
         status: 'inProgress',
         updatedAt: DateTime.now(),
       );
