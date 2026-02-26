@@ -6,8 +6,10 @@ import 'package:tracking_app/Features/order/presentation/my_orders/view_model/my
 import 'package:tracking_app/Features/order/presentation/my_orders/view_model/my_orders_view_model.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/views/my_orders_screen.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/widget/my_orders_body.dart';
+import 'package:tracking_app/Features/order/presentation/my_orders/widget/my_orders_loading.dart';
 import 'package:tracking_app/core/di/di.dart';
 import 'package:tracking_app/core/l10n/app_localizations.dart';
+import 'package:tracking_app/core/widget/app_shimmer.dart';
 
 @GenerateMocks([MyOrdersViewModel])
 import 'my_orders_screen_test.mocks.dart';
@@ -55,20 +57,23 @@ void main() {
       verify(mockViewModel.close()).called(1);
     });
 
-    testWidgets('should show loading indicator in MyOrdersBody when state is loading', (tester) async {
-      // Arrange
+    testWidgets('should show MyOrdersLoading when state is loading', (tester) async {
+      // 1. Arrange
       final loadingState = const MyOrdersState(isLoading: true);
+
       when(mockViewModel.state).thenReturn(loadingState);
-      when(mockViewModel.stream).thenAnswer((_) => Stream.value(loadingState));
+       when(mockViewModel.stream).thenAnswer((_) => Stream.value(loadingState));
 
-      // Act
+      // 2. Act
       await tester.pumpWidget(createWidgetUnderTest());
-      await tester.pump();
 
-      // Assert
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+       await tester.pump();
+
+      // 3. Assert
+       expect(find.byType(MyOrdersLoading), findsOneWidget);
+
+       expect(find.byType(AppShimmer), findsWidgets);
     });
-
     testWidgets('should display error message when state has errorMessage', (tester) async {
       // Arrange
       final errorState = const MyOrdersState(

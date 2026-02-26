@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/view_model/my_orders_view_model.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/view_model/my_orders_event.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/view_model/my_orders_state.dart';
+import 'package:tracking_app/Features/order/presentation/my_orders/widget/my_orders_loading.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/widget/num_of_orders_state.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/widget/recent_orders.dart';
 
@@ -30,7 +31,7 @@ class _MyOrdersBodyState extends State<MyOrdersBody> {
     return BlocBuilder<MyOrdersViewModel, MyOrdersState>(
       builder: (context, state) {
         if (state.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return MyOrdersLoading();
         }
 
         if (state.errorMessage != null) {

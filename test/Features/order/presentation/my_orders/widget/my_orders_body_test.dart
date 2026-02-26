@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/view_model/my_orders_state.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/view_model/my_orders_view_model.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/widget/my_orders_body.dart';
+import 'package:tracking_app/Features/order/presentation/my_orders/widget/my_orders_loading.dart';
+import 'package:tracking_app/core/widget/app_shimmer.dart';
 
 import 'my_orders_body_test.mocks.dart';
 
@@ -37,13 +39,24 @@ void main() {
       verify(mockViewModel.doIntent(any)).called(1);
     });
 
-    testWidgets('shows CircularProgressIndicator when isLoading is true', (tester) async {
-      when(mockViewModel.state).thenReturn(const MyOrdersState(isLoading: true));
-      when(mockViewModel.stream).thenAnswer((_) => Stream.value(const MyOrdersState(isLoading: true)));
+    testWidgets('should show MyOrdersLoading when state is loading', (tester) async {
+      // Arrange
+      final loadingState = const MyOrdersState(isLoading: true);
 
+      when(mockViewModel.state).thenReturn(loadingState);
+       when(mockViewModel.stream).thenAnswer((_) => Stream.value(loadingState));
+
+      // Act
       await tester.pumpWidget(createWidgetUnderTest());
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+       await tester.pump();
+
+      // Assert
+       expect(find.byType(MyOrdersLoading), findsOneWidget);
+
+       expect(find.byType(AppShimmer), findsWidgets);
+
+
     });
 
     testWidgets('shows error message when errorMessage is not null', (tester) async {
