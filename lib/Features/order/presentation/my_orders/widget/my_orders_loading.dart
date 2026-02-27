@@ -40,9 +40,9 @@ class MyOrdersLoading extends StatelessWidget {
                       children: const [
                         AppShimmer(height: 30, width: 30),
                         SizedBox(width: 16),
-                        AppShimmer(height: 30, width: 160),
+                        AppShimmer(height: 30, width: 100),
                         Spacer(),
-                        AppShimmer(height: 30, width: 120),
+                        AppShimmer(height: 30, width: 80),
                       ],
                     ),
                     const SizedBox(height: 16),
