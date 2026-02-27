@@ -78,6 +78,20 @@ class AppRouter {
       // return null;
 
       GoRoute(
+        path: Routes.ordersPath,
+        name: Routes.ordersName,
+        builder: (context, state) =>  Container(),
+      ),
+      // final authRepo = getIt<AuthRepoContract>();
+      // final bool isLoggedIn = await authRepo.isLoggedIn();
+      // final bool isLoggingIn = state.uri.toString() == Routes.signInPath;
+      //
+      // if (isLoggedIn && isLoggingIn) {
+      //   return Routes.homePath;
+      // }
+      // return null;
+
+      GoRoute(
         path: Routes.onBoardingPath,
         name: Routes.onBoardingName,
         builder: (context, state) => OnBoardingScreen(),
