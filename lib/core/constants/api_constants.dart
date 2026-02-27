@@ -2,7 +2,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // coverage:ignore-file
 
-
 class ApiConstants {
   static String apiBaseUrl = dotenv.env['BASE_URL'] ?? "";
 
@@ -18,17 +17,30 @@ class ApiConstants {
   static const String editProfile = "/auth/editProfile";
   static const String uploadPhoto = "auth/upload-photo";
   static const String changePassword = "/auth/change-password";
-  static const String logout = "/auth/logout";
+
+  //=========================EditDriverInfo======================================//
+  static const String editDriverProfile = "drivers/editProfile";
+  static const String changeDriverPassword = "drivers/change-password";
+  static const String uploadDriverPhoto = "/drivers/upload-photo";
+  static const String logout = "/drivers/logout";
+  static const String getDriverProfile = "/drivers/profile-data";
+  static const String vehicles = "/vehicles";
+
+  // ================= Order  =================
+  static const String pendingOrders = "orders/pending-orders";
+  static const String driverOrders = "orders/driver-orders";
+  static const String updateOrderState = "orders/state/";
+  static const String startOrder = "orders/start/";
 
   // ================= Token  =================
 
   static const String tokenKey = "user_token";
   static const String rememberMeKey = "is_remember_me";
 
- // ================= Notifications Endpoints =================
+  // ================= Notifications Endpoints =================
   static const String notifications = "notifications/user";
 
-// ================= Apply Fields =================
+  // ================= Apply Fields =================
   static const country = 'country';
   static const firstName = 'firstName';
   static const lastName = 'lastName';
@@ -42,4 +54,11 @@ class ApiConstants {
   static const phone = 'phone';
   static const vehicleLicense = 'vehicleLicense';
   static const nidImg = 'NIDImg';
+
+  // ================= Orders Type  =================
+  static const String pending = "pending";
+  static const String completed = "completed";
+  static const String cancelled = "cancelled";
+
+
 }

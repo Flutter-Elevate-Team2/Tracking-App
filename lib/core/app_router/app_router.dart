@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tracking_app/Features/auth/domain/auth_repo_contract/auth_repo_contract.dart';
 import 'package:tracking_app/Features/auth/presentation/forget_password/views/forget_password_screen_flow.dart';
 import 'package:tracking_app/Features/auth/presentation/login/views/login_screen.dart';
-import 'package:tracking_app/core/di/di.dart';
 import 'package:tracking_app/Features/auth/presentation/apply/views/apply_screen.dart';
 import 'package:tracking_app/Features/auth/presentation/apply/views/success_apply_screen.dart';
 import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
@@ -25,6 +23,14 @@ class Routes {
   static const String forgetPasswordPath = '/forgetpassword';
   static const String forgetPasswordName = 'forgetPassword';
 
+
+  static const String verifyCodePath = '/verifycode';
+  static const String verifyCodeName = 'verifyCode';
+
+
+  static const String resetPasswordPath = '/resetpassword';
+  static const String resetPasswordName = 'resetPassword';
+
   // Home Tabs Paths
   static const String homePath = '/home';
   static const String homeName = 'home';
@@ -44,7 +50,7 @@ class Routes {
 
 class AppRouter {
   static final GlobalKey<NavigatorState> rootNavigatorKey =
-      GlobalKey<NavigatorState>();
+  GlobalKey<NavigatorState>();
   // static final GlobalKey<NavigatorState> _homeNavigatorKey =
   //     GlobalKey<NavigatorState>();
   // static final GlobalKey<NavigatorState> _ordersNavigatorKey =
@@ -54,18 +60,22 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: Routes.onBoardingPath,
-    redirect: (context, state) async {
-      final authRepo = getIt<AuthRepoContract>();
-      final bool isLoggedIn = await authRepo.isLoggedIn();
-      final bool isLoggingIn = state.uri.toString() == Routes.loginPath;
-
-      if (isLoggedIn && isLoggingIn) {
-        return Routes.homePath;
-      }
-      return null;
-    },
+    initialLocation: Routes.ordersPath, // "/orders"
     routes: [
+      GoRoute(
+        path: Routes.ordersPath,
+        name: Routes.ordersName,
+        builder: (context, state) =>  Container(),
+      ),
+      // final authRepo = getIt<AuthRepoContract>();
+      // final bool isLoggedIn = await authRepo.isLoggedIn();
+      // final bool isLoggingIn = state.uri.toString() == Routes.signInPath;
+      //
+      // if (isLoggedIn && isLoggingIn) {
+      //   return Routes.homePath;
+      // }
+      // return null;
+
       GoRoute(
         path: Routes.onBoardingPath,
         name: Routes.onBoardingName,
@@ -92,6 +102,18 @@ class AppRouter {
         name: Routes.forgetPasswordName,
         builder: (context, state) => ForgetPasswordScreenFlow(),
       ),
+      GoRoute(
+        path: Routes.verifyCodePath,
+        name: Routes.verifyCodeName,
+        builder: (context, state) => Container(),
+      ),
+
+      GoRoute(
+        path: Routes.resetPasswordPath,
+        name: Routes.resetPasswordName,
+        builder: (context, state) => Container(),
+      ),
+
       GoRoute(
         path: Routes.editProfilePath,
         name: Routes.editProfileName,
