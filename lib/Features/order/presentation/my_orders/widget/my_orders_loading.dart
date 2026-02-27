@@ -10,6 +10,7 @@ class MyOrdersLoading extends StatelessWidget {
     return Padding(padding: EdgeInsetsGeometry.all(16),
     child: SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -18,6 +19,9 @@ class MyOrdersLoading extends StatelessWidget {
               Expanded(child: AppShimmer(height: 70,),)
             ],
           ),
+          const SizedBox(height: 26),
+          const AppShimmer(height: 20, width: 120),
+          const SizedBox(height: 16),
           ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
