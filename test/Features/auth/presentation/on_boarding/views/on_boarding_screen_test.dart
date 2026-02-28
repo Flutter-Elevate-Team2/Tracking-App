@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
@@ -8,6 +9,7 @@ import 'package:tracking_app/core/l10n/app_localizations.dart';
 
 import 'on_boarding_screen_test.mocks.dart';
 
+@GenerateMocks([GoRouter])
 void main() {
   late MockGoRouter mockRouter;
 
