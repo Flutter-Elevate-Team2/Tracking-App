@@ -18,6 +18,8 @@ class ApiConstants {
   static const String changePassword = "/auth/change-password";
   static const String logout = "/drivers/logout";
   static const String getDriverProfile = "/drivers/profile-data";
+  static const String editDriverProfile = "/drivers/editProfile";
+  static const String vehicles = "/vehicles";
 
   // ================= Token  =================
 
@@ -27,7 +29,7 @@ class ApiConstants {
   // ================= Notifications Endpoints =================
   static const String notifications = "notifications/user";
 
-// ================= Apply Fields =================
+  // ================= Apply Fields =================
   static const country = 'country';
   static const firstName = 'firstName';
   static const lastName = 'lastName';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracking_app/Features/profile/presentation/views/screens/edit_vehicle_screen.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/profile_screen.dart';
 
 class Routes {
@@ -108,13 +109,13 @@ class AppRouter {
       GoRoute(
         path: Routes.editProfilePath,
         name: Routes.editProfileName,
-        builder: (context, state) => Container(),
+        builder: (context, state) => const EditVehicleScreen(),
       ),
 
       GoRoute(
         path: Routes.editVehiclePath,
         name: Routes.editVehicleName,
-        builder: (context, state) => Container(),
+        builder: (context, state) => const EditVehicleScreen(),
       ),
 
       GoRoute(
