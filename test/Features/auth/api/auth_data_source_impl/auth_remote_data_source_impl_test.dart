@@ -8,6 +8,12 @@ import 'package:tracking_app/Features/auth/api/api_client/auth_api.dart';
 import 'package:tracking_app/Features/auth/api/auth_data_source_impl/auth_remote_data_source_impl.dart';
 import 'package:tracking_app/Features/auth/data/models/apply_models/apply_request.dart';
 import 'package:tracking_app/Features/auth/data/models/apply_models/apply_response.dart';
+import 'package:tracking_app/Features/auth/data/models/forget_password_models/request/forget_password_request/forget_password_request.dart';
+import 'package:tracking_app/Features/auth/data/models/forget_password_models/request/reset_password_request/reset_password_request.dart';
+import 'package:tracking_app/Features/auth/data/models/forget_password_models/request/verify_reset_password_request/verify_reset_password_request.dart';
+import 'package:tracking_app/Features/auth/data/models/forget_password_models/response/forget_password_response/forget_password_response.dart';
+import 'package:tracking_app/Features/auth/data/models/forget_password_models/response/reset_password_response/reset_password_response.dart';
+import 'package:tracking_app/Features/auth/data/models/forget_password_models/response/verify_reset_password_response/verify_reset_password_response.dart';
 import 'package:tracking_app/Features/auth/data/models/login_models/login_request.dart';
 import 'package:tracking_app/Features/auth/data/models/login_models/login_response.dart';
 
@@ -136,6 +142,113 @@ void main() {
 
       // act & assert
       expect(() => dataSource.login(tRequest), throwsException);
+    });
+  });
+
+  // ================= FORGET PASSWORD =================
+  group('forgetPassword', () {
+    final tRequest = ForgetPasswordRequest(email: 'test@test.com');
+    final tResponse = ForgetPasswordResponse(
+      message: 'Email sent',
+      info: 'Check inbox',
+    );
+
+    test(
+      'should return ForgetPasswordResponse when AuthApi.forgetPassword succeeds',
+      () async {
+        // arrange
+        when(
+          mockAuthApi.forgetPassword(tRequest),
+        ).thenAnswer((_) async => tResponse);
+
+        // act
+        final result = await dataSource.forgetPassword(tRequest);
+
+        // assert
+        expect(result, tResponse);
+        verify(mockAuthApi.forgetPassword(tRequest)).called(1);
+      },
+    );
+
+    test('should throw Exception when AuthApi.forgetPassword fails', () async {
+      // arrange
+      when(
+        mockAuthApi.forgetPassword(any),
+      ).thenThrow(Exception('Forget password failed'));
+
+      // act & assert
+      expect(() => dataSource.forgetPassword(tRequest), throwsException);
+    });
+  });
+
+  // ================= VERIFY RESET PASSWORD =================
+  group('verifyPassword', () {
+    final tRequest = VerifyResetPasswordRequest(resetCode: '123456');
+    final tResponse = VerifyResetPasswordResponse(status: 'Verified');
+
+    test(
+      'should return VerifyResetPasswordResponse when AuthApi.verifyPassword succeeds',
+      () async {
+        // arrange
+        when(
+          mockAuthApi.verifyPassword(tRequest),
+        ).thenAnswer((_) async => tResponse);
+
+        // act
+        final result = await dataSource.verifyPassword(tRequest);
+
+        // assert
+        expect(result, tResponse);
+        verify(mockAuthApi.verifyPassword(tRequest)).called(1);
+      },
+    );
+
+    test('should throw Exception when AuthApi.verifyPassword fails', () async {
+      // arrange
+      when(
+        mockAuthApi.verifyPassword(any),
+      ).thenThrow(Exception('Invalid code'));
+
+      // act & assert
+      expect(() => dataSource.verifyPassword(tRequest), throwsException);
+    });
+  });
+
+  // ================= RESET PASSWORD =================
+  group('resetPassword', () {
+    final tRequest = ResetPasswordRequest(
+      email: 'test@test.com',
+      newPassword: 'newPassword',
+    );
+
+    final tResponse = ResetPasswordResponse(
+      message: 'Password reset',
+      token: 'token123',
+    );
+
+    test(
+      'should return ResetPasswordResponse when AuthApi.resetPassword succeeds',
+      () async {
+        // arrange
+        when(
+          mockAuthApi.resetPassword(tRequest),
+        ).thenAnswer((_) async => tResponse);
+
+        // act
+        final result = await dataSource.resetPassword(tRequest);
+
+        // assert
+        expect(result, tResponse);
+        verify(mockAuthApi.resetPassword(tRequest)).called(1);
+      },
+    );
+
+    test('should throw Exception when AuthApi.resetPassword fails', () async {
+      // arrange
+      when(mockAuthApi.resetPassword(any)).thenThrow(Exception('Reset failed'));
+
+      // act & assert
+      expect(() => dataSource.resetPassword(tRequest), throwsException);
     });
   });
 }

@@ -10,8 +10,17 @@ import 'package:tracking_app/Features/auth/data/auth_data_source_contract/auth_r
 import 'package:tracking_app/Features/auth/data/auth_repo_impl/auth_repo_impl.dart';
 import 'package:tracking_app/Features/auth/data/models/apply_models/apply_request.dart';
 import 'package:tracking_app/Features/auth/data/models/apply_models/apply_response.dart';
+import 'package:tracking_app/Features/auth/data/models/forget_password_models/request/forget_password_request/forget_password_request.dart';
+import 'package:tracking_app/Features/auth/data/models/forget_password_models/request/reset_password_request/reset_password_request.dart';
+import 'package:tracking_app/Features/auth/data/models/forget_password_models/request/verify_reset_password_request/verify_reset_password_request.dart';
+import 'package:tracking_app/Features/auth/data/models/forget_password_models/response/forget_password_response/forget_password_response.dart';
+import 'package:tracking_app/Features/auth/data/models/forget_password_models/response/reset_password_response/reset_password_response.dart';
+import 'package:tracking_app/Features/auth/data/models/forget_password_models/response/verify_reset_password_response/verify_reset_password_response.dart';
 import 'package:tracking_app/Features/auth/data/models/login_models/login_request.dart';
 import 'package:tracking_app/Features/auth/data/models/login_models/login_response.dart';
+import 'package:tracking_app/Features/auth/domain/entities/forget_password_entities/forget_password_entity.dart';
+import 'package:tracking_app/Features/auth/domain/entities/forget_password_entities/reset_password_entity.dart';
+import 'package:tracking_app/Features/auth/domain/entities/forget_password_entities/verify_reset_password_entity.dart';
 import 'package:tracking_app/core/base_response/base_response.dart';
 import 'package:tracking_app/Features/auth/domain/entities/apply_entity/apply_entity.dart';
 import 'package:tracking_app/Features/auth/domain/entities/login_entity/login_entity.dart';
@@ -147,5 +156,111 @@ void main() {
 
       expect(result, false);
     });
+  });
+
+  // ================= Forget Password =================
+  group('Forget Password', () {
+    final tRequest = ForgetPasswordRequest(email: 'test@test.com');
+    final tResponse = ForgetPasswordResponse(
+      message: 'Sent',
+      info: 'Check email',
+    );
+
+    test(
+      'returns SuccessResponse<ForgetPasswordEntity> when RemoteDataSource succeeds',
+      () async {
+        when(mockRemote.forgetPassword(any)).thenAnswer((_) async => tResponse);
+
+        final result = await authRepo.forgetPassword(tRequest);
+
+        expect(result, isA<SuccessResponse<ForgetPasswordEntity>>());
+        verify(mockRemote.forgetPassword(tRequest)).called(1);
+      },
+    );
+
+    test(
+      'returns ErrorResponse when RemoteDataSource throws Exception',
+      () async {
+        when(
+          mockRemote.forgetPassword(any),
+        ).thenThrow(Exception('Forget password failed'));
+
+        final result = await authRepo.forgetPassword(tRequest);
+
+        expect(result, isA<ErrorResponse>());
+        verify(mockRemote.forgetPassword(tRequest)).called(1);
+      },
+    );
+  });
+
+  // ================= Verify Reset Password =================
+  group('Verify Reset Password', () {
+    final tRequest = VerifyResetPasswordRequest(resetCode: '123456');
+    final tResponse = VerifyResetPasswordResponse(status: 'Verified');
+
+    test(
+      'returns SuccessResponse<VerifyResetPasswordEntity> when RemoteDataSource succeeds',
+      () async {
+        when(mockRemote.verifyPassword(any)).thenAnswer((_) async => tResponse);
+
+        final result = await authRepo.verifyPassword(tRequest);
+
+        expect(result, isA<SuccessResponse<VerifyResetPasswordEntity>>());
+        verify(mockRemote.verifyPassword(tRequest)).called(1);
+      },
+    );
+
+    test(
+      'returns ErrorResponse when RemoteDataSource throws Exception',
+      () async {
+        when(
+          mockRemote.verifyPassword(any),
+        ).thenThrow(Exception('Invalid code'));
+
+        final result = await authRepo.verifyPassword(tRequest);
+
+        expect(result, isA<ErrorResponse>());
+        verify(mockRemote.verifyPassword(tRequest)).called(1);
+      },
+    );
+  });
+
+  // ================= Reset Password =================
+  group('Reset Password', () {
+    final tRequest = ResetPasswordRequest(
+      email: 'test@test.com',
+      newPassword: 'newPassword',
+    );
+
+    final tResponse = ResetPasswordResponse(
+      message: 'Reset done',
+      token: 'token123',
+    );
+
+    test(
+      'returns SuccessResponse<ResetPasswordEntity> when RemoteDataSource succeeds',
+      () async {
+        when(mockRemote.resetPassword(any)).thenAnswer((_) async => tResponse);
+
+        final result = await authRepo.resetPassword(tRequest);
+
+        expect(result, isA<SuccessResponse<ResetPasswordEntity>>());
+        verify(mockRemote.resetPassword(tRequest)).called(1);
+      },
+    );
+
+    test(
+      'returns ErrorResponse when RemoteDataSource throws Exception',
+      () async {
+        when(
+          mockRemote.resetPassword(any),
+        ).thenThrow(Exception('Reset failed'));
+
+        final result = await authRepo.resetPassword(tRequest);
+
+        expect(result, isA<ErrorResponse>());
+        verify(mockRemote.resetPassword(tRequest)).called(1);
+      },
+    );
   });
 }

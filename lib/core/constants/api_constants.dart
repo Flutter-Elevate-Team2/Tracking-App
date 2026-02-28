@@ -7,11 +7,12 @@ class ApiConstants {
   static String apiBaseUrl = dotenv.env['BASE_URL'] ?? "";
 
   // ================= Auth Endpoints =================
-  static const String login = "/signin";
-  static const String apply = "/apply";
-  static const String forgetPassword = "/forgotPassword";
-  static const String resetPassword = "/resetPassword";
-  static const String verifyResetCode = "/verifyResetCode";
+  static const String login = "/drivers/signin";
+  static const String apply = "/drivers/apply";
+  static const String forgetPassword = "/drivers/forgotPassword";
+  static const String resetPassword = "/drivers/resetPassword";
+  static const String verifyResetCode = "/drivers/verifyResetCode";
+  static const String vehicle = "/vehicles";
   static const String home = "/home";
   static const String getProfile = "/auth/profile-data";
   static const String editProfile = "/auth/editProfile";
