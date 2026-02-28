@@ -16,6 +16,9 @@ import 'package:tracking_app/Features/profile/presentation/views/screens/edit_pr
 import 'package:tracking_app/Features/profile/presentation/views/screens/edit_vehicle_screen.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/profile_screen.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/reset_password_screen.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/order_tracking_entity.dart';
+import 'package:tracking_app/Features/track_order/presentation/views/order_map_screen.dart';
+import 'package:tracking_app/Features/track_order/presentation/views/success_screen.dart';
 import 'package:tracking_app/Features/track_order/presentation/views/track_order_screen.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/di/di.dart';
@@ -61,6 +64,12 @@ class Routes {
 
   static const String trackOrderPath = '/trackorder';
   static const String trackOrderName = 'trackOrder';
+
+  static const String successPath = '/success';
+  static const String successName = 'success';
+
+  static const String mapPath = '/map';
+  static const String mapName = 'map';
 }
 
 class AppRouter {
@@ -89,9 +98,9 @@ class AppRouter {
           state.uri.toString() == Routes.onBoardingPath ||
           state.uri.toString() == Routes.loginPath;
 
-      final isTrackingRoute = state.uri.toString().startsWith(
-        Routes.trackOrderPath,
-      );
+      final isTrackingRoute =
+          state.uri.toString().startsWith(Routes.trackOrderPath) ||
+          state.uri.toString().startsWith(Routes.mapPath);
       if (!isLoggedIn) {
         return isAuthRoute ? null : Routes.loginPath;
       }
@@ -207,6 +216,23 @@ class AppRouter {
 
           return TrackOrderScreen(orderId: orderId);
         },
+      ),
+      GoRoute(
+        path: Routes.mapPath,
+        name: Routes.mapName,
+        builder: (context, state) {
+          final extras = state.extra as Map<String, dynamic>;
+          final order = extras['order'] as OrderTrackingEntity;
+          final isPickup = extras['isPickup'] as bool;
+
+          return OrderMapScreen(order: order, initialShowPickup: isPickup);
+        },
+      ),
+
+      GoRoute(
+        path: Routes.successPath,
+        name: Routes.successName,
+        builder: (context, state) => const SuccessScreen(),
       ),
     ],
   );

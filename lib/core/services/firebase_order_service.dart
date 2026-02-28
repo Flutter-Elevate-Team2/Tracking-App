@@ -38,4 +38,11 @@ class FirebaseOrderService {
     if (!doc.exists) return null;
     return OrderTrackingFirebaseModel.fromJson(doc.data()!);
   }
+
+  Future<void> updateOrderLocation(
+    String orderId,
+    Map<String, dynamic> data,
+  ) async {
+    await _firestore.collection('active_orders').doc(orderId).update(data);
+  }
 }

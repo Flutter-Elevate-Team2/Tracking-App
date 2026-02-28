@@ -37,13 +37,22 @@ class OrderTrackingFirebaseModel {
   }
 
   factory OrderTrackingFirebaseModel.fromJson(Map<String, dynamic> json) {
+    DateTime? parseDate(dynamic value) {
+      if (value == null) return null;
+      if (value is Timestamp) return value.toDate();
+      if (value is String) return DateTime.tryParse(value);
+      return null;
+    }
+
     return OrderTrackingFirebaseModel(
       userData: json['userData'] as Map<String, dynamic>? ?? {},
       orderData: json['orderData'] as Map<String, dynamic>? ?? {},
       driverData: json['driverData'] as Map<String, dynamic>? ?? {},
       trackingLocation: json['trackingLocation'] as Map<String, dynamic>? ?? {},
       status: json['status'] as String? ?? 'accepted',
-      updatedAt: (json['updatedAt'] as Timestamp?)?.toDate(),
+
+      updatedAt: parseDate(json['updatedAt']),
+
       orderItems:
           (json['orderItems'] as List<dynamic>?)
               ?.map((e) => e as Map<String, dynamic>)

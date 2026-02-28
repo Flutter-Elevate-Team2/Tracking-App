@@ -12,6 +12,7 @@ class AddressSection extends StatelessWidget {
   final String imagePath;
   final VoidCallback? onPhoneTap;
   final VoidCallback? onChatTap;
+  final VoidCallback? onAddressTap;
 
   const AddressSection({
     super.key,
@@ -21,6 +22,7 @@ class AddressSection extends StatelessWidget {
     required this.imagePath,
     this.onPhoneTap,
     this.onChatTap,
+    this.onAddressTap,
   });
 
   @override
@@ -37,90 +39,93 @@ class AddressSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.lightGray),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.gray.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(25),
-                child: CachedNetworkImage(
-                  imageUrl: imagePath,
-                  width: 44,
-                  height: 44,
-                  fit: BoxFit.cover,
-                  errorWidget: (_, _, _) => const CircleAvatar(
-                    radius: 25,
-                    backgroundColor: AppColors.lightGray,
-                    child: Icon(Icons.person, color: AppColors.gray),
+        GestureDetector(
+          onTap: onAddressTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.lightGray),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.gray.withValues(alpha: 0.1),
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: CachedNetworkImage(
+                    imageUrl: imagePath,
+                    width: 44,
+                    height: 44,
+                    fit: BoxFit.cover,
+                    errorWidget: (_, _, _) => const CircleAvatar(
+                      radius: 25,
+                      backgroundColor: AppColors.lightGray,
+                      child: Icon(Icons.person, color: AppColors.gray),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: AppTheme.getTextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.gray,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: AppTheme.getTextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.gray,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.location_on_outlined,
-                          size: 16,
-                          color: AppColors.black,
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            address,
-                            style: AppTheme.getTextStyle(
-                              fontSize: 12,
-                              color: AppColors.black,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on_outlined,
+                            size: 16,
+                            color: AppColors.black,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              address,
+                              style: AppTheme.getTextStyle(
+                                fontSize: 12,
+                                color: AppColors.black,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildSocialIcon(
+                      icon: Icons.phone_outlined,
+                      color: AppColors.mainColor,
+                      onTap: onPhoneTap,
+                    ),
+                    const SizedBox(width: 8),
+                    _buildSocialIcon(
+                      imagePath: AssetsManager.whatsapp,
+                      onTap: onChatTap,
                     ),
                   ],
                 ),
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildSocialIcon(
-                    icon: Icons.phone_outlined,
-                    color: AppColors.mainColor,
-                    onTap: onPhoneTap,
-                  ),
-                  const SizedBox(width: 8),
-                  _buildSocialIcon(
-                    imagePath: AssetsManager.whatsapp,
-                    onTap: onChatTap,
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         const SizedBox(height: 24),

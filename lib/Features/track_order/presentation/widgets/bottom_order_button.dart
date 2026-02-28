@@ -23,7 +23,16 @@ class BuildBottomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      color: AppColors.white,
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.lightGray,
+            blurRadius: 15,
+            spreadRadius: 5,
+          ),
+        ],
+      ),
       child: OrderActionButton(
         status: currentStatus,
         onPressed: () {

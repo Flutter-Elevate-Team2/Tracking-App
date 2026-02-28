@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mapbox;
 import 'package:tracking_app/Features/profile/presentation/view_model/profile_events.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/profile_view_model.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
@@ -24,6 +25,10 @@ Future<void> main() async {
   await PushNotificationService.init();
 
   await dotenv.load(fileName: ".env");
+  String mapboxToken = dotenv.get('MAPBOX_ACCESS_TOKEN', fallback: '');
+  if (mapboxToken.isNotEmpty) {
+    mapbox.MapboxOptions.setAccessToken(mapboxToken);
+  }
   await configureDependencies();
   // final prefs = getIt<SharedPreferences>();
   //
