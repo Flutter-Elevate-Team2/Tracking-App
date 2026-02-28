@@ -22,6 +22,10 @@ import 'package:tracking_app/Features/track_order/presentation/views/success_scr
 import 'package:tracking_app/Features/track_order/presentation/views/track_order_screen.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/di/di.dart';
+import 'package:tracking_app/Features/order/presentation/my_orders/views/my_orders_screen.dart';
+import 'package:tracking_app/Features/auth/presentation/apply/views/apply_screen.dart';
+import 'package:tracking_app/Features/auth/presentation/apply/views/success_apply_screen.dart';
+import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
 // coverage:ignore-file
 
 class Routes {
@@ -39,6 +43,14 @@ class Routes {
 
   static const String forgetPasswordPath = '/forgetpassword';
   static const String forgetPasswordName = 'forgetPassword';
+
+
+  static const String verifyCodePath = '/verifycode';
+  static const String verifyCodeName = 'verifyCode';
+
+
+  static const String resetPasswordPath = '/resetpassword';
+  static const String resetPasswordName = 'resetPassword';
 
   // Home Tabs Paths
   static const String homePath = '/home';
@@ -117,6 +129,20 @@ class AppRouter {
     },
     routes: [
       GoRoute(
+        path: Routes.ordersPath,
+        name: Routes.ordersName,
+        builder: (context, state) =>  MyOrdersScreen(),
+      ),
+      // final authRepo = getIt<AuthRepoContract>();
+      // final bool isLoggedIn = await authRepo.isLoggedIn();
+      // final bool isLoggingIn = state.uri.toString() == Routes.signInPath;
+      //
+      // if (isLoggedIn && isLoggingIn) {
+      //   return Routes.homePath;
+      // }
+      // return null;
+
+      GoRoute(
         path: Routes.onBoardingPath,
         name: Routes.onBoardingName,
         builder: (context, state) => OnBoardingScreen(),
@@ -183,6 +209,22 @@ class AppRouter {
             ],
           ),
         ],
+      GoRoute(
+        path: Routes.verifyCodePath,
+        name: Routes.verifyCodeName,
+        builder: (context, state) => Container(),
+      ),
+
+      GoRoute(
+        path: Routes.resetPasswordPath,
+        name: Routes.resetPasswordName,
+        builder: (context, state) => Container(),
+      ),
+
+      GoRoute(
+        path: Routes.editProfilePath,
+        name: Routes.editProfileName,
+        builder: (context, state) => Container(),
       ),
 
       GoRoute(

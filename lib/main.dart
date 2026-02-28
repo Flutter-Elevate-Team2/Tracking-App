@@ -86,7 +86,7 @@ class _MyAppState extends State<MyApp> {
             routerConfig: AppRouter.router,
             debugShowCheckedModeBanner: false,
             onGenerateTitle: (context) =>
-                AppLocalizations.of(context)!.appTitle,
+            AppLocalizations.of(context)!.appTitle,
             supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             theme: AppTheme.lightTheme,

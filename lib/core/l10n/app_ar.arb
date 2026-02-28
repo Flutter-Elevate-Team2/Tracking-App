@@ -209,6 +209,10 @@
   "@home": { "description": "تسمية لزر التنقل الرئيسية" },
   "cart": "الطلبات",
   "@cart": { "description": "تسمية لزر التنقل الطلبات" },
+  "myOrders": "طلباتي",
+  "@myOrders": {
+    "description": "Label for the My Orders navigation tab"
+  },
   "profile": "الملف الشخصي",
   "@profile": { "description": "تسمية لزر التنقل الملف الشخصي" },
 
@@ -473,5 +477,9 @@
   "notApplicable": "غير متاح",
   "exitDeliveredOrderWarning": "لا يمكنك الخروج حتى يتم تسليم الطلب!",
   "orderAcceptedBody": "تم قبول طلبك.",
-  "acceptingOrder": "جاري قبول الطلب..."
+  "acceptingOrder": "جاري قبول الطلب...",
+  "@noOrderFound": { "description": "رسالة عند عدم العثور على طلبات" },
+  "floweryStore": "متجر الزهور",
+  "sampleUserName": "نور محمد",
+  "sampleAddress": "شارع 20، الشيخ زايد، الجيزة"
 }

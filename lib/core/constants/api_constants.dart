@@ -29,6 +29,20 @@ class ApiConstants {
   static const String pendingOrders = "/orders/pending-orders";
   static const String startOrder = "/orders/start/";
 
+  //=========================EditDriverInfo======================================//
+  static const String editDriverProfile = "drivers/editProfile";
+  static const String changeDriverPassword = "drivers/change-password";
+  static const String uploadDriverPhoto = "/drivers/upload-photo";
+  static const String logout = "/drivers/logout";
+  static const String getDriverProfile = "/drivers/profile-data";
+  static const String vehicles = "/vehicles";
+
+  // ================= Order  =================
+  static const String pendingOrders = "orders/pending-orders";
+  static const String driverOrders = "orders/driver-orders";
+  static const String updateOrderState = "orders/state/";
+  static const String startOrder = "orders/start/";
+
   // ================= Token  =================
 
   static const String tokenKey = "user_token";
@@ -52,4 +66,11 @@ class ApiConstants {
   static const phone = 'phone';
   static const vehicleLicense = 'vehicleLicense';
   static const nidImg = 'NIDImg';
+
+  // ================= Orders Type  =================
+  static const String pending = "pending";
+  static const String completed = "completed";
+  static const String cancelled = "cancelled";
+
+
 }
