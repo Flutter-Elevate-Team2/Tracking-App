@@ -5,7 +5,9 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/order_tracking_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/store_entity.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/tracking_location_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/user_entity.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/user_location_entity.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_state.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_view_model.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/track_order_body.dart';
@@ -30,6 +32,8 @@ void main() {
         storeAddress: "Store Address",
         storeImage: "",
         storePhone: "123456"
+        , storeLat: 123,
+        storeLong: 456
     ),
     user: UserEntity(
         userName: "John Doe",
@@ -38,6 +42,14 @@ void main() {
         deviceToken: "mock_token"
     ),
     items: [],
+     trackingLocation: TrackingLocationEntity(
+       lat: 123,
+       long: 123,
+     ),
+     userLocationEntity: UserLocationEntity(
+       lat: 123,
+       long: 123,
+     ), id: '',
   );
 
   setUp(() {

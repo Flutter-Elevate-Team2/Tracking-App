@@ -7,7 +7,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/order_status.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/order_tracking_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/store_entity.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/tracking_location_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/user_entity.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/user_location_entity.dart';
+import 'package:tracking_app/Features/track_order/domain/use_cases/get_directions_use_case.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/get_order_details_use_case.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/track_order_use_case.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_event.dart';
@@ -15,6 +18,8 @@ import 'package:tracking_app/Features/track_order/presentation/view_model/track_
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_view_model.dart';
 import 'package:tracking_app/core/base_states/base_states.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
+import 'package:tracking_app/core/services/firebase_order_service.dart';
+import 'package:tracking_app/core/services/location_service.dart';
 
 import 'track_order_view_model_test.mocks.dart';
 
@@ -22,11 +27,17 @@ import 'track_order_view_model_test.mocks.dart';
   UpdateOrderStatusUseCase,
   GetOrderDetailsUseCase,
   BuildContext,
+  GetDirectionsUseCase,
+  LocationService,
+  FirebaseOrderService,
 ])
 void main() {
   late OrderStatusViewModel viewModel;
   late MockUpdateOrderStatusUseCase mockUpdateUseCase;
   late MockGetOrderDetailsUseCase mockGetOrderUseCase;
+  late MockGetDirectionsUseCase mockGetDirectionsUseCase;
+  late MockLocationService mockLocationService;
+  late MockFirebaseOrderService mockFirebaseService;
   late MockBuildContext mockContext;
 
   /// ---------- Fake Data ----------
@@ -45,6 +56,8 @@ void main() {
       storeAddress: "123 Street",
       storeImage: "img",
       storePhone: "012",
+      storeLat: 123,
+      storeLong: 123,
     ),
     user: UserEntity(
       userName: "Ahmed",
@@ -54,17 +67,25 @@ void main() {
     ),
     items: [],
     shippingAddress: "Cairo",
+    id: '',
+    trackingLocation: TrackingLocationEntity(lat: 123, long: 123),
+    userLocationEntity: UserLocationEntity(lat: 123, long: 123),
   );
 
   setUp(() {
     mockUpdateUseCase = MockUpdateOrderStatusUseCase();
     mockGetOrderUseCase = MockGetOrderDetailsUseCase();
+    mockGetDirectionsUseCase = MockGetDirectionsUseCase();
+    mockLocationService = MockLocationService();
+    mockFirebaseService = MockFirebaseOrderService();
     mockContext = MockBuildContext();
 
     // Stub the internal Flutter call that AppLocalizations/status needs
-    when(mockContext.dependOnInheritedWidgetOfExactType(
-      aspect: anyNamed('aspect'),
-    )).thenReturn(null);
+    when(
+      mockContext.dependOnInheritedWidgetOfExactType(
+        aspect: anyNamed('aspect'),
+      ),
+    ).thenReturn(null);
 
     SharedPreferences.setMockInitialValues({
       ApiConstants.currentOrderIdKey: "123",
@@ -73,6 +94,9 @@ void main() {
     viewModel = OrderStatusViewModel(
       mockUpdateUseCase,
       mockGetOrderUseCase,
+      mockLocationService,
+      mockFirebaseService,
+      mockGetDirectionsUseCase,
     );
   });
   tearDown(() {
@@ -84,13 +108,24 @@ void main() {
     blocTest<OrderStatusViewModel, TrackOrderStatusState>(
       'FetchOrderDetailsEvent emits loading then order details on success',
       build: () {
-        when(mockGetOrderUseCase.call(any)).thenAnswer((_) async => fakeOrderDetailsData);
+        when(
+          mockGetOrderUseCase.call(any),
+        ).thenAnswer((_) async => fakeOrderDetailsData);
         return viewModel;
       },
-      act: (bloc) => bloc.doIntent(mockContext, FetchOrderDetailsEvent(fakeOrderId)),
+      act: (bloc) =>
+          bloc.doIntent(mockContext, FetchOrderDetailsEvent(fakeOrderId)),
       expect: () => [
-        isA<TrackOrderStatusState>().having((s) => s.orderState!.isLoading, 'loading', true),
-        isA<TrackOrderStatusState>().having((s) => s.orderState!.data, 'data', fakeOrderDetailsData),
+        isA<TrackOrderStatusState>().having(
+          (s) => s.orderState!.isLoading,
+          'loading',
+          true,
+        ),
+        isA<TrackOrderStatusState>().having(
+          (s) => s.orderState!.data,
+          'data',
+          fakeOrderDetailsData,
+        ),
       ],
     );
 
@@ -100,23 +135,43 @@ void main() {
         when(mockGetOrderUseCase.call(any)).thenAnswer((_) async => null);
         return viewModel;
       },
-      act: (bloc) => bloc.doIntent(mockContext, FetchOrderDetailsEvent(fakeOrderId)),
+      act: (bloc) =>
+          bloc.doIntent(mockContext, FetchOrderDetailsEvent(fakeOrderId)),
       expect: () => [
-        isA<TrackOrderStatusState>().having((s) => s.orderState!.isLoading, 'loading', true),
-        isA<TrackOrderStatusState>().having((s) => s.orderState!.errorMessage, 'error', "Order Not Found"),
+        isA<TrackOrderStatusState>().having(
+          (s) => s.orderState!.isLoading,
+          'loading',
+          true,
+        ),
+        isA<TrackOrderStatusState>().having(
+          (s) => s.orderState!.errorMessage,
+          'error',
+          "Order Not Found",
+        ),
       ],
     );
 
     blocTest<OrderStatusViewModel, TrackOrderStatusState>(
       'FetchOrderDetailsEvent emits error on exception',
       build: () {
-        when(mockGetOrderUseCase.call(any)).thenThrow(Exception("Network Error"));
+        when(
+          mockGetOrderUseCase.call(any),
+        ).thenThrow(Exception("Network Error"));
         return viewModel;
       },
-      act: (bloc) => bloc.doIntent(mockContext, FetchOrderDetailsEvent(fakeOrderId)),
+      act: (bloc) =>
+          bloc.doIntent(mockContext, FetchOrderDetailsEvent(fakeOrderId)),
       expect: () => [
-        isA<TrackOrderStatusState>().having((s) => s.orderState!.isLoading, 'loading', true),
-        isA<TrackOrderStatusState>().having((s) => s.orderState!.errorMessage, 'error', contains("Network Error")),
+        isA<TrackOrderStatusState>().having(
+          (s) => s.orderState!.isLoading,
+          'loading',
+          true,
+        ),
+        isA<TrackOrderStatusState>().having(
+          (s) => s.orderState!.errorMessage,
+          'error',
+          contains("Network Error"),
+        ),
       ],
     );
 
@@ -124,14 +179,27 @@ void main() {
     blocTest<OrderStatusViewModel, TrackOrderStatusState>(
       'FetchOrderDetailsEvent updates existing data loading state',
       build: () {
-        when(mockGetOrderUseCase.call(any)).thenAnswer((_) async => fakeOrderDetailsData);
+        when(
+          mockGetOrderUseCase.call(any),
+        ).thenAnswer((_) async => fakeOrderDetailsData);
         return viewModel;
       },
-      seed: () => TrackOrderStatusState(orderState: BaseState(data: fakeOrderDetailsData)),
-      act: (bloc) => bloc.doIntent(mockContext, FetchOrderDetailsEvent(fakeOrderId)),
+      seed: () => TrackOrderStatusState(
+        orderState: BaseState(data: fakeOrderDetailsData),
+      ),
+      act: (bloc) =>
+          bloc.doIntent(mockContext, FetchOrderDetailsEvent(fakeOrderId)),
       expect: () => [
-        isA<TrackOrderStatusState>().having((s) => s.orderState!.isLoading, 'loading existing', true),
-        isA<TrackOrderStatusState>().having((s) => s.orderState!.data, 'data maintained', fakeOrderDetailsData),
+        isA<TrackOrderStatusState>().having(
+          (s) => s.orderState!.isLoading,
+          'loading existing',
+          true,
+        ),
+        isA<TrackOrderStatusState>().having(
+          (s) => s.orderState!.data,
+          'data maintained',
+          fakeOrderDetailsData,
+        ),
       ],
     );
 

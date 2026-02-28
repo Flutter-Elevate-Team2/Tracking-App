@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/order_tracking_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/store_entity.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/tracking_location_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/user_entity.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/user_location_entity.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/address_section.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/order_addresses_section.dart';
 import 'package:tracking_app/core/l10n/app_localizations.dart';
@@ -20,6 +22,8 @@ void main() {
       storeAddress: "Store Street 10",
       storeImage: "",
       storePhone: "010111",
+      storeLat: 123,
+      storeLong: 123,
     ),
     user: UserEntity(
       userName: "Ahmed Ali",
@@ -27,7 +31,15 @@ void main() {
       userPhone: "010222",
       deviceToken: "",
     ),
-    items: [],
+    items: [], id: '',
+     trackingLocation: TrackingLocationEntity(
+       lat: 123,
+       long: 123,
+     ),
+     userLocationEntity: UserLocationEntity(
+       lat: 123,
+       long: 123,
+     ),
   );
 
   Widget createWidgetUnderTest() {

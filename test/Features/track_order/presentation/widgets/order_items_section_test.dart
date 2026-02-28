@@ -3,18 +3,42 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/order_item_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/order_tracking_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/store_entity.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/tracking_location_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/user_entity.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/user_location_entity.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/order_item_tile.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/order_items_section.dart';
 import 'package:tracking_app/core/l10n/app_localizations.dart';
 
 void main() {
-   final fakeStore = StoreEntity(storeName: "Flowery", storeAddress: "Addr", storeImage: "", storePhone: "");
-  final fakeUser = UserEntity(userName: "User", userImage: "", userPhone: "", deviceToken: "");
+  final fakeStore = StoreEntity(
+    storeName: "Flowery",
+    storeAddress: "Addr",
+    storeImage: "",
+    storePhone: "",
+    storeLat: 122,
+    storeLong: 122,
+  );
+  final fakeUser = UserEntity(
+    userName: "User",
+    userImage: "",
+    userPhone: "",
+    deviceToken: "",
+  );
 
   final fakeItems = [
-    OrderItemEntity(name: "Red Rose", price: "50", quantity: 2, image: "rose.jpg"),
-    OrderItemEntity(name: "White Lily", price: "80", quantity: 1, image: "lily.jpg"),
+    OrderItemEntity(
+      name: "Red Rose",
+      price: "50",
+      quantity: 2,
+      image: "rose.jpg",
+    ),
+    OrderItemEntity(
+      name: "White Lily",
+      price: "80",
+      quantity: 1,
+      image: "lily.jpg",
+    ),
   ];
 
   final fakeOrder = OrderTrackingEntity(
@@ -27,9 +51,12 @@ void main() {
     store: fakeStore,
     user: fakeUser,
     items: fakeItems,
+    id: '',
+    trackingLocation: TrackingLocationEntity(lat: 123, long: 123),
+    userLocationEntity: UserLocationEntity(lat: 123, long: 123),
   );
 
-   Widget createWidgetUnderTest({OrderTrackingEntity? order}) {
+  Widget createWidgetUnderTest({OrderTrackingEntity? order}) {
     return MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -52,12 +79,16 @@ void main() {
       expect(textWidget.data, isNotEmpty);
     });
 
-    testWidgets('should render correct number of OrderItemTile widgets', (tester) async {
+    testWidgets('should render correct number of OrderItemTile widgets', (
+      tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       expect(find.byType(OrderItemTile), findsNWidgets(fakeItems.length));
     });
 
-    testWidgets('should pass correct data from items list to OrderItemTile', (tester) async {
+    testWidgets('should pass correct data from items list to OrderItemTile', (
+      tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       expect(find.text("Red Rose"), findsOneWidget);
       expect(find.text("X2"), findsOneWidget);
@@ -66,7 +97,7 @@ void main() {
     });
 
     testWidgets('should handle empty items list gracefully', (tester) async {
-       final emptyOrder = OrderTrackingEntity(
+      final emptyOrder = OrderTrackingEntity(
         orderNumber: '102',
         updatedAt: DateTime.now(),
         status: 'pending',
@@ -76,12 +107,15 @@ void main() {
         user: fakeUser,
         shippingAddress: 'No Address',
         items: [],
+        trackingLocation: TrackingLocationEntity(lat: 123, long: 123),
+        userLocationEntity: UserLocationEntity(lat: 123, long: 123),
+        id: '',
       );
 
       await tester.pumpWidget(createWidgetUnderTest(order: emptyOrder));
 
-       expect(find.byType(Text).first, findsOneWidget);
-       expect(find.byType(OrderItemTile), findsNothing);
+      expect(find.byType(Text).first, findsOneWidget);
+      expect(find.byType(OrderItemTile), findsNothing);
     });
   });
 }
