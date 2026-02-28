@@ -19,7 +19,7 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final _formKey = GlobalKey<FormState>(); // الـ Key هنا
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -45,20 +45,8 @@ class _LoginFormState extends State<LoginForm> {
         builder: (context, state) {
           return Column(
             children: [
-              EmailField(
-                controller: _emailController,
-                onChanged: () {
-                  setState(() {});
-                  viewModel.doIntent(UserTypingEvent());
-                },
-              ),
-              PasswordField(
-                controller: _passwordController,
-                onChanged: () {
-                  setState(() {});
-                  viewModel.doIntent(UserTypingEvent());
-                },
-              ),
+              EmailField(controller: _emailController, onChanged: () {}),
+              PasswordField(controller: _passwordController, onChanged: () {}),
               RememberMeRow(
                 rememberMe: state.isRememberMe,
                 onChanged: (value) {
@@ -69,18 +57,26 @@ class _LoginFormState extends State<LoginForm> {
                 },
               ),
               const SizedBox(height: 16),
-              LoginSubmitButton(
-                isLoading: state.loginState?.isLoading == true,
-                enabled: _isFormValid,
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    viewModel.doIntent(
-                      LoginButtonClickedEvent(
-                        email: _emailController.text,
-                        password: _passwordController.text,
-                      ),
-                    );
-                  }
+              ListenableBuilder(
+                listenable: Listenable.merge([
+                  _emailController,
+                  _passwordController,
+                ]),
+                builder: (context, child) {
+                  return LoginSubmitButton(
+                    isLoading: state.loginState?.isLoading == true,
+                    enabled: _isFormValid,
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        viewModel.doIntent(
+                          LoginButtonClickedEvent(
+                            email: _emailController.text,
+                            password: _passwordController.text,
+                          ),
+                        );
+                      }
+                    },
+                  );
                 },
               ),
             ],
