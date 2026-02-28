@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// coverage:ignore-file
 
 abstract class AppColors {
   static MaterialColor white = const MaterialColor(0xFFF9F9F9, <int, Color>{
