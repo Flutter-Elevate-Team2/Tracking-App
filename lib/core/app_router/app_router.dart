@@ -90,7 +90,7 @@ class AppRouter {
       GoRoute(
         path: Routes.forgetPasswordPath,
         name: Routes.forgetPasswordName,
-        builder: (context, state) => ForgetPasswordScreenFlow(),
+        builder: (context, state) => const ForgetPasswordScreenFlow(),
       ),
       GoRoute(
         path: Routes.editProfilePath,
