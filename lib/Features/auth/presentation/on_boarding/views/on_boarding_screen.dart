@@ -59,8 +59,8 @@ class OnBoardingScreen extends StatelessWidget {
                 child: CustomButton(
                   title: context.l10n.loginTitle,
                   onPressed: () {
-                    context.goNamed(Routes.loginName);
-                  },
+                    context.pushNamed(Routes.loginName);
+                    },
                 ),
               ),
 
@@ -71,7 +71,7 @@ class OnBoardingScreen extends StatelessWidget {
                   title: context.l10n.applyButton,
                   onPressed: () {
                     FocusScope.of(context).unfocus();
-                    context.goNamed(Routes.applyName);
+                    context.pushNamed(Routes.applyName);
                   },
                   backgroundColor: AppColors.white,
                   foregroundColor: AppColors.gray,

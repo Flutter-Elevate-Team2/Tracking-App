@@ -1,0 +1,155 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:tracking_app/Features/auth/domain/entities/forget_password_entities/forget_password_entity.dart';
+import 'package:tracking_app/Features/auth/presentation/forget_password/view_model/forget_password_state.dart';
+import 'package:tracking_app/Features/auth/presentation/forget_password/view_model/forget_password_view_model.dart';
+import 'package:tracking_app/Features/auth/presentation/forget_password/widgets/forget_password_widgets/email_form_section.dart';
+import 'package:tracking_app/core/base_states/base_states.dart';
+import 'package:tracking_app/core/l10n/app_localizations.dart';
+
+import 'email_form_section_test.mocks.dart';
+
+@GenerateMocks([ForgetPasswordViewModel])
+void main() {
+  late MockForgetPasswordViewModel mockViewModel;
+  late StreamController<ForgetPasswordState> stateController;
+
+  setUp(() {
+    mockViewModel = MockForgetPasswordViewModel();
+    stateController = StreamController<ForgetPasswordState>.broadcast();
+
+    final initialState = ForgetPasswordState();
+
+    when(mockViewModel.state).thenReturn(initialState);
+    when(mockViewModel.stream).thenAnswer((_) => stateController.stream);
+  });
+
+  tearDown(() {
+    stateController.close();
+  });
+
+  Widget createWidgetUnderTest(Widget child) {
+    return MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(
+        body: BlocProvider<ForgetPasswordViewModel>.value(
+          value: mockViewModel,
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  group('EmailFormSection Widget Tests', () {
+    testWidgets('1. Should show validation error when email is empty', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        createWidgetUnderTest(EmailFormSection(onNextPage: () {})),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pump();
+
+      expect(find.textContaining('email'), findsOneWidget);
+      verifyNever(mockViewModel.doIntent(any));
+    });
+
+    testWidgets('2. Should show loading indicator when state is loading', (
+      tester,
+    ) async {
+      when(mockViewModel.state).thenReturn(
+        ForgetPasswordState(sendOtpState: BaseState(isLoading: true)),
+      );
+
+      await tester.pumpWidget(
+        createWidgetUnderTest(EmailFormSection(onNextPage: () {})),
+      );
+      await tester.pump();
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      final textField = tester.widget<TextFormField>(
+        find.byType(TextFormField),
+      );
+      expect(textField.enabled, isFalse);
+    });
+
+    testWidgets('3. Should show SnackBar when error occurs', (tester) async {
+      await tester.pumpWidget(
+        createWidgetUnderTest(EmailFormSection(onNextPage: () {})),
+      );
+
+      stateController.add(
+        ForgetPasswordState(
+          sendOtpState: BaseState(
+            isLoading: false,
+            errorMessage: 'Server Error',
+          ),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 750));
+
+      expect(find.text('Server Error'), findsOneWidget);
+    });
+
+    testWidgets('4. Should call onNextPage when success occurs', (
+      tester,
+    ) async {
+      bool nextCalled = false;
+      await tester.pumpWidget(
+        createWidgetUnderTest(
+          EmailFormSection(onNextPage: () => nextCalled = true),
+        ),
+      );
+
+      stateController.add(
+        ForgetPasswordState(
+          sendOtpState: BaseState(
+            isLoading: false,
+            data: ForgetPasswordEntity(message: 'ok', info: ''),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(nextCalled, isTrue);
+    });
+
+    testWidgets(
+      '5. Should call doIntent and onEmailSubmitted when email is valid',
+      (tester) async {
+        String? submittedEmail;
+
+        await tester.pumpWidget(
+          createWidgetUnderTest(
+            EmailFormSection(
+              onNextPage: () {},
+              onEmailSubmitted: (email) => submittedEmail = email,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.enterText(find.byType(TextFormField), 'test@example.com');
+
+        await tester.tap(find.byType(ElevatedButton));
+        await tester.pump();
+
+        expect(submittedEmail, 'test@example.com');
+
+        verify(mockViewModel.doIntent(any)).called(1);
+      },
+    );
+  });
+}

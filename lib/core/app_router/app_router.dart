@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracking_app/Features/auth/domain/auth_repo_contract/auth_repo_contract.dart';
+import 'package:tracking_app/Features/auth/presentation/forget_password/views/forget_password_screen_flow.dart';
+import 'package:tracking_app/Features/auth/presentation/login/views/login_screen.dart';
+import 'package:tracking_app/core/di/di.dart';
 import 'package:tracking_app/Features/auth/presentation/apply/views/apply_screen.dart';
 import 'package:tracking_app/Features/auth/presentation/apply/views/success_apply_screen.dart';
 import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
 // coverage:ignore-file
 
 class Routes {
-
   static const String onBoardingPath = '/onBoarding';
   static const String onBoardingName = 'onBoarding';
-
 
   static const String loginPath = '/login';
   static const String loginName = 'login';
@@ -17,43 +19,27 @@ class Routes {
   static const String applyPath = '/apply';
   static const String applyName = 'apply';
 
-
   static const String successApplyPath = '/successapply';
   static const String successApplyName = 'successApply';
 
   static const String forgetPasswordPath = '/forgetpassword';
   static const String forgetPasswordName = 'forgetPassword';
 
-
-  static const String verifyCodePath = '/verifycode';
-  static const String verifyCodeName = 'verifyCode';
-
-
-  static const String resetPasswordPath = '/resetpassword';
-  static const String resetPasswordName = 'resetPassword';
-
   // Home Tabs Paths
   static const String homePath = '/home';
   static const String homeName = 'home';
 
-
   static const String profilePath = '/profile';
   static const String profileName = 'profile';
-
-
 
   static const String editProfilePath = '/editprofile';
   static const String editProfileName = 'editProfile';
 
-
   static const String editVehiclePath = '/editvehicle';
   static const String editVehicleName = 'editVehicle';
 
-
   static const String ordersPath = '/orders';
   static const String ordersName = 'orders';
-
-
 }
 
 class AppRouter {
@@ -70,16 +56,14 @@ class AppRouter {
     navigatorKey: rootNavigatorKey,
     initialLocation: Routes.onBoardingPath,
     redirect: (context, state) async {
-      return null;
+      final authRepo = getIt<AuthRepoContract>();
+      final bool isLoggedIn = await authRepo.isLoggedIn();
+      final bool isLoggingIn = state.uri.toString() == Routes.loginPath;
 
-      // final authRepo = getIt<AuthRepoContract>();
-      // final bool isLoggedIn = await authRepo.isLoggedIn();
-      // final bool isLoggingIn = state.uri.toString() == Routes.signInPath;
-      //
-      // if (isLoggedIn && isLoggingIn) {
-      //   return Routes.homePath;
-      // }
-      // return null;
+      if (isLoggedIn && isLoggingIn) {
+        return Routes.homePath;
+      }
+      return null;
     },
     routes: [
       GoRoute(
@@ -90,7 +74,7 @@ class AppRouter {
       GoRoute(
         path: Routes.loginPath,
         name: Routes.loginName,
-        builder: (context, state) =>  Container(),
+        builder: (context, state) => LoginScreen(),
       ),
       GoRoute(
         path: Routes.applyPath,
@@ -106,20 +90,8 @@ class AppRouter {
       GoRoute(
         path: Routes.forgetPasswordPath,
         name: Routes.forgetPasswordName,
-        builder: (context, state) => Container(),
+        builder: (context, state) => const ForgetPasswordScreenFlow(),
       ),
-      GoRoute(
-        path: Routes.verifyCodePath,
-        name: Routes.verifyCodeName,
-        builder: (context, state) => Container(),
-      ),
-
-      GoRoute(
-        path: Routes.resetPasswordPath,
-        name: Routes.resetPasswordName,
-        builder: (context, state) => Container(),
-      ),
-
       GoRoute(
         path: Routes.editProfilePath,
         name: Routes.editProfileName,
@@ -131,7 +103,6 @@ class AppRouter {
         name: Routes.editVehicleName,
         builder: (context, state) => Container(),
       ),
-
 
       /// ====== MAIN SHELL ROUTE (BOTTOM NAV BAR) ======
       // StatefulShellRoute.indexedStack(
