@@ -10,7 +10,6 @@ part 'vehicle_api.g.dart';
 
 @lazySingleton
 @RestApi()
-@injectable
 abstract class VehicleApi {
   @factoryMethod
   factory VehicleApi(Dio dio) = _VehicleApi;
