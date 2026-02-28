@@ -39,14 +39,20 @@ extension OrderTrackingMapper on OrderTrackingFirebaseModel {
       }).toList(),
       shippingAddress: _formatShippingAddress(orderData['shippingAddress']),
       trackingLocation: TrackingLocationEntity(
-        lat: trackingLocation['lat'],
-        long: trackingLocation['long'],
+        lat: (trackingLocation['lat'] as num?)?.toDouble() ?? 0.0,
+        long: (trackingLocation['long'] as num?)?.toDouble() ?? 0.0,
       ),
       userLocationEntity: UserLocationEntity(
-        lat: (orderData['shippingAddress']['location']['lat'] as num)
-            .toDouble(),
-        long: (orderData['shippingAddress']['location']['long'] as num)
-            .toDouble(),
+        lat: (orderData['shippingAddress'] is Map)
+            ? (orderData['shippingAddress']['location']?['lat'] as num?)
+                      ?.toDouble() ??
+                  0.0
+            : 0.0,
+        long: (orderData['shippingAddress'] is Map)
+            ? (orderData['shippingAddress']['location']?['long'] as num?)
+                      ?.toDouble() ??
+                  0.0
+            : 0.0,
       ),
     );
   }
