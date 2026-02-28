@@ -29,7 +29,7 @@ class PushNotificationService {
 
   // StreamController to broadcast notification events
   static final StreamController<void> _notificationStreamController =
-      StreamController.broadcast();
+  StreamController.broadcast();
   static Stream<void> get onNotificationReceived =>
       _notificationStreamController.stream;
 
@@ -101,27 +101,27 @@ class PushNotificationService {
 
   static Future<void> _initLocalNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const DarwinInitializationSettings initializationSettingsDarwin =
-        DarwinInitializationSettings(
-          requestAlertPermission: false,
-          requestBadgePermission: false,
-          requestSoundPermission: false,
-        );
+    DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
 
     const InitializationSettings initializationSettings =
-        InitializationSettings(
-          android: initializationSettingsAndroid,
-          iOS: initializationSettingsDarwin,
-        );
+    InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsDarwin,
+    );
 
     await _flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse:
           (NotificationResponse notificationResponse) {
-            // Handle notification tap
-          },
+        // Handle notification tap
+      },
     );
   }
 
@@ -139,7 +139,7 @@ class PushNotificationService {
             'high_importance_channel',
             'High Importance Notifications',
             channelDescription:
-                'This channel is used for important notifications.',
+            'This channel is used for important notifications.',
             importance: Importance.max,
             priority: Priority.high,
             icon: '@mipmap/ic_launcher',
