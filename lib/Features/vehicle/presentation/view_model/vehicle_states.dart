@@ -6,7 +6,7 @@ class VehicleStates extends Equatable {
   final BaseState<List<VehicleEntity>>? vehiclesState;
   final VehicleEntity? selectedVehicle;
 
-  VehicleStates({
+  const VehicleStates({
     this.vehiclesState ,
     this.selectedVehicle,
   });

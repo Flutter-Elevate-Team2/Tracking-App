@@ -62,7 +62,20 @@
   "@invalidPasswordError": {
     "description": "Generic error message for incorrect password"
   },
-  "country": "Country",
+  "nationalIdRequired": "National ID is required",
+  "nationalIdInvalidLength": "National ID must be 14 digits",
+  "nationalIdInvalidChars": "National ID must contain only numbers",
+
+  "vehicleNumberLength": "Vehicle number must be between 3 and 10 characters",
+  "vehicleNumberInvalidChars": "Vehicle number must contain only letters and numbers",
+  "uploadLicensePhoto": "Upload license image",
+  "uploadIdImage": "Upload ID image",
+
+
+  "errorLoadingCountries": "Error loading countries: {error}",
+
+
+"country": "Country",
   "@country": {
   "description": "Label for selecting or displaying the user's country"
 },
