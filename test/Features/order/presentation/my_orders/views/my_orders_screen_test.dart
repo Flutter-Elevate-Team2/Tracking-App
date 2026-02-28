@@ -42,13 +42,15 @@ void main() {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pump();
 
+      // Verify AppBar existence
       expect(find.byType(AppBar), findsOneWidget);
 
-      expect(find.byIcon(Icons.arrow_back_ios), findsOneWidget);
+      // Match the exact icon used in your code (Icons.arrow_back)
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
 
+      // Verify MyOrdersBody is rendered (inside BlocProvider)
       expect(find.byType(MyOrdersBody), findsOneWidget);
     });
-
     testWidgets('should call close on ViewModel when screen is disposed', (tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
 

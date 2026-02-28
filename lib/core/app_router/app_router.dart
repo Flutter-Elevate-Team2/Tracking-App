@@ -8,8 +8,11 @@ import 'package:tracking_app/Features/auth/presentation/apply/views/success_appl
 import 'package:tracking_app/Features/auth/presentation/forget_password/views/forget_password_screen_flow.dart';
 import 'package:tracking_app/Features/auth/presentation/login/views/login_screen.dart';
 import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
+import 'package:tracking_app/Features/order/domain/entities/driver_order_entity.dart';
+import 'package:tracking_app/Features/order/domain/entities/order_entity.dart';
 import 'package:tracking_app/Features/home/presentation/views/screens/home_screen.dart';
 import 'package:tracking_app/Features/home/presentation/views/screens/home_view.dart';
+import 'package:tracking_app/Features/order/presentation/my_orders/views/order_details.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/change_password/change_password_view_model.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/edit_profile/edit_profile_view_model.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/edit_profile_screen.dart';
@@ -23,9 +26,6 @@ import 'package:tracking_app/Features/track_order/presentation/views/track_order
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/di/di.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/views/my_orders_screen.dart';
-import 'package:tracking_app/Features/auth/presentation/apply/views/apply_screen.dart';
-import 'package:tracking_app/Features/auth/presentation/apply/views/success_apply_screen.dart';
-import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
 // coverage:ignore-file
 
 class Routes {
@@ -68,11 +68,11 @@ class Routes {
   static const String editVehiclePath = '/editvehicle';
   static const String editVehicleName = 'editVehicle';
 
-  static const String resetPasswordPath = '/resetpassword';
-  static const String resetPasswordName = 'resetPassword';
-
   static const String ordersPath = '/orders';
   static const String ordersName = 'orders';
+
+  static const String orderDetailsPath = '/ordersdetails';
+  static const String orderDetailsName = 'ordersdetails';
 
   static const String trackOrderPath = '/trackorder';
   static const String trackOrderName = 'trackOrder';
@@ -96,7 +96,7 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: Routes.onBoardingPath,
+    initialLocation: Routes.ordersPath,
     redirect: (context, state) async {
       final authRepo = getIt<AuthRepoContract>();
       final prefs = await SharedPreferences.getInstance();
@@ -128,11 +128,6 @@ class AppRouter {
       return null;
     },
     routes: [
-      GoRoute(
-        path: Routes.ordersPath,
-        name: Routes.ordersName,
-        builder: (context, state) =>  MyOrdersScreen(),
-      ),
       // final authRepo = getIt<AuthRepoContract>();
       // final bool isLoggedIn = await authRepo.isLoggedIn();
       // final bool isLoggingIn = state.uri.toString() == Routes.signInPath;
@@ -146,6 +141,15 @@ class AppRouter {
         path: Routes.onBoardingPath,
         name: Routes.onBoardingName,
         builder: (context, state) => OnBoardingScreen(),
+      ),
+      GoRoute(
+        path: '${Routes.orderDetailsPath}', // مثلا "/orderdetails"
+        name: Routes.orderDetailsName,
+        builder: (context, state) {
+          final order = state.extra as DriverOrdersEntity?;
+
+          return OrderDetailsDisplayBody(order: order!);
+        },
       ),
       GoRoute(
         path: Routes.loginPath,
@@ -168,64 +172,12 @@ class AppRouter {
         name: Routes.forgetPasswordName,
         builder: (context, state) => ForgetPasswordScreenFlow(),
       ),
-      // / ====== MAIN SHELL ROUTE (BOTTOM NAV BAR) ======
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) {
-          return HomeScreen(navigationShell: navigationShell);
-        },
-        branches: [
-          // Branch 1: Home
-          StatefulShellBranch(
-            navigatorKey: _homeNavigatorKey,
-            routes: [
-              GoRoute(
-                path: Routes.homePath,
-                name: Routes.homeName,
-                builder: (context, state) => const HomeView(),
-              ),
-            ],
-          ),
-          // Branch 2: Orders
-          StatefulShellBranch(
-            navigatorKey: _ordersNavigatorKey,
-            routes: [
-              GoRoute(
-                path: Routes.ordersPath,
-                name: Routes.ordersName,
-                builder: (context, state) => Container(),
-              ),
-            ],
-          ),
-
-          // Branch 3: Profile
-          StatefulShellBranch(
-            navigatorKey: _profileNavigatorKey,
-            routes: [
-              GoRoute(
-                path: Routes.mainProfilePath,
-                name: Routes.mainProfileName,
-                builder: (context, state) => const ProfileScreen(),
-              ),
-            ],
-          ),
-        ],
       GoRoute(
         path: Routes.verifyCodePath,
         name: Routes.verifyCodeName,
         builder: (context, state) => Container(),
       ),
 
-      GoRoute(
-        path: Routes.resetPasswordPath,
-        name: Routes.resetPasswordName,
-        builder: (context, state) => Container(),
-      ),
-
-      GoRoute(
-        path: Routes.editProfilePath,
-        name: Routes.editProfileName,
-        builder: (context, state) => Container(),
-      ),
 
       GoRoute(
         path: Routes.editVehiclePath,
@@ -256,7 +208,7 @@ class AppRouter {
         builder: (context, state) {
           final orderId = state.pathParameters['orderId'] ?? '';
 
-          return TrackOrderScreen(orderId: orderId);
+          return TrackOrderScreen(orderId: orderId ,);
         },
       ),
       GoRoute(
@@ -276,6 +228,48 @@ class AppRouter {
         name: Routes.successName,
         builder: (context, state) => const SuccessScreen(),
       ),
-    ],
-  );
+      // / ====== MAIN SHELL ROUTE (BOTTOM NAV BAR) ======
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return HomeScreen(navigationShell: navigationShell);
+        },
+        branches: [
+          // Branch 1: Home
+          StatefulShellBranch(
+            navigatorKey: _homeNavigatorKey,
+            routes: [
+              GoRoute(
+                path: Routes.homePath,
+                name: Routes.homeName,
+                builder: (context, state) => const HomeView(),
+              ),
+            ],
+          ),
+          // Branch 2: Orders
+          StatefulShellBranch(
+            navigatorKey: _ordersNavigatorKey,
+            routes: [
+              GoRoute(
+                path: Routes.ordersPath,
+                name: Routes.ordersName,
+                builder: (context, state) => MyOrdersScreen(),
+              ),
+            ],
+          ),
+
+          // Branch 3: Profile
+          StatefulShellBranch(
+            navigatorKey: _profileNavigatorKey,
+            routes: [
+              GoRoute(
+                path: Routes.mainProfilePath,
+                name: Routes.mainProfileName,
+                builder: (context, state) => const ProfileScreen(),
+              ),
+            ],
+          ),
+        ],
+
+  )
+    ]);
 }

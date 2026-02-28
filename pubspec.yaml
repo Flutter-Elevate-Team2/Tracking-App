@@ -44,7 +44,6 @@ dependencies:
   flutter_dotenv: ^6.0.0
   flutter_local_notifications: ^20.0.0
   flutter_localization: ^0.3.3
-  flutter_local_notifications: ^18.0.1
   flutter_svg: ^2.2.3
   geolocator: ^13.0.2
   get_it: ^9.2.0
