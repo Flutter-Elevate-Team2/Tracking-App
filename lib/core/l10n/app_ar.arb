@@ -95,15 +95,23 @@
 
   "vehicleNumberInvalid": "رقم المركبة غير صالح",
   "@vehicleNumberInvalid": { "description": "رسالة خطأ عند إدخال رقم مركبة غير صالح" },
+  "nationalIdRequired": "الرقم القومي مطلوب",
+  "nationalIdInvalidLength": "الرقم القومي يجب أن يكون 14 رقمًا",
+  "nationalIdInvalidChars": "الرقم القومي يجب أن يحتوي على أرقام فقط",
 
+  "vehicleNumberLength": "رقم المركبة يجب أن يكون بين 3 و 10 حروف أو أرقام",
+  "vehicleNumberInvalidChars": "رقم المركبة يجب أن يحتوي على حروف وأرقام فقط",
   "vehicleNumberRequired": "رقم المركبة مطلوب",
   "@vehicleNumberRequired": { "description": "رسالة خطأ عند ترك حقل رقم المركبة فارغًا" },
 
+  "errorLoadingCountries": "حدث خطأ أثناء تحميل الدول: {error}",
   "vehicleLicenseInvalid": "ترخيص المركبة غير صالح",
   "@vehicleLicenseInvalid": { "description": "رسالة خطأ عند إدخال ترخيص مركبة غير صالح" },
 
   "vehicleLicenseRequired": "ترخيص المركبة مطلوب",
   "@vehicleLicenseRequired": { "description": "رسالة خطأ عند ترك حقل ترخيص المركبة فارغًا" },
+  "uploadLicensePhoto": "ارفع صورة الرخصة",
+  "uploadIdImage": "ارفع صورة البطاقة",
 
   "phoneRequired": "رقم الهاتف مطلوب",
   "@phoneRequired": { "description": "رسالة تحقق عندما يكون رقم الهاتف فارغًا" },

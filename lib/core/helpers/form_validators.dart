@@ -70,4 +70,42 @@ class FormValidators {
 
     return null;
   }
+
+  static String? validateNationalId(BuildContext context, String? value) {
+    final trimmedValue = value?.trim();
+
+    if (trimmedValue == null || trimmedValue.isEmpty) {
+      return AppLocalizations.of(context)!.nationalIdRequired; //
+    }
+
+    if (trimmedValue.length != 14) {
+      return AppLocalizations.of(context)!.nationalIdInvalidLength;
+    }
+
+    if (!RegExp(r'^\d+$').hasMatch(trimmedValue)) {
+      return AppLocalizations.of(context)!.nationalIdInvalidChars;
+    }
+
+    return null;
+  }
+
+  static String? validateVehicleNumber(BuildContext context, String? value) {
+    final trimmedValue = value?.trim();
+
+    if (trimmedValue == null || trimmedValue.isEmpty) {
+      return AppLocalizations.of(context)!.vehicleNumberRequired;
+    }
+
+    if (trimmedValue.length < 3 || trimmedValue.length > 10) {
+      return AppLocalizations.of(context)!.vehicleNumberLength;
+    }
+
+    if (!RegExp(r'^[A-Za-z0-9]+$').hasMatch(trimmedValue)) {
+      return AppLocalizations.of(context)!.vehicleNumberInvalidChars;
+    }
+
+    return null;
+  }
+
+
 }
