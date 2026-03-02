@@ -1,0 +1,152 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tracking_app/Features/auth/domain/auth_repo_contract/auth_repo_contract.dart';
+import 'package:tracking_app/Features/auth/presentation/forget_password/views/forget_password_screen_flow.dart';
+import 'package:tracking_app/Features/auth/presentation/login/views/login_screen.dart';
+import 'package:tracking_app/core/di/di.dart';
+import 'package:tracking_app/Features/auth/presentation/apply/views/apply_screen.dart';
+import 'package:tracking_app/Features/auth/presentation/apply/views/success_apply_screen.dart';
+import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
+// coverage:ignore-file
+
+class Routes {
+  static const String onBoardingPath = '/onBoarding';
+  static const String onBoardingName = 'onBoarding';
+
+  static const String loginPath = '/login';
+  static const String loginName = 'login';
+
+  static const String applyPath = '/apply';
+  static const String applyName = 'apply';
+
+  static const String successApplyPath = '/successapply';
+  static const String successApplyName = 'successApply';
+
+  static const String forgetPasswordPath = '/forgetpassword';
+  static const String forgetPasswordName = 'forgetPassword';
+
+  // Home Tabs Paths
+  static const String homePath = '/home';
+  static const String homeName = 'home';
+
+  static const String profilePath = '/profile';
+  static const String profileName = 'profile';
+
+  static const String editProfilePath = '/editprofile';
+  static const String editProfileName = 'editProfile';
+
+  static const String editVehiclePath = '/editvehicle';
+  static const String editVehicleName = 'editVehicle';
+
+  static const String ordersPath = '/orders';
+  static const String ordersName = 'orders';
+}
+
+class AppRouter {
+  static final GlobalKey<NavigatorState> rootNavigatorKey =
+      GlobalKey<NavigatorState>();
+  // static final GlobalKey<NavigatorState> _homeNavigatorKey =
+  //     GlobalKey<NavigatorState>();
+  // static final GlobalKey<NavigatorState> _ordersNavigatorKey =
+  //     GlobalKey<NavigatorState>();
+  // static final GlobalKey<NavigatorState> _profileNavigatorKey =
+  //     GlobalKey<NavigatorState>();
+
+  static final GoRouter router = GoRouter(
+    navigatorKey: rootNavigatorKey,
+    initialLocation: Routes.onBoardingPath,
+    redirect: (context, state) async {
+      final authRepo = getIt<AuthRepoContract>();
+      final bool isLoggedIn = await authRepo.isLoggedIn();
+      final bool isLoggingIn = state.uri.toString() == Routes.loginPath;
+
+      if (isLoggedIn && isLoggingIn) {
+        return Routes.homePath;
+      }
+      return null;
+    },
+    routes: [
+      GoRoute(
+        path: Routes.onBoardingPath,
+        name: Routes.onBoardingName,
+        builder: (context, state) => OnBoardingScreen(),
+      ),
+      GoRoute(
+        path: Routes.loginPath,
+        name: Routes.loginName,
+        builder: (context, state) => LoginScreen(),
+      ),
+      GoRoute(
+        path: Routes.applyPath,
+        name: Routes.applyName,
+        builder: (context, state) => ApplyScreen(),
+      ),
+      GoRoute(
+        path: Routes.successApplyPath,
+        name: Routes.successApplyName,
+        builder: (context, state) => SuccessApplyScreen(),
+      ),
+
+      GoRoute(
+        path: Routes.forgetPasswordPath,
+        name: Routes.forgetPasswordName,
+        builder: (context, state) => const ForgetPasswordScreenFlow(),
+      ),
+      GoRoute(
+        path: Routes.editProfilePath,
+        name: Routes.editProfileName,
+        builder: (context, state) => Container(),
+      ),
+
+      GoRoute(
+        path: Routes.editVehiclePath,
+        name: Routes.editVehicleName,
+        builder: (context, state) => Container(),
+      ),
+
+      /// ====== MAIN SHELL ROUTE (BOTTOM NAV BAR) ======
+      // StatefulShellRoute.indexedStack(
+      //   builder: (context, state, navigationShell) {
+      //     return HomeScreen(navigationShell: navigationShell);
+      //   },
+      //   branches: [
+      //     // Branch 1: Home
+      //     StatefulShellBranch(
+      //       navigatorKey: _homeNavigatorKey,
+      //       routes: [
+      //         GoRoute(
+      //           path: Routes.homePath,
+      //           name: Routes.homeName,
+      //           builder: (context, state) =>  Container(),
+      //         ),
+      //       ],
+      //     ),
+      //
+      //     // Branch 2: Orders
+      //     StatefulShellBranch(
+      //       navigatorKey: _ordersNavigatorKey,
+      //       routes: [
+      //         GoRoute(
+      //           path: Routes.ordersPath,
+      //           name: Routes.ordersName,
+      //           builder: (context, state) =>  Container(),
+      //         ),
+      //       ],
+      //     ),
+      //
+      //     // Branch 3: Profile
+      //     StatefulShellBranch(
+      //       navigatorKey: _profileNavigatorKey,
+      //       routes: [
+      //         GoRoute(
+      //           path: Routes.profilePath,
+      //           name: Routes.profileName,
+      //           builder: (context, state) =>  Container(),
+      //         ),
+      //       ],
+      //     ),
+      //   ],
+      // ),
+    ],
+  );
+}

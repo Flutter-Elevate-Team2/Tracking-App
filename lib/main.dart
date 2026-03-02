@@ -1,0 +1,69 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:tracking_app/core/app_router/app_router.dart';
+import 'package:tracking_app/core/controller/session_controller.dart';
+import 'package:tracking_app/core/di/di.dart';
+import 'package:tracking_app/core/helpers/session_expired_handler.dart';
+import 'package:tracking_app/core/l10n/app_localizations.dart';
+import 'package:tracking_app/core/theming/app_theming.dart';
+
+import 'core/l10n/view_model/language_cubit.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(fileName: ".env");
+  await configureDependencies();
+
+  runApp(const MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _sessionController = getIt<SessionController>();
+  late StreamSubscription? _subscription;
+  @override
+  void initState() {
+    super.initState();
+    _subscription = _sessionController.onSessionExpired.listen((_) {
+      SessionExpiredHandler.handle();
+    });
+  }
+
+  @override
+  void dispose() {
+    // Fix: Safe cancel
+    _subscription?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [BlocProvider(create: (_) => LanguageCubit())],
+      child: BlocBuilder<LanguageCubit, Locale>(
+        builder: (context, locale) {
+          return MaterialApp.router(
+            locale: locale,
+            routerConfig: AppRouter.router,
+            debugShowCheckedModeBanner: false,
+            onGenerateTitle: (context) =>
+                AppLocalizations.of(context)!.appTitle,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            theme: AppTheme.lightTheme,
+          );
+        },
+      ),
+    );
+  }
+}
