@@ -7,6 +7,7 @@ import 'package:tracking_app/Features/track_order/presentation/views/success_scr
 import 'package:tracking_app/core/app_router/app_router.dart';
 import 'package:tracking_app/core/l10n/app_localizations.dart';
 import 'package:tracking_app/core/widget/custom_button.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class MockGoRouter extends Mock implements GoRouter {}
