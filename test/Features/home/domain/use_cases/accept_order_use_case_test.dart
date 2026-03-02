@@ -13,6 +13,7 @@ import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/controller/session_controller.dart';
 import 'package:tracking_app/core/services/firebase_order_service.dart';
 import 'package:tracking_app/core/services/location_service.dart';
+import 'package:tracking_app/core/services/push_notification_service.dart';
 
 import 'accept_order_use_case_test.mocks.dart';
 
@@ -23,6 +24,7 @@ import 'accept_order_use_case_test.mocks.dart';
   LocationService,
   GetDriverProfileUseCase,
   SharedPreferences,
+  PushNotificationService,
 ])
 void main() {
   late MockStartOrderUseCase mockStartOrder;
@@ -32,6 +34,7 @@ void main() {
   late MockGetDriverProfileUseCase mockGetProfile;
   late MockSharedPreferences mockPrefs;
   late AcceptOrderUseCase useCase;
+  late MockPushNotificationService mockPush;
 
   final tOrder = OrderEntity(id: '123', orderNumber: '#1');
   final tDriver = DriverEntity(
@@ -76,6 +79,7 @@ void main() {
     mockLocation = MockLocationService();
     mockGetProfile = MockGetDriverProfileUseCase();
     mockPrefs = MockSharedPreferences();
+    mockPush = MockPushNotificationService();
 
     useCase = AcceptOrderUseCase(
       mockStartOrder,
@@ -84,6 +88,7 @@ void main() {
       mockLocation,
       mockGetProfile,
       mockPrefs,
+      mockPush
     );
   });
 
@@ -107,12 +112,13 @@ void main() {
         mockFirebase.uploadTrackingOrder(any, any),
       ).thenAnswer((_) async => {});
       when(mockPrefs.setString(any, any)).thenAnswer((_) async => true);
-
+      when(mockPush.deviceToken).thenReturn('fake_driver_token');
       // Action
       final result = await useCase(tOrder);
 
       // Verify
       expect(result, isA<SuccessResponse<OrderEntity>>());
+      verify(mockPush.deviceToken).called(1);
       verify(mockFirebase.getUserDataByOrderId('123')).called(1);
       verify(mockStartOrder.call('123')).called(1);
       verify(mockFirebase.uploadTrackingOrder('123', any)).called(1);
