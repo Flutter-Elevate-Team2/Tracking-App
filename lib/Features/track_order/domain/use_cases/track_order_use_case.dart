@@ -6,8 +6,9 @@ import 'package:tracking_app/core/services/push_notification_service.dart';
 @injectable
 class UpdateOrderStatusUseCase {
   final FirebaseOrderService _firebaseService;
+  final PushNotificationService _pushNotificationService; // 1. أضيفي السطر ده
 
-  UpdateOrderStatusUseCase(this._firebaseService);
+  UpdateOrderStatusUseCase(this._firebaseService,this._pushNotificationService);
 
   Future<void> call({
     required String orderId,
@@ -24,7 +25,7 @@ class UpdateOrderStatusUseCase {
 
     // 2. Send Notification if token exists
     if (userToken.isNotEmpty) {
-      await PushNotificationService.sendNotification(
+      await _pushNotificationService.sendNotification(
         token: userToken,
         title: title,
         body: body,
