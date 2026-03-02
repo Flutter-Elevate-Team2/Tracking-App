@@ -17,7 +17,7 @@ import 'package:tracking_app/core/widget/custom_button.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
 
 import 'apply_form_test.mocks.dart';
-@GenerateMocks([ApplyViewModel, GoRouter])
+@GenerateMocks([ApplyViewModel,VehicleViewModel , GoRouter])
 void main() {
   late MockApplyViewModel mockApplyViewModel;
   late MockVehicleViewModel mockVehicleViewModel;
