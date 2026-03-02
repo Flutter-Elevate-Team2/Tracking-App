@@ -16,7 +16,6 @@ import 'package:tracking_app/core/l10n/app_localizations.dart';
 import 'package:tracking_app/core/widget/custom_button.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
 
-import '../../../../vehicle/presentation/views/vehicle_type_field_test.mocks.dart';
 import 'apply_form_test.mocks.dart';
 @GenerateMocks([ApplyViewModel, GoRouter])
 void main() {

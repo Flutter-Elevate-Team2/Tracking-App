@@ -10,6 +10,7 @@ import 'package:tracking_app/Features/auth/presentation/apply/view_model/apply_e
 import 'package:tracking_app/Features/auth/presentation/apply/view_model/apply_states.dart';
 import 'package:tracking_app/Features/auth/presentation/apply/view_model/apply_view_model.dart';
 import 'package:tracking_app/core/base_response/base_response.dart';
+import 'package:tracking_app/core/base_states/base_states.dart';
 
 import 'apply_view_model_test.mocks.dart';
 
@@ -96,6 +97,21 @@ void main() {
 
       // ACT
       viewModel.doIntent(tEvent);
+    });
+  });
+  group('ApplyStates Testing', () {
+    test('copyWith should return same object if no arguments provided', () {
+      final state = ApplyStates();
+      final result = state.copyWith();
+      expect(result.applyState, state.applyState);
+    });
+
+    test('copyWith should update applyState and keep others', () {
+      final state = ApplyStates();
+      final newState = BaseState<ApplyEntity>(isLoading: true);
+      final result = state.copyWith(applyState: newState);
+      expect(result.applyState, newState);
+      expect(result.applyState?.isLoading, true);
     });
   });
 }
