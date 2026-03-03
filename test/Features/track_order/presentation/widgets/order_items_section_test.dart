@@ -24,6 +24,7 @@ void main() {
     userImage: "",
     userPhone: "",
     deviceToken: "",
+    userId: "",
   );
 
   final fakeItems = [

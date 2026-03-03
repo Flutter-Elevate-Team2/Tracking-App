@@ -40,6 +40,7 @@ void main() {
       userImage: "",
       userPhone: "010222",
       deviceToken: "",
+      userId: "",
     ),
     items: [],
     trackingLocation: TrackingLocationEntity(lat: 123, long: 123),

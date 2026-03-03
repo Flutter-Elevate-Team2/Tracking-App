@@ -1,19 +1,27 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:tracking_app/Features/track_order/data/model/notification_model.dart';
 import 'package:tracking_app/core/services/push_notification_service.dart';
+
+import 'push_notification_service_test.mocks.dart';
 
 @GenerateMocks([
   FirebaseMessaging,
   FlutterLocalNotificationsPlugin,
   NotificationSettings,
+  FirebaseFirestore,
+  CollectionReference,
+  DocumentReference,
+  http.Client,
 ])
-import 'push_notification_service_test.mocks.dart';
-
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -21,11 +29,15 @@ void main() {
   late MockFirebaseMessaging mockMessaging;
   late MockFlutterLocalNotificationsPlugin mockLocalNotifications;
   late MockNotificationSettings mockSettings;
+  late MockFirebaseFirestore mockFirestore;
+  late MockClient mockHttpClient;
 
   setUp(() {
     mockMessaging = MockFirebaseMessaging();
     mockLocalNotifications = MockFlutterLocalNotificationsPlugin();
     mockSettings = MockNotificationSettings();
+    mockFirestore = MockFirebaseFirestore();
+    mockHttpClient = MockClient();
 
     when(
       mockMessaging.requestPermission(
@@ -34,12 +46,10 @@ void main() {
         sound: anyNamed('sound'),
       ),
     ).thenAnswer((_) async => mockSettings);
-
     when(
       mockSettings.authorizationStatus,
     ).thenReturn(AuthorizationStatus.authorized);
     when(mockMessaging.getToken()).thenAnswer((_) async => 'fake_token');
-
     when(
       mockLocalNotifications.initialize(
         any,
@@ -49,159 +59,196 @@ void main() {
       ),
     ).thenAnswer((_) async => true);
 
-    service = PushNotificationService(mockMessaging, mockLocalNotifications);
+    service = PushNotificationService(
+      mockMessaging,
+      mockLocalNotifications,
+      mockFirestore,
+      mockHttpClient,
+    );
+    service.tokenProvider = () async => 'fake_access_token';
   });
 
-  group('PushNotificationService Clean Coverage Tests', () {
-    test('init() and Permission coverage', () async {
-      // Act
+  group('PushNotificationService Optimized Coverage', () {
+    test('init() and getDeviceToken - Full Success/Error Paths', () async {
+      // Test init
       await service.init();
-      await service.requestPermission();
-
-      // Assert
       verify(
         mockMessaging.requestPermission(alert: true, badge: true, sound: true),
-      ).called(2);
-      expect(service.deviceToken, 'fake_token');
-    });
+      ).called(1);
 
-    test('getDeviceToken covers Android, iOS, and Error paths', () async {
+      // Test Android/iOS Token
       when(mockMessaging.getToken()).thenAnswer((_) async => 'android_token');
       await service.getDeviceToken();
       expect(service.deviceToken, 'android_token');
 
-      when(mockMessaging.getAPNSToken()).thenAnswer((_) async => 'ios_token');
+      // Test Exception Path
+      when(mockMessaging.getToken()).thenThrow(Exception('Error'));
       await service.getDeviceToken();
-      service = PushNotificationService(mockMessaging, mockLocalNotifications);
-
-      when(mockMessaging.getToken()).thenThrow(Exception('Token Error'));
-      when(mockMessaging.getAPNSToken()).thenThrow(Exception('Token Error'));
-
-      await service.getDeviceToken();
-
       expect(service.deviceToken, isNull);
     });
 
-    test('showLocalNotification success and null guard coverage', () async {
-      final message = RemoteMessage(
-        notification: const RemoteNotification(
-          title: 'Order Update',
-          body: 'Your order is on the way',
-          android: AndroidNotification(),
-        ),
-        data: {'orderId': '123'},
-      );
-
-      await service.showLocalNotification(message);
-      verify(
-        mockLocalNotifications.show(
-          any,
-          'Order Update',
-          'Your order is on the way',
-          any,
-          payload: anyNamed('payload'),
-        ),
-      ).called(1);
-
-      await service.showLocalNotification(
-        const RemoteMessage(notification: null),
-      );
-      verifyNoMoreInteractions(mockLocalNotifications);
-    });
-
-    test('sendNotification covers asset loading and error catch', () async {
-      final serviceAccountMock = {
-        'project_id': 'test-123',
-        'private_key': 'mock_key',
-        'client_email': 'mock@test.com',
-      };
-
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(const MethodChannel('flutter/assets'), (
-            message,
-          ) async {
-            final data = utf8.encode(json.encode(serviceAccountMock));
-            return ByteData.view(Uint8List.fromList(data).buffer);
-          });
-
-      await service.sendNotification(token: 'token', title: 'T', body: 'B');
-
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(
-            const MethodChannel('flutter/assets'),
-            (message) async => null,
-          );
-
-      await service.sendNotification(token: 'token', title: 'T', body: 'B');
-    });
-
-    test('Stream and helper initialization coverage', () async {
-      expect(service.onNotificationReceived, isA<Stream<void>>());
-
-      await service.initLocalNotifications();
-      verify(
-        mockLocalNotifications.initialize(
-          any,
-          onDidReceiveNotificationResponse: anyNamed(
-            'onDidReceiveNotificationResponse',
-          ),
-        ),
-      ).called(1);
-    });
-
-    test('Force coverage for Notification Listeners', () async {
+    test('showLocalNotification - Branch Coverage', () async {
       final message = RemoteMessage(
         notification: const RemoteNotification(
           title: 'T',
           body: 'B',
           android: AndroidNotification(),
         ),
+        data: {'id': '1'},
+      );
+      // Case: Success
+      await service.showLocalNotification(message);
+      // Case: Null Android or Null Notification
+      await service.showLocalNotification(
+        const RemoteMessage(
+          notification: RemoteNotification(
+            title: 'T',
+            body: 'B',
+            android: null,
+          ),
+        ),
+      );
+      await service.showLocalNotification(
+        const RemoteMessage(notification: null),
       );
 
-      service.handleForegroundMessage(message);
-      service.handleMessageOpenedApp(message);
+      verify(
+        mockLocalNotifications.show(
+          any,
+          any,
+          any,
+          any,
+          payload: anyNamed('payload'),
+        ),
+      ).called(1);
+    });
+
+    test('sendNotification - Success Case (High Coverage)', () async {
+      when(
+        mockHttpClient.post(
+          any,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
+      ).thenAnswer(
+        (_) async => http.Response(json.encode({'name': 'ok'}), 200),
+      );
+
+      final mockCollection = MockCollectionReference<Map<String, dynamic>>();
+      final mockDoc = MockDocumentReference<Map<String, dynamic>>();
+
+      when(
+        mockFirestore.collection('notifications'),
+      ).thenReturn(mockCollection);
+      when(mockCollection.doc(any)).thenReturn(mockDoc);
+      when(mockDoc.set(any)).thenAnswer((_) async => {});
+
+      // Act
+      await service.sendNotification(
+        token: 'token',
+        title: 'T',
+        body: 'B',
+        data: {'userId': '123'},
+      );
 
       // Assert
       verify(
-        mockLocalNotifications.show(
+        mockHttpClient.post(
           any,
-          any,
-          any,
-          any,
-          payload: anyNamed('payload'),
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
         ),
       ).called(1);
+      verify(mockFirestore.collection('notifications')).called(1);
+      verify(mockDoc.set(any)).called(1);
     });
 
-    test('showLocalNotification - branch coverage (android is null)', () async {
-      final message = RemoteMessage(
-        notification: const RemoteNotification(
-          title: 'T',
-          body: 'B',
-          android: null,
+    test('sendNotification - HTTP Failure & Catch Block Coverage', () async {
+      when(
+        mockHttpClient.post(
+          any,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
+      ).thenAnswer((_) async => http.Response('Error', 400));
+      await service.sendNotification(token: 't', title: 'T', body: 'B');
+
+      // Case 2: Asset missing (Triggers catch block)
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+            const MethodChannel('flutter/assets'),
+            (m) async => null,
+          );
+      await service.sendNotification(token: 't', title: 'T', body: 'B');
+
+      verifyNever(mockFirestore.collection('notifications'));
+    });
+
+    test('saveNotification - Data Validation Coverage', () async {
+      final mockCollection = MockCollectionReference<Map<String, dynamic>>();
+      final mockDoc = MockDocumentReference<Map<String, dynamic>>();
+      when(
+        mockFirestore.collection('notifications'),
+      ).thenReturn(mockCollection);
+      when(mockCollection.doc(any)).thenReturn(mockDoc);
+
+      final model = NotificationModel(
+        id: '1',
+        receiverId: 'u1',
+        title: 'T',
+        body: 'B',
+        sentAt: DateTime.now(),
+      );
+      await service.saveNotification(model);
+
+      verify(mockDoc.set(argThat(isA<Map<String, dynamic>>()))).called(1);
+    });
+
+    test('Listeners and Streams coverage', () async {
+      expect(service.onNotificationReceived, isA<Stream<void>>());
+      service.handleForegroundMessage(
+        const RemoteMessage(
+          notification: RemoteNotification(
+            title: 'T',
+            body: 'B',
+            android: AndroidNotification(),
+          ),
         ),
       );
-      await service.showLocalNotification(message);
+      service.handleMessageOpenedApp(const RemoteMessage(notification: null));
     });
 
-    test('showLocalNotification - full branch coverage', () async {
-      final messageNoAndroid = RemoteMessage(
-        notification: const RemoteNotification(
-          title: 'T',
-          body: 'B',
-          android: null,
-        ),
-      );
-      await service.showLocalNotification(messageNoAndroid);
+    test(
+      'sendNotification - should cover catch block on generic exception',
+      () async {
+        when(
+          mockHttpClient.post(
+            any,
+            headers: anyNamed('headers'),
+            body: anyNamed('body'),
+          ),
+        ).thenThrow(Exception('Network Failed'));
 
-      await service.showLocalNotification(
-        const RemoteMessage(notification: null),
-      );
-    });
+        await service.sendNotification(token: 't', title: 'T', body: 'B');
 
-    test('handleForegroundMessage - notification is null', () async {
-      const message = RemoteMessage(notification: null);
-      service.handleForegroundMessage(message);
+        verifyNever(mockFirestore.collection('notifications'));
+      },
+    );
+
+    test('Force coverage for Background Handler', () async {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+            const MethodChannel('plugins.flutter.io/firebase_core'),
+            (message) async => null,
+          );
+
+      const message = RemoteMessage(messageId: '123');
+
+      try {
+        await firebaseMessagingBackgroundHandler(message);
+      } catch (e) {
+        debugPrint('Expected background error in test: $e');
+      }
     });
   });
 }

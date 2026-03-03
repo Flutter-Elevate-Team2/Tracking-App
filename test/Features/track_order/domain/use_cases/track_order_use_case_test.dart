@@ -51,6 +51,7 @@ void main() {
         userToken: tUserToken,
         title: tTitle,
         body: tBody,
+        userId: ''
       );
 
       // Assert
@@ -76,6 +77,7 @@ void main() {
         userToken: '',
         title: tTitle,
         body: tBody,
+        userId: ''
       );
 
       verify(mockFirebaseService.uploadTrackingOrder(any, any)).called(1);

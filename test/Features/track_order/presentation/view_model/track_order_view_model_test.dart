@@ -7,6 +7,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mapbox;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/order_status.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/order_tracking_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/store_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/tracking_location_entity.dart';
@@ -59,6 +60,7 @@ void main() {
       userImage: "I",
       userPhone: "P",
       deviceToken: "D",
+      userId: "U",
     ),
     trackingLocation: TrackingLocationEntity(lat: 30.0, long: 31.0),
     userLocationEntity: UserLocationEntity(lat: 30.2, long: 31.2),
@@ -114,7 +116,6 @@ void main() {
   });
 
   group('OrderStatusViewModel 100% Coverage', () {
-    // 1. اختبار FetchOrderDetails (نجاح)
     blocTest<OrderStatusViewModel, TrackOrderStatusState>(
       'FetchOrderDetails: Success path',
       build: () {
@@ -148,7 +149,6 @@ void main() {
       ],
     );
 
-    // 2. اختبار FetchOrderDetails (بيانات فارغة - تغطية else)
     blocTest<OrderStatusViewModel, TrackOrderStatusState>(
       'FetchOrderDetails: Not Found path',
       build: () {
@@ -170,60 +170,74 @@ void main() {
       ],
     );
 
-    // 3. اختبار UpdateStatus (نجاح + تغطية delivered + تغطية refetch)
-    // blocTest<OrderStatusViewModel, TrackOrderStatusState>(
-    //   'UpdateStatus: Delivered Success',
-    //   build: () {
-    //     // تأكدي إن كل الـ arguments واخدة anyNamed
-    //     when(mockUpdateUseCase.call(
-    //       title: anyNamed('title'),
-    //       orderId: anyNamed('orderId'),
-    //       status: anyNamed('status'),
-    //       userToken: anyNamed('userToken'),
-    //       body: anyNamed('body'), // ده التعديل المهم
-    //     )).thenAnswer((_) async => Future.value());
-    //
-    //     when(mockGetOrderUseCase.call(any)).thenAnswer((_) async => fakeOrder);
-    //     return viewModel;
-    //   },
-    //   act: (bloc) => bloc.doIntent(mockContext, UpdateOrderStatusEvent(
-    //       orderId: "123", status: OrderStatus.delivered, userToken: "T", title: "T"
-    //   )),
-    //   wait: const Duration(milliseconds: 500),
-    //   verify: (_) {
-    //     verify(mockUpdateUseCase.call(
-    //       title: anyNamed('title'),
-    //       orderId: anyNamed('orderId'),
-    //       status: anyNamed('status'),
-    //       userToken: anyNamed('userToken'),
-    //       body: anyNamed('body'), // لازم هنا كمان يتصلح
-    //     )).called(1);
-    //   },
-    // );
-    //
-    // // 4. اختبار UpdateStatus (فشل - تغطية catch)
-    // blocTest<OrderStatusViewModel, TrackOrderStatusState>(
-    //   'UpdateStatus: Failure path',
-    //   build: () {
-    //     when(mockUpdateUseCase.call(
-    //       title: anyNamed('title'),
-    //       orderId: anyNamed('orderId'),
-    //       status: anyNamed('status'),
-    //       userToken: anyNamed('userToken'),
-    //       body: anyNamed('body'), // هنا كمان
-    //     )).thenThrow(Exception("Update Failed"));
-    //     return viewModel;
-    //   },
-    //   act: (bloc) => bloc.doIntent(mockContext, UpdateOrderStatusEvent(
-    //       orderId: "123", status: OrderStatus.accepted, userToken: "T", title: "T"
-    //   )),
-    //   expect: () => [
-    //     isA<TrackOrderStatusState>().having((s) => s.updateStatusState?.isLoading, 'update loading', true),
-    //     isA<TrackOrderStatusState>().having((s) => s.updateStatusState?.errorMessage, 'error', contains("Update Failed")),
-    //   ],
-    // );
+    blocTest<OrderStatusViewModel, TrackOrderStatusState>(
+      'UpdateStatus: Coverage through caught error',
+      build: () {
+        return viewModel;
+      },
+      seed: () => TrackOrderStatusState(orderState: BaseState(data: fakeOrder)),
+      act: (bloc) => bloc.doIntent(
+        mockContext,
+        UpdateOrderStatusEvent(
+          orderId: "123",
+          status: OrderStatus.delivered,
+          userToken: "T",
+          title: "T",
+        ),
+      ),
+      expect: () => [
+        isA<TrackOrderStatusState>().having(
+          (s) => s.updateStatusState?.isLoading,
+          'loading',
+          true,
+        ),
+        isA<TrackOrderStatusState>().having(
+          (s) => s.updateStatusState?.errorMessage,
+          'catch coverage',
+          isNotNull,
+        ),
+      ],
+    );
 
-    // 5. تغطية الـ changeTarget والـ Branching
+    blocTest<OrderStatusViewModel, TrackOrderStatusState>(
+      'FetchOrderDetails: Error Catch Path',
+      build: () {
+        when(
+          mockGetOrderUseCase.call(any),
+        ).thenThrow(Exception("Network Error"));
+        return viewModel;
+      },
+      act: (bloc) => bloc.doIntent(mockContext, FetchOrderDetailsEvent("123")),
+      expect: () => [
+        isA<TrackOrderStatusState>().having(
+          (s) => s.orderState?.isLoading,
+          'loading',
+          true,
+        ),
+        isA<TrackOrderStatusState>().having(
+          (s) => s.orderState?.errorMessage,
+          'error',
+          contains("Network Error"),
+        ),
+      ],
+    );
+    test('Location stream should update Firebase and Emit state', () async {
+      final controller = StreamController<Position>();
+      when(
+        mockLocationService.getLocationStream(),
+      ).thenAnswer((_) => controller.stream);
+
+      viewModel.startTracking("123");
+
+      controller.add(fakePosition);
+
+      await Future.delayed(Duration.zero);
+
+      verify(mockFirebaseService.updateOrderLocation(("123"), any)).called(1);
+      expect(viewModel.state.currentDriverPosition, fakePosition);
+
+      controller.close();
+    });
     test('changeTarget should toggle showPickup and update route', () async {
       viewModel.emit(
         viewModel.state.copyWith(
@@ -241,5 +255,43 @@ void main() {
       await Future.delayed(Duration.zero);
       verify(mockGetDirectionsUseCase.call(any, any)).called(greaterThan(0));
     });
+
+    blocTest<OrderStatusViewModel, TrackOrderStatusState>(
+      'UpdateStatus: Failure path coverage',
+      build: () {
+        when(
+          mockUpdateUseCase.call(
+            title: anyNamed('title'),
+            orderId: anyNamed('orderId'),
+            status: anyNamed('status'),
+            userToken: anyNamed('userToken'),
+            body: anyNamed('body'),
+            userId: anyNamed('userId'),
+          ),
+        ).thenThrow(Exception("Update Error"));
+        return viewModel;
+      },
+      act: (bloc) => bloc.doIntent(
+        mockContext,
+        UpdateOrderStatusEvent(
+          orderId: "123",
+          status: OrderStatus.accepted,
+          userToken: "T",
+          title: "T",
+        ),
+      ),
+      expect: () => [
+        isA<TrackOrderStatusState>().having(
+          (s) => s.updateStatusState?.isLoading,
+          'loading',
+          true,
+        ),
+        isA<TrackOrderStatusState>().having(
+          (s) => s.updateStatusState?.errorMessage,
+          'error',
+          isNotNull,
+        ),
+      ],
+    );
   });
 }

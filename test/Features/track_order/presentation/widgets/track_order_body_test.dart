@@ -39,7 +39,8 @@ void main() {
         userName: "John Doe",
         userImage: "",
         userPhone: "78910",
-        deviceToken: "mock_token"
+        deviceToken: "mock_token",
+        userId: "mock_user_id"
     ),
     items: [],
      trackingLocation: TrackingLocationEntity(

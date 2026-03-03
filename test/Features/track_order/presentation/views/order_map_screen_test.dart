@@ -28,6 +28,7 @@ void main() {
       userImage: 'userImage',
       userPhone: 'userPhone',
       deviceToken: 'deviceToken',
+      userId: 'userId',
     ),
     orderNumber: 'ORD-1',
     status: 'accepted',
