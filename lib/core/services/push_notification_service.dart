@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -10,21 +11,33 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
+import 'package:tracking_app/Features/track_order/data/model/notification_model.dart';
 
+@visibleForTesting
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   if (kDebugMode) {
     print('Handling a background message: ${message.messageId}');
   }
 }
 
+typedef TokenProvider = Future<String> Function();
+
 @singleton
 class PushNotificationService {
   final FirebaseMessaging _firebaseMessaging;
   final FlutterLocalNotificationsPlugin _localNotifications;
+  final FirebaseFirestore _firestore;
+  final http.Client _client;
+  TokenProvider? tokenProvider; // 👈 أضيفي هذا
 
-  PushNotificationService(this._firebaseMessaging, this._localNotifications);
+  PushNotificationService(
+    this._firebaseMessaging,
+    this._localNotifications,
+    this._firestore,
+    this._client,
+  );
 
   String? _deviceToken;
   String? get deviceToken => _deviceToken;
@@ -40,9 +53,7 @@ class PushNotificationService {
     await getDeviceToken();
 
     if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
-      FirebaseMessaging.onBackgroundMessage(
-        _firebaseMessagingBackgroundHandler,
-      );
+      FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     }
 
     FirebaseMessaging.onMessage.listen(handleForegroundMessage);
@@ -80,6 +91,7 @@ class PushNotificationService {
         _deviceToken = await _firebaseMessaging.getToken();
       }
     } catch (e) {
+      _deviceToken = null;
       if (kDebugMode) print('Error getting device token: $e');
     }
   }
@@ -137,21 +149,30 @@ class PushNotificationService {
     Map<String, dynamic>? data,
   }) async {
     try {
-      final String response = await rootBundle.loadString(
-        'assets/json/tracking-app-service.json',
-      );
-      final serviceAccountJson = json.decode(response);
-      final scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
+      String accessToken;
+      String projectId = "tracking-app-123";
 
-      final authClient = await auth.clientViaServiceAccount(
-        auth.ServiceAccountCredentials.fromJson(serviceAccountJson),
-        scopes,
-      );
+      // 👈 الاستخدام هنا بنفس المنطق
+      if (tokenProvider != null) {
+        accessToken = await tokenProvider!();
+      } else {
+        final String response = await rootBundle.loadString(
+          'assets/json/tracking-app-service.json',
+        );
+        final serviceAccountJson = json.decode(response);
+        final scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
+        projectId = serviceAccountJson['project_id'];
 
-      final String accessToken = authClient.credentials.accessToken.data;
-      final String projectId = serviceAccountJson['project_id'];
+        final authClient = await auth.clientViaServiceAccount(
+          auth.ServiceAccountCredentials.fromJson(serviceAccountJson),
+          scopes,
+        );
+        accessToken = authClient.credentials.accessToken.data;
+        authClient.close();
+      }
 
-      await http.post(
+      // بقية الكود الآن سيتم تغطيته بالكامل لأننا تخطينا الـ Exception
+      final http.Response httpResponse = await _client.post(
         Uri.parse(
           'https://fcm.googleapis.com/v1/projects/$projectId/messages:send',
         ),
@@ -168,9 +189,28 @@ class PushNotificationService {
         }),
       );
 
-      authClient.close();
+      if (httpResponse.statusCode == 200 || httpResponse.statusCode == 201) {
+        // السطور دي هي اللي كانت "حمراء" ودلوقتي هتبقى "خضراء"
+        final newNotification = NotificationModel(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          receiverId: data?['userId'] ?? 'unknown',
+          title: title,
+          body: body,
+          sentAt: DateTime.now(),
+          isRead: false,
+          metadata: data,
+        );
+        await saveNotification(newNotification);
+      }
     } catch (e) {
       if (kDebugMode) print("❌ Notification Service Error: $e");
     }
+  }
+
+  Future<void> saveNotification(NotificationModel notification) async {
+    await _firestore
+        .collection('notifications')
+        .doc(notification.id)
+        .set(notification.toJson());
   }
 }

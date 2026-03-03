@@ -14,6 +14,7 @@ class UpdateOrderStatusUseCase {
     required String orderId,
     required OrderStatus status,
     required String userToken,
+    required String userId,
     required String title,
     required String body,
   }) async {
@@ -30,6 +31,7 @@ class UpdateOrderStatusUseCase {
         title: title,
         body: body,
         data: {
+          "userId": userId,
           "orderId": orderId,
           "status": status.firebaseValue,
         },

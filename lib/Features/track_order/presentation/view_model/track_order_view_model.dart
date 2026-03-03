@@ -105,6 +105,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
         status: status,
         userToken: userToken,
         body: status.getNotificationBody(context),
+        userId: state.orderState?.data?.user.userId ?? '',
       );
 
       if (status == OrderStatus.delivered) {

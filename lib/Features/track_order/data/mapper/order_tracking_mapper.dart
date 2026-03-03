@@ -28,6 +28,7 @@ extension OrderTrackingMapper on OrderTrackingFirebaseModel {
         userImage: userData['userImage'] ?? '',
         userPhone: userData['userPhone'] ?? '',
         deviceToken: userData['deviceToken'] ?? '',
+        userId: userData['userId'] ?? '',
       ),
       items: orderItems.map((item) {
         return OrderItemEntity(
