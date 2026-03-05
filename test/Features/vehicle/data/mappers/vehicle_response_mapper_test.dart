@@ -27,10 +27,15 @@ void main() {
       expect(result.type, tVehicleDto.type);
     });
 
-    test('should throw an error if vehicle object is null', () {
+    test('should return an empty VehicleEntity if vehicle object is null', () {
       final tResponse = VehicleResponse(message: "Error", vehicle: null);
 
-      expect(() => tResponse.toEntity(), throwsA(isA<TypeError>()));
+      final result = tResponse.toEntity();
+
+      expect(result, isA<VehicleEntity>());
+      expect(result.id, '');
+      expect(result.type, '');
+      expect(result.image, '');
     });
   });
 }
