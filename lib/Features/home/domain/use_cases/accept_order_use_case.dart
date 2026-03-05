@@ -5,12 +5,15 @@ import 'package:tracking_app/Features/home/domain/entities/order_entity.dart';
 import 'package:tracking_app/Features/home/domain/use_cases/start_order_use_case.dart';
 import 'package:tracking_app/Features/profile/domain/entities/driver_entity.dart';
 import 'package:tracking_app/Features/profile/domain/use_cases/get_driver_profile_use_case.dart';
+import 'package:tracking_app/Features/vehicle/domain/use_cases/get_vehicle_use_case.dart';
 import 'package:tracking_app/core/base_response/base_response.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/controller/session_controller.dart';
 import 'package:tracking_app/core/services/firebase_order_service.dart';
 import 'package:tracking_app/core/services/location_service.dart';
 import 'package:tracking_app/core/services/push_notification_service.dart';
+
+import '../../../vehicle/domain/entities/vehicle_entity.dart';
 
 @injectable
 class AcceptOrderUseCase {
@@ -20,6 +23,7 @@ class AcceptOrderUseCase {
   final LocationService _locationService;
   final GetDriverProfileUseCase _getDriverProfileUseCase;
   final SharedPreferences _prefs;
+  final GetVehicleUseCase _getVehicleUseCase;
 
   AcceptOrderUseCase(
     this._startOrderUseCase,
@@ -28,6 +32,7 @@ class AcceptOrderUseCase {
     this._locationService,
     this._getDriverProfileUseCase,
     this._prefs,
+    this._getVehicleUseCase,
   );
 
   Future<BaseResponse<OrderEntity>> call(OrderEntity order) async {
@@ -48,6 +53,14 @@ class AcceptOrderUseCase {
         if (profileResult is SuccessResponse<DriverEntity>) {
           driver = profileResult.data;
           _sessionController.saveUser(driver);
+        }
+      }
+
+      String? vehicleImage;
+      if (driver?.vehicleType != null) {
+        final vehicleResult = await _getVehicleUseCase.call(driver!.vehicleType);
+        if (vehicleResult is SuccessResponse<VehicleEntity>) {
+          vehicleImage = vehicleResult.data.image;
         }
       }
 
@@ -83,6 +96,7 @@ class AcceptOrderUseCase {
           'driverPhone': driver?.phone,
           'vehicleNumber': driver?.vehicleNumber,
           'driverToken': await PushNotificationService.getDeviceTokenAsync(),
+          'vehicleImage': vehicleImage,
         },
         trackingLocation: {
           'lat': position?.latitude,
@@ -105,7 +119,7 @@ class AcceptOrderUseCase {
               },
             )
             .toList(),
-        status: 'inProgress',
+        status: 'accepted',
         updatedAt: DateTime.now(),
       );
 
