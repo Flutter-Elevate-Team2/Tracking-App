@@ -38,6 +38,18 @@ class FirebaseOrderService {
     return OrderTrackingFirebaseModel.fromJson(doc.data()!);
   }
 
+  Future<Map<String, dynamic>?> getUserDataByUserId(String userId) async {
+    try {
+      final doc = await _firestore.collection('user_data').doc(userId).get();
+      if (doc.exists) {
+        return doc.data();
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<void> updateOrderLocation(
     String orderId,
     Map<String, dynamic> data,
