@@ -21,8 +21,24 @@ class PushNotificationService {
   _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   static String? _deviceToken;
-  static String? get deviceToken => _deviceToken;
+static Future<String?> getDeviceTokenAsync() async {
+  if (_deviceToken != null) {
+    return _deviceToken;
+  }
 
+  try {
+    _deviceToken = await FirebaseMessaging.instance.getToken();
+    if (kDebugMode) {
+      print('Fetched Token on Demand: $_deviceToken');
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      print('🚨 Failed to fetch token on demand: $e');
+    }
+  }
+
+  return _deviceToken;
+}
   // StreamController to broadcast notification events
   static final StreamController<void> _notificationStreamController =
       StreamController.broadcast();

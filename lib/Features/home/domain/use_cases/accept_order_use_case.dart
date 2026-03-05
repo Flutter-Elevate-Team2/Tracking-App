@@ -32,10 +32,9 @@ class AcceptOrderUseCase {
 
   Future<BaseResponse<OrderEntity>> call(OrderEntity order) async {
     // 1. Get user data from firebase (userid, device token)
-    final userDataFirestore = await _firebaseService.getUserDataByOrderId(
-      order.id,
+    final userDataFirestore = await _firebaseService.getUserDataByUserId(
+      order.user?.id ?? "",
     );
-
     // 2. Start order API
     final response = await _startOrderUseCase(order.id);
 
@@ -83,7 +82,7 @@ class AcceptOrderUseCase {
               : null,
           'driverPhone': driver?.phone,
           'vehicleNumber': driver?.vehicleNumber,
-          'driverToken': PushNotificationService.deviceToken,
+          'driverToken': await PushNotificationService.getDeviceTokenAsync(),
         },
         trackingLocation: {
           'lat': position?.latitude,
