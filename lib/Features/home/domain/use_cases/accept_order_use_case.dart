@@ -20,6 +20,7 @@ class AcceptOrderUseCase {
   final LocationService _locationService;
   final GetDriverProfileUseCase _getDriverProfileUseCase;
   final SharedPreferences _prefs;
+  final PushNotificationService _pushNotificationService;
 
   AcceptOrderUseCase(
     this._startOrderUseCase,
@@ -28,13 +29,15 @@ class AcceptOrderUseCase {
     this._locationService,
     this._getDriverProfileUseCase,
     this._prefs,
+    this._pushNotificationService
   );
 
   Future<BaseResponse<OrderEntity>> call(OrderEntity order) async {
     // 1. Get user data from firebase (userid, device token)
-    final userDataFirestore = await _firebaseService.getUserDataByUserId(
-      order.user?.id ?? "",
+    final userDataFirestore = await _firebaseService.getUserDataByOrderId(
+      order.id,
     );
+
     // 2. Start order API
     final response = await _startOrderUseCase(order.id);
 
@@ -82,7 +85,7 @@ class AcceptOrderUseCase {
               : null,
           'driverPhone': driver?.phone,
           'vehicleNumber': driver?.vehicleNumber,
-          'driverToken': await PushNotificationService.getDeviceTokenAsync(),
+          'driverToken': _pushNotificationService.deviceToken,
         },
         trackingLocation: {
           'lat': position?.latitude,
@@ -105,7 +108,7 @@ class AcceptOrderUseCase {
               },
             )
             .toList(),
-        status: 'inProgress',
+        status: 'accepted',
         updatedAt: DateTime.now(),
       );
 
