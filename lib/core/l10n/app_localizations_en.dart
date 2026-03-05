@@ -319,6 +319,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home => 'Home';
 
   @override
+  String get myOrders => 'My orders';
+
+  @override
   String get cart => 'Orders';
 
   @override
@@ -391,7 +394,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get done => 'Done';
 
   @override
-  String get cancelled => 'Cancelled';
+  String get cancelled => 'Canceled';
 
   @override
   String get recentOrders => 'Recent orders';
@@ -658,4 +661,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sampleAddress => '20th st, Sheikh Zayed, Giza';
+
+  @override
+  String get orderUpdated => 'Order Updated';
+
+  @override
+  String get notificationArrivedPickup =>
+      'The driver has arrived at the pickup location.';
+
+  @override
+  String get notificationStartDeliver => 'Your order is on the way to you!';
+
+  @override
+  String get notificationArrivedUser => 'The driver is at your location.';
+
+  @override
+  String get notificationDelivered => 'Order delivered successfully. Enjoy!';
+
+  @override
+  String get notificationStatusUpdated => 'Your order status has been updated.';
+
+  @override
+  String get orderNotFound => 'Order not found';
+
+  @override
+  String get noAddressFound => 'No Address Found';
+
+  @override
+  String get notApplicable => 'N/A';
+
+  @override
+  String get exitDeliveredOrderWarning =>
+      'You can\'t exit until the order is delivered!';
+
+  @override
+  String get orderAcceptedBody => 'Your order has been accepted.';
+
+  @override
+  String get acceptingOrder => 'Accepting order...';
 }

@@ -319,6 +319,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get home => 'الرئيسية';
 
   @override
+  String get myOrders => 'طلباتي';
+
+  @override
   String get cart => 'الطلبات';
 
   @override
@@ -657,4 +660,41 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sampleAddress => 'شارع 20، الشيخ زايد، الجيزة';
+
+  @override
+  String get orderUpdated => 'تم تحديث الطلب';
+
+  @override
+  String get notificationArrivedPickup => 'وصل السائق إلى موقع الاستلام.';
+
+  @override
+  String get notificationStartDeliver => 'طلبك في الطريق إليك!';
+
+  @override
+  String get notificationArrivedUser => 'السائق وصل إلى موقعك.';
+
+  @override
+  String get notificationDelivered => 'تم تسليم الطلب بنجاح. بالهناء والشفاء!';
+
+  @override
+  String get notificationStatusUpdated => 'تم تحديث حالة طلبك.';
+
+  @override
+  String get orderNotFound => 'الطلب غير موجود';
+
+  @override
+  String get noAddressFound => 'لا يوجد عنوان';
+
+  @override
+  String get notApplicable => 'غير متاح';
+
+  @override
+  String get exitDeliveredOrderWarning =>
+      'لا يمكنك الخروج حتى يتم تسليم الطلب!';
+
+  @override
+  String get orderAcceptedBody => 'تم قبول طلبك.';
+
+  @override
+  String get acceptingOrder => 'جاري قبول الطلب...';
 }

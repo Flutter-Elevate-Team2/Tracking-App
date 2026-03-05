@@ -48,6 +48,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/bg.png
   AssetGenImage get bg => const AssetGenImage('assets/images/bg.png');
 
+  /// File path: assets/images/driver_location.png
+  AssetGenImage get driverLocation =>
+      const AssetGenImage('assets/images/driver_location.png');
+
   /// File path: assets/images/logouticon.png
   AssetGenImage get logouticon =>
       const AssetGenImage('assets/images/logouticon.png');
@@ -56,9 +60,21 @@ class $AssetsImagesGen {
   AssetGenImage get onBoardingImage =>
       const AssetGenImage('assets/images/onBoardingImage.png');
 
+  /// File path: assets/images/store_location.png
+  AssetGenImage get storeLocation =>
+      const AssetGenImage('assets/images/store_location.png');
+
   /// File path: assets/images/successApplyImage.png
   AssetGenImage get successApplyImage =>
       const AssetGenImage('assets/images/successApplyImage.png');
+
+  /// File path: assets/images/user_location.png
+  AssetGenImage get userLocation =>
+      const AssetGenImage('assets/images/user_location.png');
+
+  /// File path: assets/images/whatsappIcon.png
+  AssetGenImage get whatsappIcon =>
+      const AssetGenImage('assets/images/whatsappIcon.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
@@ -66,9 +82,13 @@ class $AssetsImagesGen {
     arrowBackIos,
     arrowBackLeft,
     bg,
+    driverLocation,
     logouticon,
     onBoardingImage,
+    storeLocation,
     successApplyImage,
+    userLocation,
+    whatsappIcon,
   ];
 }
 
@@ -92,8 +112,15 @@ class $AssetsLottieGen {
   String get deliveryServiceDeliveryMan =>
       'assets/lottie/Delivery Service-Delivery man.json';
 
+  /// File path: assets/lottie/success.json
+  String get success => 'assets/lottie/success.json';
+
   /// List of all assets
-  List<String> get values => [checkAnimation, deliveryServiceDeliveryMan];
+  List<String> get values => [
+    checkAnimation,
+    deliveryServiceDeliveryMan,
+    success,
+  ];
 }
 
 class Assets {

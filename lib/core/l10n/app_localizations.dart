@@ -692,6 +692,12 @@ abstract class AppLocalizations {
   /// **'Home'**
   String get home;
 
+  /// Label for the My Orders navigation tab
+  ///
+  /// In en, this message translates to:
+  /// **'My orders'**
+  String get myOrders;
+
   /// Label for the Orders navigation tab
   ///
   /// In en, this message translates to:
@@ -839,7 +845,7 @@ abstract class AppLocalizations {
   /// Status indicating the order has been cancelled
   ///
   /// In en, this message translates to:
-  /// **'Cancelled'**
+  /// **'Canceled'**
   String get cancelled;
 
   /// Label for displaying the list of recent orders
@@ -1363,6 +1369,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'20th st, Sheikh Zayed, Giza'**
   String get sampleAddress;
+
+  /// Order updated
+  ///
+  /// In en, this message translates to:
+  /// **'Order Updated'**
+  String get orderUpdated;
+
+  /// Notification body shown to the user when the driver arrives at the pickup location.
+  ///
+  /// In en, this message translates to:
+  /// **'The driver has arrived at the pickup location.'**
+  String get notificationArrivedPickup;
+
+  /// Notification body shown to the user when the driver starts delivering the order.
+  ///
+  /// In en, this message translates to:
+  /// **'Your order is on the way to you!'**
+  String get notificationStartDeliver;
+
+  /// Notification body shown to the user when the driver arrives at the user's address.
+  ///
+  /// In en, this message translates to:
+  /// **'The driver is at your location.'**
+  String get notificationArrivedUser;
+
+  /// Notification body shown to the user when the order is marked as delivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Order delivered successfully. Enjoy!'**
+  String get notificationDelivered;
+
+  /// Fallback notification body shown when the order status changes but no specific message is defined.
+  ///
+  /// In en, this message translates to:
+  /// **'Your order status has been updated.'**
+  String get notificationStatusUpdated;
+
+  /// No description provided for @orderNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Order not found'**
+  String get orderNotFound;
+
+  /// No description provided for @noAddressFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No Address Found'**
+  String get noAddressFound;
+
+  /// No description provided for @notApplicable.
+  ///
+  /// In en, this message translates to:
+  /// **'N/A'**
+  String get notApplicable;
+
+  /// No description provided for @exitDeliveredOrderWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t exit until the order is delivered!'**
+  String get exitDeliveredOrderWarning;
+
+  /// No description provided for @orderAcceptedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your order has been accepted.'**
+  String get orderAcceptedBody;
+
+  /// Fallback notification body shown when the order is accepted
+  ///
+  /// In en, this message translates to:
+  /// **'Accepting order...'**
+  String get acceptingOrder;
 }
 
 class _AppLocalizationsDelegate
