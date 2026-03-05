@@ -98,5 +98,51 @@ void main() {
 
       verify(mockDoc.update(tData)).called(1);
     });
+
+    test('getUserDataByOrderId returns null when doc does not exist', () async {
+      when(mockDoc.get()).thenAnswer((_) async => mockSnapshot);
+      when(mockSnapshot.exists).thenReturn(false);
+
+      final result = await service.getUserDataByOrderId(tOrderId);
+
+      expect(result, isNull);
+    });
+
+    group('getUserDataByUserId', () {
+      const tUserId = 'user_999';
+
+      test('should return data when document exists', () async {
+        when(mockDoc.get()).thenAnswer((_) async => mockSnapshot);
+        when(mockSnapshot.exists).thenReturn(true);
+        when(mockSnapshot.data()).thenReturn(tData);
+
+        final result = await service.getUserDataByUserId(tUserId);
+
+        expect(result, tData);
+      });
+
+      test('should return null when document does not exist', () async {
+        when(mockDoc.get()).thenAnswer((_) async => mockSnapshot);
+        when(mockSnapshot.exists).thenReturn(false);
+
+        final result = await service.getUserDataByUserId(tUserId);
+
+        expect(result, isNull);
+      });
+
+      test('should return null when an exception occurs (catch block)', () async {
+        when(mockDoc.get()).thenThrow(Exception('Firebase Error'));
+
+        final result = await service.getUserDataByUserId(tUserId);
+
+        expect(result, isNull);
+      });
+    });
+
+    test('uploadTrackingOrder completes successfully', () async {
+      when(mockDoc.set(any, any)).thenAnswer((_) async => Future.value());
+
+      expect(service.uploadTrackingOrder(tOrderId, tData), completes);
+    });
   });
 }

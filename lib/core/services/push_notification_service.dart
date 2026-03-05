@@ -30,7 +30,7 @@ class PushNotificationService {
   final FlutterLocalNotificationsPlugin _localNotifications;
   final FirebaseFirestore _firestore;
   final http.Client _client;
-  TokenProvider? tokenProvider; // 👈 أضيفي هذا
+  TokenProvider? tokenProvider;
 
   PushNotificationService(
     this._firebaseMessaging,
@@ -152,7 +152,6 @@ class PushNotificationService {
       String accessToken;
       String projectId = "tracking-app-123";
 
-      // 👈 الاستخدام هنا بنفس المنطق
       if (tokenProvider != null) {
         accessToken = await tokenProvider!();
       } else {
@@ -171,7 +170,6 @@ class PushNotificationService {
         authClient.close();
       }
 
-      // بقية الكود الآن سيتم تغطيته بالكامل لأننا تخطينا الـ Exception
       final http.Response httpResponse = await _client.post(
         Uri.parse(
           'https://fcm.googleapis.com/v1/projects/$projectId/messages:send',
@@ -190,7 +188,6 @@ class PushNotificationService {
       );
 
       if (httpResponse.statusCode == 200 || httpResponse.statusCode == 201) {
-        // السطور دي هي اللي كانت "حمراء" ودلوقتي هتبقى "خضراء"
         final newNotification = NotificationModel(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
           receiverId: data?['userId'] ?? 'unknown',
