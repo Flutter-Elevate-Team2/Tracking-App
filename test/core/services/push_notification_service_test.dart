@@ -39,13 +39,15 @@ void main() {
     mockFirestore = MockFirebaseFirestore();
     mockHttpClient = MockClient();
 
-    when(
-      mockMessaging.requestPermission(
-        alert: anyNamed('alert'),
-        badge: anyNamed('badge'),
-        sound: anyNamed('sound'),
-      ),
-    ).thenAnswer((_) async => mockSettings);
+    when(mockMessaging.requestPermission(
+      alert: anyNamed('alert'),
+      announcement: anyNamed('announcement'),
+      badge: anyNamed('badge'),
+      carPlay: anyNamed('carPlay'),
+      criticalAlert: anyNamed('criticalAlert'),
+      provisional: anyNamed('provisional'),
+      sound: anyNamed('sound'),
+    )).thenAnswer((_) async => mockSettings);
     when(
       mockSettings.authorizationStatus,
     ).thenReturn(AuthorizationStatus.authorized);

@@ -33,10 +33,8 @@ class PushNotificationService {
   TokenProvider? tokenProvider;
 
   static String? _deviceToken;
-static Future<String?> getDeviceTokenAsync() async {
-  if (_deviceToken != null) {
-    return _deviceToken;
-  }
+  String? get deviceToken => _deviceToken;
+
   PushNotificationService(
     this._firebaseMessaging,
     this._localNotifications,
@@ -44,19 +42,25 @@ static Future<String?> getDeviceTokenAsync() async {
     this._client,
   );
 
-  try {
-    _deviceToken = await FirebaseMessaging.instance.getToken();
-    if (kDebugMode) {
-      print('Fetched Token on Demand: $_deviceToken');
+  static Future<String?> getDeviceTokenAsync() async {
+    if (_deviceToken != null) {
+      return _deviceToken;
     }
-  } catch (e) {
-    if (kDebugMode) {
-      print('🚨 Failed to fetch token on demand: $e');
+
+    try {
+      _deviceToken = await FirebaseMessaging.instance.getToken();
+      if (kDebugMode) {
+        print('Fetched Token on Demand: $_deviceToken');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('🚨 Failed to fetch token on demand: $e');
+      }
     }
+
+    return _deviceToken;
   }
 
-  return _deviceToken;
-}
   // StreamController to broadcast notification events
   static final StreamController<void> _notificationStreamController =
       StreamController.broadcast();
@@ -115,6 +119,7 @@ static Future<String?> getDeviceTokenAsync() async {
         print('Device Token: $_deviceToken');
       }
     } catch (e) {
+      _deviceToken = null;
       if (kDebugMode) {
         print('Error getting device token: $e');
       }
