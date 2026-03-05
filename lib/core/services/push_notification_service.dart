@@ -1,15 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:googleapis_auth/auth_io.dart' as auth;
-import 'package:http/http.dart' as http;
-import 'package:injectable/injectable.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -19,51 +14,77 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
 }
 
-@singleton
 class PushNotificationService {
-  final FirebaseMessaging _firebaseMessaging;
-  final FlutterLocalNotificationsPlugin _localNotifications;
+  static final FirebaseMessaging _firebaseMessaging =
+      FirebaseMessaging.instance;
+  static final FlutterLocalNotificationsPlugin
+  _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  PushNotificationService(this._firebaseMessaging, this._localNotifications);
+  static String? _deviceToken;
+static Future<String?> getDeviceTokenAsync() async {
+  if (_deviceToken != null) {
+    return _deviceToken;
+  }
 
-  String? _deviceToken;
-  String? get deviceToken => _deviceToken;
+  try {
+    _deviceToken = await FirebaseMessaging.instance.getToken();
+    if (kDebugMode) {
+      print('Fetched Token on Demand: $_deviceToken');
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      print('🚨 Failed to fetch token on demand: $e');
+    }
+  }
 
-  final StreamController<void> _notificationStreamController =
+  return _deviceToken;
+}
+  // StreamController to broadcast notification events
+  static final StreamController<void> _notificationStreamController =
       StreamController.broadcast();
-  Stream<void> get onNotificationReceived =>
+  static Stream<void> get onNotificationReceived =>
       _notificationStreamController.stream;
 
-  Future<void> init() async {
-    await requestPermission();
-    await initLocalNotifications();
-    await getDeviceToken();
+  static Future<void> init() async {
+    await _requestPermission();
+    await _initLocalNotifications();
+    await _getDeviceToken();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
-      FirebaseMessaging.onBackgroundMessage(
-        _firebaseMessagingBackgroundHandler,
-      );
-    }
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (kDebugMode) {
+        print('Got a message whilst in the foreground!');
+        print('Message data: ${message.data}');
+      }
 
-    FirebaseMessaging.onMessage.listen(handleForegroundMessage);
-    FirebaseMessaging.onMessageOpenedApp.listen(handleMessageOpenedApp);
+      if (message.notification != null) {
+        if (kDebugMode) {
+          print(
+            'Message also contained a notification: ${message.notification}',
+          );
+        }
+        _showLocalNotification(message);
+        _notificationStreamController.add(null); // Notify listeners
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      if (kDebugMode) {
+        print('A new onMessageOpenedApp event was published!');
+      }
+      _notificationStreamController.add(null); // Notify listeners
+      // TODO: Handle navigation here
+    });
   }
 
-  void handleForegroundMessage(RemoteMessage message) {
-    if (message.notification != null) {
-      showLocalNotification(message);
-      _notificationStreamController.add(null);
-    }
-  }
-
-  void handleMessageOpenedApp(RemoteMessage message) {
-    _notificationStreamController.add(null);
-  }
-
-  Future<void> requestPermission() async {
+  static Future<void> _requestPermission() async {
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
       alert: true,
+      announcement: false,
       badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
       sound: true,
     );
 
@@ -72,19 +93,25 @@ class PushNotificationService {
     }
   }
 
-  Future<void> getDeviceToken() async {
+  static Future<void> _getDeviceToken() async {
     try {
       if (Platform.isIOS) {
         _deviceToken = await _firebaseMessaging.getAPNSToken();
       } else {
         _deviceToken = await _firebaseMessaging.getToken();
       }
+
+      if (kDebugMode) {
+        print('Device Token: $_deviceToken');
+      }
     } catch (e) {
-      if (kDebugMode) print('Error getting device token: $e');
+      if (kDebugMode) {
+        print('Error getting device token: $e');
+      }
     }
   }
 
-  Future<void> initLocalNotifications() async {
+  static Future<void> _initLocalNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -101,18 +128,21 @@ class PushNotificationService {
           iOS: initializationSettingsDarwin,
         );
 
-    await _localNotifications.initialize(
+    await _flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (details) {},
+      onDidReceiveNotificationResponse:
+          (NotificationResponse notificationResponse) {
+            // Handle notification tap
+          },
     );
   }
 
-  Future<void> showLocalNotification(RemoteMessage message) async {
+  static Future<void> _showLocalNotification(RemoteMessage message) async {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
 
     if (notification != null && android != null) {
-      await _localNotifications.show(
+      await _flutterLocalNotificationsPlugin.show(
         notification.hashCode,
         notification.title,
         notification.body,
@@ -120,57 +150,20 @@ class PushNotificationService {
           android: AndroidNotificationDetails(
             'high_importance_channel',
             'High Importance Notifications',
+            channelDescription:
+                'This channel is used for important notifications.',
             importance: Importance.max,
             priority: Priority.high,
             icon: '@mipmap/ic_launcher',
           ),
+          iOS: DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
         ),
         payload: message.data.toString(),
       );
-    }
-  }
-
-  Future<void> sendNotification({
-    required String token,
-    required String title,
-    required String body,
-    Map<String, dynamic>? data,
-  }) async {
-    try {
-      final String response = await rootBundle.loadString(
-        'assets/json/tracking-app-service.json',
-      );
-      final serviceAccountJson = json.decode(response);
-      final scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
-
-      final authClient = await auth.clientViaServiceAccount(
-        auth.ServiceAccountCredentials.fromJson(serviceAccountJson),
-        scopes,
-      );
-
-      final String accessToken = authClient.credentials.accessToken.data;
-      final String projectId = serviceAccountJson['project_id'];
-
-      await http.post(
-        Uri.parse(
-          'https://fcm.googleapis.com/v1/projects/$projectId/messages:send',
-        ),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken',
-        },
-        body: jsonEncode({
-          'message': {
-            'token': token,
-            'notification': {'title': title, 'body': body},
-            'data': data ?? {},
-          },
-        }),
-      );
-
-      authClient.close();
-    } catch (e) {
-      if (kDebugMode) print("❌ Notification Service Error: $e");
     }
   }
 }
