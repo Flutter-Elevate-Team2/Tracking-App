@@ -32,6 +32,11 @@ class PushNotificationService {
   final http.Client _client;
   TokenProvider? tokenProvider;
 
+  static String? _deviceToken;
+static Future<String?> getDeviceTokenAsync() async {
+  if (_deviceToken != null) {
+    return _deviceToken;
+  }
   PushNotificationService(
     this._firebaseMessaging,
     this._localNotifications,
@@ -39,10 +44,21 @@ class PushNotificationService {
     this._client,
   );
 
-  String? _deviceToken;
-  String? get deviceToken => _deviceToken;
+  try {
+    _deviceToken = await FirebaseMessaging.instance.getToken();
+    if (kDebugMode) {
+      print('Fetched Token on Demand: $_deviceToken');
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      print('🚨 Failed to fetch token on demand: $e');
+    }
+  }
 
-  final StreamController<void> _notificationStreamController =
+  return _deviceToken;
+}
+  // StreamController to broadcast notification events
+  static final StreamController<void> _notificationStreamController =
       StreamController.broadcast();
   Stream<void> get onNotificationReceived =>
       _notificationStreamController.stream;
@@ -74,7 +90,11 @@ class PushNotificationService {
   Future<void> requestPermission() async {
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
       alert: true,
+      announcement: false,
       badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
       sound: true,
     );
 
@@ -90,9 +110,14 @@ class PushNotificationService {
       } else {
         _deviceToken = await _firebaseMessaging.getToken();
       }
+
+      if (kDebugMode) {
+        print('Device Token: $_deviceToken');
+      }
     } catch (e) {
-      _deviceToken = null;
-      if (kDebugMode) print('Error getting device token: $e');
+      if (kDebugMode) {
+        print('Error getting device token: $e');
+      }
     }
   }
 
@@ -132,9 +157,16 @@ class PushNotificationService {
           android: AndroidNotificationDetails(
             'high_importance_channel',
             'High Importance Notifications',
+            channelDescription:
+                'This channel is used for important notifications.',
             importance: Importance.max,
             priority: Priority.high,
             icon: '@mipmap/ic_launcher',
+          ),
+          iOS: DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
           ),
         ),
         payload: message.data.toString(),

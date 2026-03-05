@@ -20,6 +20,7 @@ class FirebaseOrderService {
     }
   }
 
+  /// Uploads or updates the tracking information for an active order.
   Future<void> uploadTrackingOrder(
     String orderId,
     Map<String, dynamic> trackingData,

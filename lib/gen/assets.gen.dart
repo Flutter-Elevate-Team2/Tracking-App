@@ -98,8 +98,11 @@ class $AssetsJsonGen {
   /// File path: assets/json/country.json
   String get country => 'assets/json/country.json';
 
+  /// File path: assets/json/tracking-app-service.json
+  String get trackingAppService => 'assets/json/tracking-app-service.json';
+
   /// List of all assets
-  List<String> get values => [country];
+  List<String> get values => [country, trackingAppService];
 }
 
 class $AssetsLottieGen {
