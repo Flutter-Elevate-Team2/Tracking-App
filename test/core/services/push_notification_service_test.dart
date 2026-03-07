@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:tracking_app/Features/track_order/data/model/notification_model.dart';
+import 'package:tracking_app/core/services/firebase_background_handler.dart';
 import 'package:tracking_app/core/services/push_notification_service.dart';
 
 import 'push_notification_service_test.mocks.dart';
@@ -39,15 +41,17 @@ void main() {
     mockFirestore = MockFirebaseFirestore();
     mockHttpClient = MockClient();
 
-    when(mockMessaging.requestPermission(
-      alert: anyNamed('alert'),
-      announcement: anyNamed('announcement'),
-      badge: anyNamed('badge'),
-      carPlay: anyNamed('carPlay'),
-      criticalAlert: anyNamed('criticalAlert'),
-      provisional: anyNamed('provisional'),
-      sound: anyNamed('sound'),
-    )).thenAnswer((_) async => mockSettings);
+    when(
+      mockMessaging.requestPermission(
+        alert: anyNamed('alert'),
+        announcement: anyNamed('announcement'),
+        badge: anyNamed('badge'),
+        carPlay: anyNamed('carPlay'),
+        criticalAlert: anyNamed('criticalAlert'),
+        provisional: anyNamed('provisional'),
+        sound: anyNamed('sound'),
+      ),
+    ).thenAnswer((_) async => mockSettings);
     when(
       mockSettings.authorizationStatus,
     ).thenReturn(AuthorizationStatus.authorized);

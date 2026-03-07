@@ -51,7 +51,8 @@ void main() {
       // 4. اختيار العنصر الثاني
       // استخدمنا .last لأن الـ DropdownMenuItem قد يتكرر في الـ Overlay الخاص بـ Flutter
       final item2 = find.byKey(const Key("vehicleItem_2")).last;
-      await tester.tap(item2);
+      await tester.ensureVisible(item2);
+      await tester.tap(item2, warnIfMissed: false);
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
     });

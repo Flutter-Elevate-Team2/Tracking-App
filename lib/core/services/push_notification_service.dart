@@ -12,15 +12,9 @@ import 'package:googleapis_auth/auth_io.dart' as auth;
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
 import 'package:tracking_app/Features/track_order/data/model/notification_model.dart';
+import 'package:tracking_app/core/services/firebase_background_handler.dart';
 
-@visibleForTesting
-@pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  if (kDebugMode) {
-    print('Handling a background message: ${message.messageId}');
-  }
-}
+
 
 typedef TokenProvider = Future<String> Function();
 

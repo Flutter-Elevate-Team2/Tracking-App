@@ -10,15 +10,16 @@ import 'package:tracking_app/core/base_states/base_states.dart';
 @injectable
 class CompleteOrderViewModel extends Cubit<CompleteOrderState> {
   final CompleteOrderUseCase _completeOrderUseCase;
+
   CompleteOrderViewModel(this._completeOrderUseCase) : super(const CompleteOrderState());
-   void doIntent(CompleteOrderEvents event) {
+
+  void doIntent(CompleteOrderEvents event) {
     switch (event) {
       case CompleteOrderEvent(orderId: final orderId):
         completeOrder(orderId);
         break;
     }
   }
-  
 
   Future<void> completeOrder(String orderId) async {
     emit(state.copyWith(completeOrderState: const BaseState<CompleteOrderEntity>(isLoading: true)));

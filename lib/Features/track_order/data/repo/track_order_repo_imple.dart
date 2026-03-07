@@ -1,3 +1,4 @@
+import 'package:injectable/injectable.dart';
 import 'package:tracking_app/Features/track_order/data/mapper/complet_order_mapper.dart';
 import 'package:tracking_app/Features/track_order/data/model/complete_order_response/complete_order_response.dart';
 import 'package:tracking_app/Features/track_order/data/remote_data_source_contract/map_remote_data_source_contract.dart';
@@ -6,6 +7,7 @@ import 'package:tracking_app/Features/track_order/domain/repo/track_order_repo_c
 import 'package:tracking_app/core/base_response/base_response.dart';
 import 'package:tracking_app/core/helpers/api_execution_mixin.dart';
 
+@Injectable(as: TrackOrderRepoContract)
 class TrackOrderRepoImple
     with ApiExecutionMixin
     implements TrackOrderRepoContract {

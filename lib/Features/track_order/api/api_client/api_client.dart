@@ -20,7 +20,7 @@ abstract class MapboxApiClient {
     @Query("overview") String overview,
     @Query("access_token") String accessToken,
   );
-  @PUT('${ApiConstants.updateOrderState}/{orderId}')
+  @PUT('https://flower.elevateegy.com/api/v1/orders/state/{orderId}')
   Future<CompleteOrderResponse> changeOrderState(
     @Path('orderId') String orderId,
     @Body() Map<String, dynamic> body,

@@ -4,7 +4,7 @@ import 'orders.dart';
 
 part 'complete_order_response.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class CompleteOrderResponse {
   String? message;
   Orders? orders;

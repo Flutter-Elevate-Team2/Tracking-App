@@ -5,7 +5,7 @@ import 'shipping_address.dart';
 
 part 'orders.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Orders {
   ShippingAddress? shippingAddress;
   @JsonKey(name: '_id')

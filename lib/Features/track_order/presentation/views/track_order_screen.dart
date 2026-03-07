@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tracking_app/Features/track_order/presentation/view_model/complet_order/complete_order_view_model.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_event.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_state.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_view_model.dart';
@@ -13,10 +14,15 @@ class TrackOrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) =>
-          getIt<OrderStatusViewModel>()
-            ..doIntent(context, FetchOrderDetailsEvent(orderId)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) =>
+              getIt<OrderStatusViewModel>()
+                ..doIntent(context, FetchOrderDetailsEvent(orderId)),
+        ),
+        BlocProvider(create: (_) => getIt<CompleteOrderViewModel>()),
+      ],
       child: Scaffold(
         body: BlocBuilder<OrderStatusViewModel, TrackOrderStatusState>(
           builder: (context, state) {
