@@ -9,7 +9,6 @@ import 'package:tracking_app/Features/auth/presentation/forget_password/views/fo
 import 'package:tracking_app/Features/auth/presentation/login/views/login_screen.dart';
 import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
 import 'package:tracking_app/Features/order/domain/entities/driver_order_entity.dart';
-import 'package:tracking_app/Features/order/domain/entities/order_entity.dart';
 import 'package:tracking_app/Features/home/presentation/views/screens/home_screen.dart';
 import 'package:tracking_app/Features/home/presentation/views/screens/home_view.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/views/order_details.dart';
@@ -104,11 +103,15 @@ class AppRouter {
 
       final isAuthRoute =
           state.uri.toString() == Routes.onBoardingPath ||
-          state.uri.toString() == Routes.loginPath;
+              state.uri.toString() == Routes.loginPath ||
+              state.uri.toString() == Routes.applyPath ||
+              state.uri.toString() == Routes.successApplyPath ||
+              state.uri.toString() == Routes.forgetPasswordPath;
 
       final isTrackingRoute =
           state.uri.toString().startsWith(Routes.trackOrderPath) ||
           state.uri.toString().startsWith(Routes.mapPath);
+
       if (!isLoggedIn) {
         return isAuthRoute ? null : Routes.loginPath;
       }
@@ -146,7 +149,7 @@ class AppRouter {
         builder: (context, state) => OnBoardingScreen(),
       ),
       GoRoute(
-        path: '${Routes.orderDetailsPath}', // مثلا "/orderdetails"
+        path: Routes.orderDetailsPath,
         name: Routes.orderDetailsName,
         builder: (context, state) {
           final order = state.extra as DriverOrdersEntity?;
