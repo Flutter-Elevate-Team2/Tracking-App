@@ -37,6 +37,10 @@ tracking_app/.idea/
 .pub/
 /build/
 /coverage/
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+lib/firebase_options.dart
+assets/json/tracking-app-service.json
 
 # Symbolication related
 app.*.symbols
