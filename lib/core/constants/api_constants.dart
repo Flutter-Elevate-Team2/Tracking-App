@@ -29,7 +29,6 @@ class ApiConstants {
   static const String pendingOrders = "/orders/pending-orders";
   static const String startOrder = "/orders/start/";
 
-
   // ================= Order  =================
   static const String driverOrders = "orders/driver-orders";
   static const String updateOrderState = "orders/state/";
@@ -62,6 +61,4 @@ class ApiConstants {
   static const String pending = "pending";
   static const String completed = "completed";
   static const String cancelled = "cancelled";
-
-
 }

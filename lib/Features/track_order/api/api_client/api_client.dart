@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
+import 'package:tracking_app/Features/track_order/data/model/complete/complete.order_response.dart';
+import 'package:tracking_app/core/constants/api_constants.dart';
 
 part 'api_client.g.dart';
 
@@ -17,5 +19,10 @@ abstract class MapboxApiClient {
     @Query("geometries") String geometries,
     @Query("overview") String overview,
     @Query("access_token") String accessToken,
+  );
+  @PUT('${ApiConstants.updateOrderState}/{orderId}')
+  Future<CompleteOrderResponse> changeOrderState(
+    @Path('orderId') String orderId,
+    @Body() Map<String, dynamic> body,
   );
 }
