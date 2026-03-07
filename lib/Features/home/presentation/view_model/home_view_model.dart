@@ -14,7 +14,7 @@ class HomeViewModel extends Cubit<HomeState> {
   final AcceptOrderUseCase _acceptOrderUseCase;
 
   HomeViewModel(this._getPendingOrdersUseCase, this._acceptOrderUseCase)
-    : super(const HomeState());
+      : super(const HomeState());
 
   void doIntent(HomeEvent event) {
     switch (event) {
@@ -27,9 +27,6 @@ class HomeViewModel extends Cubit<HomeState> {
       case RejectOrderEvent():
         _rejectOrder(event);
         break;
-      case ResetAcceptOrderStateEvent():
-        _resetAcceptOrderState();
-        break;
     }
   }
 
@@ -40,9 +37,9 @@ class HomeViewModel extends Cubit<HomeState> {
 
     final isFirstPage =
         isRefresh ||
-        (state.currentPage == 1 &&
-            (state.ordersState?.data == null ||
-                state.ordersState!.data!.isEmpty));
+            (state.currentPage == 1 &&
+                (state.ordersState?.data == null ||
+                    state.ordersState!.data!.isEmpty));
 
     if (isFirstPage) {
       emit(
@@ -53,69 +50,38 @@ class HomeViewModel extends Cubit<HomeState> {
         ),
       );
 
-      // 1. First fetch to get totalPages
-      final initialResponse = await _getPendingOrdersUseCase(1);
+      final response = await _getPendingOrdersUseCase(1);
 
-      if (initialResponse is SuccessResponse<HomeOrdersEntity>) {
-        final totalPages = initialResponse.data.totalPages;
-
-        if (totalPages <= 1) {
-          // Only one page or no pages, just use the reversed data from page 1
-          emit(
-            state.copyWith(
-              ordersState: BaseState(
-                isLoading: false,
-                data: initialResponse.data.orders.reversed.toList(),
-              ),
-              currentPage: 1,
-              hasReachedMax: true,
-            ),
-          );
-        } else {
-          // 2. Multiple pages, fetch the last page as the "first" visible page
-          final lastPageResponse = await _getPendingOrdersUseCase(totalPages);
-
-          if (lastPageResponse is SuccessResponse<HomeOrdersEntity>) {
-            emit(
-              state.copyWith(
-                ordersState: BaseState(
-                  isLoading: false,
-                  data: lastPageResponse.data.orders.reversed.toList(),
-                ),
-                currentPage: totalPages,
-                hasReachedMax: totalPages <= 1,
-              ),
-            );
-          } else if (lastPageResponse is ErrorResponse<HomeOrdersEntity>) {
-            emit(
-              state.copyWith(
-                ordersState: BaseState(
-                  isLoading: false,
-                  errorMessage: lastPageResponse.errorMessage,
-                ),
-              ),
-            );
-          }
-        }
-      } else if (initialResponse is ErrorResponse<HomeOrdersEntity>) {
+      if (response is SuccessResponse<HomeOrdersEntity>) {
         emit(
           state.copyWith(
             ordersState: BaseState(
               isLoading: false,
-              errorMessage: initialResponse.errorMessage,
+              data: response.data.orders,
+            ),
+            currentPage: 1,
+            hasReachedMax: 1 >= response.data.totalPages,
+          ),
+        );
+      } else if (response is ErrorResponse<HomeOrdersEntity>) {
+        emit(
+          state.copyWith(
+            ordersState: BaseState(
+              isLoading: false,
+              errorMessage: response.errorMessage,
             ),
           ),
         );
       }
     } else {
-      // Pagination Logic (fetching backwards)
+      // Pagination Logic (fetching forward)
       emit(state.copyWith(isPaginationLoading: true));
 
-      final pageToFetch = state.currentPage - 1;
+      final pageToFetch = state.currentPage + 1;
       final response = await _getPendingOrdersUseCase(pageToFetch);
 
       if (response is SuccessResponse<HomeOrdersEntity>) {
-        final newOrders = response.data.orders.reversed.toList();
+        final newOrders = response.data.orders;
         final currentOrders = List<OrderEntity>.from(
           state.ordersState?.data ?? [],
         );
@@ -127,7 +93,7 @@ class HomeViewModel extends Cubit<HomeState> {
             ),
             isPaginationLoading: false,
             currentPage: pageToFetch,
-            hasReachedMax: pageToFetch <= 1,
+            hasReachedMax: pageToFetch >= response.data.totalPages,
           ),
         );
       } else if (response is ErrorResponse<HomeOrdersEntity>) {
@@ -175,9 +141,5 @@ class HomeViewModel extends Cubit<HomeState> {
         ordersState: state.ordersState?.copyWith(data: currentOrders),
       ),
     );
-  }
-
-  void _resetAcceptOrderState() {
-    emit(state.copyWith(acceptOrderState: const BaseState()));
   }
 }

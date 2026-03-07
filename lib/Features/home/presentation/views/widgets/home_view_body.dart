@@ -110,9 +110,6 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                 child: RefreshIndicator(
                   onRefresh: () async {
                     context.read<HomeViewModel>().doIntent(
-                      ResetAcceptOrderStateEvent(),
-                    );
-                    context.read<HomeViewModel>().doIntent(
                       GetPendingOrdersEvent(isRefresh: true),
                     );
                   },
@@ -123,18 +120,18 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                       : orders.isEmpty
                       ? const Center(child: Text('No pending orders'))
                       : ListView.builder(
-                          controller: _scrollController,
-                          itemCount:
-                              orders.length +
-                              (state.isPaginationLoading ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index < orders.length) {
-                              return OrderCard(order: orders[index]);
-                            } else {
-                              return const _PaginatingShimmer();
-                            }
-                          },
-                        ),
+                    controller: _scrollController,
+                    itemCount:
+                    orders.length +
+                        (state.isPaginationLoading ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index < orders.length) {
+                        return OrderCard(order: orders[index]);
+                      } else {
+                        return const _PaginatingShimmer();
+                      }
+                    },
+                  ),
                 ),
               ),
             ],

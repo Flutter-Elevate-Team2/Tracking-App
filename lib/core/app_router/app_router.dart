@@ -94,7 +94,7 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: Routes.ordersPath,
+    initialLocation: Routes.onBoardingPath,
     redirect: (context, state) async {
       final authRepo = getIt<AuthRepoContract>();
       final prefs = await SharedPreferences.getInstance();
