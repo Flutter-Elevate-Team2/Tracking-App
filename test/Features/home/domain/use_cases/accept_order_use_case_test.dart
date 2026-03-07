@@ -13,6 +13,7 @@ import 'package:tracking_app/Features/vehicle/domain/use_cases/get_vehicle_use_c
 import 'package:tracking_app/core/base_response/base_response.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/controller/session_controller.dart';
+import 'package:tracking_app/core/services/active_order_firestore_service.dart';
 import 'package:tracking_app/core/services/firebase_order_service.dart';
 import 'package:tracking_app/core/services/location_service.dart';
 
@@ -26,6 +27,7 @@ import 'accept_order_use_case_test.mocks.dart';
   GetDriverProfileUseCase,
   SharedPreferences,
   GetVehicleUseCase,
+  ActiveOrderFirestoreService,
 ])
 void main() {
   late MockStartOrderUseCase mockStartOrder;
@@ -36,6 +38,7 @@ void main() {
   late MockSharedPreferences mockPrefs;
   late AcceptOrderUseCase useCase;
   late GetVehicleUseCase mockGetVehicle;
+  late MockActiveOrderFirestoreService mockActiveOrderService;
 
   final tOrder = OrderEntity(id: '123', orderNumber: '#1');
   final tDriver = DriverEntity(
@@ -90,6 +93,11 @@ void main() {
     mockGetProfile = MockGetDriverProfileUseCase();
     mockPrefs = MockSharedPreferences();
     mockGetVehicle = MockGetVehicleUseCase();
+    mockActiveOrderService = MockActiveOrderFirestoreService();
+
+    when(
+      mockActiveOrderService.saveActiveOrder(any, any),
+    ).thenAnswer((_) async {});
 
     useCase = AcceptOrderUseCase(
       mockStartOrder,
@@ -99,6 +107,7 @@ void main() {
       mockGetProfile,
       mockPrefs,
       mockGetVehicle,
+      mockActiveOrderService,
     );
   });
 

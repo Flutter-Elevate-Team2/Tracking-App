@@ -9,6 +9,7 @@ import 'package:tracking_app/Features/vehicle/domain/use_cases/get_vehicle_use_c
 import 'package:tracking_app/core/base_response/base_response.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/controller/session_controller.dart';
+import 'package:tracking_app/core/services/active_order_firestore_service.dart';
 import 'package:tracking_app/core/services/firebase_order_service.dart';
 import 'package:tracking_app/core/services/location_service.dart';
 import 'package:tracking_app/core/services/push_notification_service.dart';
@@ -24,6 +25,7 @@ class AcceptOrderUseCase {
   final GetDriverProfileUseCase _getDriverProfileUseCase;
   final SharedPreferences _prefs;
   final GetVehicleUseCase _getVehicleUseCase;
+  final ActiveOrderFirestoreService _activeOrderFirestoreService;
 
   AcceptOrderUseCase(
     this._startOrderUseCase,
@@ -33,6 +35,7 @@ class AcceptOrderUseCase {
     this._getDriverProfileUseCase,
     this._prefs,
     this._getVehicleUseCase,
+    this._activeOrderFirestoreService,
   );
 
   Future<BaseResponse<OrderEntity>> call(OrderEntity order) async {
@@ -58,7 +61,9 @@ class AcceptOrderUseCase {
 
       String? vehicleImage;
       if (driver?.vehicleType != null) {
-        final vehicleResult = await _getVehicleUseCase.call(driver!.vehicleType);
+        final vehicleResult = await _getVehicleUseCase.call(
+          driver!.vehicleType,
+        );
         if (vehicleResult is SuccessResponse<VehicleEntity>) {
           vehicleImage = vehicleResult.data.image;
         }
@@ -130,6 +135,13 @@ class AcceptOrderUseCase {
 
       // 4. Store order id to shared preferences
       await _prefs.setString(ApiConstants.currentOrderIdKey, order.id);
+
+      // 5. Lock the driver in via Firestore + persist driverId
+      final driverId = driver?.id ?? '';
+      if (driverId.isNotEmpty) {
+        await _prefs.setString(ApiConstants.driverIdKey, driverId);
+        await _activeOrderFirestoreService.saveActiveOrder(driverId, order.id);
+      }
     }
 
     return response;

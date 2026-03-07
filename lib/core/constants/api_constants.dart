@@ -37,6 +37,7 @@ class ApiConstants {
 
   static const String tokenKey = "user_token";
   static const String currentOrderIdKey = "current_order_id";
+  static const String driverIdKey = "driver_id";
   static const String rememberMeKey = "is_remember_me";
 
   // ================= Notifications Endpoints =================

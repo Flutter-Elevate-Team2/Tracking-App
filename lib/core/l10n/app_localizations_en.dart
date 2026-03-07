@@ -699,4 +699,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get acceptingOrder => 'Accepting order...';
+
+  @override
+  String get waitingCustomerConfirmation =>
+      'Waiting for customer confirmation...';
 }

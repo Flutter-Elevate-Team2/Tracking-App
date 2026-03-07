@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/complete_order_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/complete_order_use_case.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/complet_order/complete_order_events.dart';
@@ -9,20 +10,30 @@ import 'package:tracking_app/Features/track_order/presentation/view_model/comple
 import 'package:tracking_app/Features/track_order/presentation/view_model/complet_order/complete_order_view_model.dart';
 import 'package:tracking_app/core/base_response/base_response.dart';
 import 'package:tracking_app/core/base_states/base_states.dart';
+import 'package:tracking_app/core/services/active_order_firestore_service.dart';
 
 import 'complete_order_view_model_test.mocks.dart';
 
-@GenerateMocks([CompleteOrderUseCase])
+@GenerateMocks([CompleteOrderUseCase, ActiveOrderFirestoreService])
 void main() {
   provideDummy<BaseResponse<CompleteOrderEntity>>(
     const ErrorResponse(errorMessage: 'dummy'),
   );
   late CompleteOrderViewModel viewModel;
   late MockCompleteOrderUseCase mockUseCase;
+  late MockActiveOrderFirestoreService mockActiveOrderService;
 
   setUp(() {
     mockUseCase = MockCompleteOrderUseCase();
-    viewModel = CompleteOrderViewModel(mockUseCase);
+    mockActiveOrderService = MockActiveOrderFirestoreService();
+
+    when(mockActiveOrderService.clearActiveOrder(any)).thenAnswer((_) async {});
+
+    SharedPreferences.setMockInitialValues({
+      'driver_id': 'test_driver_id',
+      'current_order_id': '123',
+    });
+    viewModel = CompleteOrderViewModel(mockUseCase, mockActiveOrderService);
   });
 
   group('CompleteOrderViewModel Test', () {
@@ -62,6 +73,9 @@ void main() {
       ],
       verify: (_) {
         verify(mockUseCase(orderId)).called(1);
+        verify(
+          mockActiveOrderService.clearActiveOrder('test_driver_id'),
+        ).called(1);
       },
     );
 

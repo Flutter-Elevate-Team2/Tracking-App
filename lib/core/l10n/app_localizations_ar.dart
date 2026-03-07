@@ -697,4 +697,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get acceptingOrder => 'جاري قبول الطلب...';
+
+  @override
+  String get waitingCustomerConfirmation => 'في انتظار تأكيد العميل...';
 }

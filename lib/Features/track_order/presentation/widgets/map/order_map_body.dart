@@ -22,6 +22,14 @@ class _OrderMapBodyState extends State<OrderMapBody> {
   final ValueNotifier<Offset?> userOffset = ValueNotifier(null);
 
   @override
+  void dispose() {
+    driverOffset.dispose();
+    storeOffset.dispose();
+    userOffset.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<OrderStatusViewModel, TrackOrderStatusState>(
       listenWhen: (prev, curr) => prev.routePoints != curr.routePoints,

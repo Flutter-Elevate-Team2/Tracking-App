@@ -17,6 +17,7 @@ import 'package:tracking_app/Features/track_order/presentation/view_model/track_
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_state.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_view_model.dart';
 import 'package:tracking_app/core/base_states/base_states.dart';
+import 'package:tracking_app/core/services/active_order_firestore_service.dart';
 import 'package:tracking_app/core/services/firebase_order_service.dart';
 import 'package:tracking_app/core/services/location_service.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/get_directions_use_case.dart';
@@ -32,6 +33,7 @@ import 'track_order_view_model_test.mocks.dart';
     GetDirectionsUseCase,
     LocationService,
     FirebaseOrderService,
+    ActiveOrderFirestoreService,
   ],
   customMocks: [
     MockSpec<BuildContext>(onMissingStub: OnMissingStub.returnDefault),
@@ -44,6 +46,7 @@ void main() {
   late MockGetDirectionsUseCase mockGetDirectionsUseCase;
   late MockLocationService mockLocationService;
   late MockFirebaseOrderService mockFirebaseService;
+  late MockActiveOrderFirestoreService mockActiveOrderService;
   late MockBuildContext mockContext;
 
   final fakeOrder = OrderTrackingEntity(
@@ -93,6 +96,7 @@ void main() {
     mockGetDirectionsUseCase = MockGetDirectionsUseCase();
     mockLocationService = MockLocationService();
     mockFirebaseService = MockFirebaseOrderService();
+    mockActiveOrderService = MockActiveOrderFirestoreService();
     mockContext = MockBuildContext();
 
     when(
@@ -104,14 +108,18 @@ void main() {
     when(
       mockGetDirectionsUseCase.call(any, any),
     ).thenAnswer((_) async => [mapbox.Position(31.0, 30.0)]);
+    when(
+      mockActiveOrderService.saveActiveOrder(any, any),
+    ).thenAnswer((_) async {});
 
-    SharedPreferences.setMockInitialValues({});
+    SharedPreferences.setMockInitialValues({'driver_id': 'test_driver_id'});
     viewModel = OrderStatusViewModel(
       mockUpdateUseCase,
       mockGetOrderUseCase,
       mockLocationService,
       mockFirebaseService,
       mockGetDirectionsUseCase,
+      mockActiveOrderService,
     );
   });
 
@@ -145,7 +153,7 @@ void main() {
           'route',
           isNotEmpty,
         ),
-        isA<TrackOrderStatusState>(), // من getCurrentLocation.then
+        isA<TrackOrderStatusState>(), // from getCurrentLocation.then
       ],
     );
 
@@ -292,6 +300,26 @@ void main() {
           isNotNull,
         ),
       ],
+    );
+
+    blocTest<OrderStatusViewModel, TrackOrderStatusState>(
+      'UpdateStatus: non-accepted status does NOT call saveActiveOrder',
+      build: () {
+        return viewModel;
+      },
+      seed: () => TrackOrderStatusState(orderState: BaseState(data: fakeOrder)),
+      act: (bloc) => bloc.doIntent(
+        mockContext,
+        UpdateOrderStatusEvent(
+          orderId: "123",
+          status: OrderStatus.arrivedPickup,
+          userToken: "T",
+          title: "T",
+        ),
+      ),
+      verify: (_) {
+        verifyNever(mockActiveOrderService.saveActiveOrder(any, any));
+      },
     );
   });
 }

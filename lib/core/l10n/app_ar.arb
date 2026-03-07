@@ -481,5 +481,6 @@
   "@noOrderFound": { "description": "رسالة عند عدم العثور على طلبات" },
   "floweryStore": "متجر الزهور",
   "sampleUserName": "نور محمد",
-  "sampleAddress": "شارع 20، الشيخ زايد، الجيزة"
+  "sampleAddress": "شارع 20، الشيخ زايد، الجيزة",
+  "waitingCustomerConfirmation": "في انتظار تأكيد العميل..."
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tracking_app/Features/track_order/domain/entities/order_tracking_entity.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_state.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_view_model.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/address_section.dart';
@@ -22,12 +23,12 @@ class MapBottomSheet extends StatelessWidget {
           final storeCard = _buildAddressItem(
             context,
             isStore: true,
-            state: state,
+            order: order,
           );
           final userCard = _buildAddressItem(
             context,
             isStore: false,
-            state: state,
+            order: order,
           );
 
           return Container(
@@ -76,9 +77,8 @@ class MapBottomSheet extends StatelessWidget {
   Widget _buildAddressItem(
     BuildContext context, {
     required bool isStore,
-    required TrackOrderStatusState state,
+    required OrderTrackingEntity order,
   }) {
-    final order = state.orderState!.data!;
     return GestureDetector(
       onTap: () => context.read<OrderStatusViewModel>().changeTarget(isStore),
       child: AddressSection(

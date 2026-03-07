@@ -33,7 +33,12 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
     final loginState = state.loginState;
 
     if (loginState?.data != null) {
-      context.goNamed(Routes.homeName);
+      // If there's an active order, trap the driver
+      if (state.activeOrderId != null) {
+        context.go('${Routes.trackOrderPath}/${state.activeOrderId}');
+      } else {
+        context.goNamed(Routes.homeName);
+      }
     } else if (loginState?.errorMessage != null) {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()

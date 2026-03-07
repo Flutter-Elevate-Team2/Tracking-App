@@ -1,11 +1,10 @@
 import 'dart:async';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mapbox;
-
 import 'package:tracking_app/Features/profile/presentation/view_model/profile_events.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/profile_view_model.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
@@ -13,19 +12,16 @@ import 'package:tracking_app/core/controller/session_controller.dart';
 import 'package:tracking_app/core/di/di.dart';
 import 'package:tracking_app/core/helpers/session_expired_handler.dart';
 import 'package:tracking_app/core/l10n/app_localizations.dart';
-import 'package:tracking_app/core/services/firebase_background_handler.dart';
 import 'package:tracking_app/core/services/push_notification_service.dart';
 import 'package:tracking_app/core/theming/app_theming.dart';
-import 'package:tracking_app/core/l10n/view_model/language_cubit.dart';
-import 'firebase_options.dart';
 
+import 'core/l10n/view_model/language_cubit.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   await dotenv.load(fileName: ".env");
   String mapboxToken = dotenv.get('MAPBOX_ACCESS_TOKEN', fallback: '');
@@ -50,7 +46,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final _sessionController = getIt<SessionController>();
   late StreamSubscription? _subscription;
-
   @override
   void initState() {
     super.initState();
@@ -65,6 +60,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
+    // Fix: Safe cancel
     _subscription?.cancel();
     super.dispose();
   }

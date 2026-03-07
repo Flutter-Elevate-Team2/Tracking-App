@@ -25,6 +25,7 @@ import 'package:tracking_app/Features/track_order/presentation/views/success_scr
 import 'package:tracking_app/Features/track_order/presentation/views/track_order_screen.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/di/di.dart';
+import 'package:tracking_app/core/services/active_order_firestore_service.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/views/my_orders_screen.dart';
 // coverage:ignore-file
 
@@ -44,10 +45,8 @@ class Routes {
   static const String forgetPasswordPath = '/forgetpassword';
   static const String forgetPasswordName = 'forgetPassword';
 
-
   static const String verifyCodePath = '/verifycode';
   static const String verifyCodeName = 'verifyCode';
-
 
   static const String resetPasswordPath = '/resetpassword';
   static const String resetPasswordName = 'resetPassword';
@@ -102,9 +101,6 @@ class AppRouter {
       final prefs = await SharedPreferences.getInstance();
 
       final bool isLoggedIn = await authRepo.isLoggedIn();
-      final String? currentOrderId = prefs.getString(
-        ApiConstants.currentOrderIdKey,
-      );
 
       final isAuthRoute =
           state.uri.toString() == Routes.onBoardingPath ||
@@ -118,8 +114,16 @@ class AppRouter {
       }
 
       if (isLoggedIn) {
-        if (currentOrderId != null && !isTrackingRoute) {
-          return '${Routes.trackOrderPath}/$currentOrderId';
+        // Cold-start trap: Check Firestore for active orders
+        final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';
+        if (driverId.isNotEmpty && !isTrackingRoute) {
+          final activeOrderService = getIt<ActiveOrderFirestoreService>();
+          final activeOrderId = await activeOrderService.getActiveOrder(
+            driverId,
+          );
+          if (activeOrderId != null) {
+            return '${Routes.trackOrderPath}/$activeOrderId';
+          }
         }
         if (isAuthRoute) {
           return Routes.homePath;
@@ -136,7 +140,6 @@ class AppRouter {
       //   return Routes.homePath;
       // }
       // return null;
-
       GoRoute(
         path: Routes.onBoardingPath,
         name: Routes.onBoardingName,
@@ -178,7 +181,6 @@ class AppRouter {
         builder: (context, state) => Container(),
       ),
 
-
       GoRoute(
         path: Routes.editVehiclePath,
         name: Routes.editVehicleName,
@@ -208,7 +210,7 @@ class AppRouter {
         builder: (context, state) {
           final orderId = state.pathParameters['orderId'] ?? '';
 
-          return TrackOrderScreen(orderId: orderId ,);
+          return TrackOrderScreen(orderId: orderId);
         },
       ),
       GoRoute(
@@ -269,7 +271,7 @@ class AppRouter {
             ],
           ),
         ],
-
-  )
-    ]);
+      ),
+    ],
+  );
 }

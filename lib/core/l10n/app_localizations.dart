@@ -1441,6 +1441,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Accepting order...'**
   String get acceptingOrder;
+
+  /// Button text shown while waiting for customer to confirm delivery
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for customer confirmation...'**
+  String get waitingCustomerConfirmation;
 }
 
 class _AppLocalizationsDelegate

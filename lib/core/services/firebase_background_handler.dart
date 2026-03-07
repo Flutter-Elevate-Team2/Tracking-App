@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,8 +20,23 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       try {
         final prefs = await SharedPreferences.getInstance();
 
+        // Unconditionally clear local state when customer confirms
+        final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';
+        if (driverId.isNotEmpty) {
+          final firestore = FirebaseFirestore.instance;
+          await firestore.collection('active_orders').doc(driverId).delete();
+          // Force Firestore to sync the deletion immediately before OS kills the isolate
+          await firestore.waitForPendingWrites();
+        }
+        await prefs.remove(ApiConstants.currentOrderIdKey);
+        debugPrint(
+          "✅ Active order cleared for driver after background completion",
+        );
+
         String? token = prefs.getString(ApiConstants.tokenKey);
-        final url = Uri.parse('https://flower.elevateegy.com/api/v1/orders/state/$orderId');
+        final url = Uri.parse(
+          'https://flower.elevateegy.com/api/v1/orders/state/$orderId',
+        );
         final response = await http.put(
           url,
           body: jsonEncode({"state": "completed"}),
@@ -32,11 +48,6 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
         debugPrint("Background API Status: ${response.statusCode}");
         debugPrint("Background API Body: ${response.body}");
-
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          await prefs.setBool('completed_$orderId', true);
-          debugPrint("✅ Flag saved successfully for order: $orderId");
-        }
       } catch (e) {
         debugPrint("❌ Background FCM Error: $e");
       }

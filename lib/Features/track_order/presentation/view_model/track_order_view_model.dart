@@ -14,6 +14,7 @@ import 'package:tracking_app/Features/track_order/presentation/view_model/track_
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_state.dart';
 import 'package:tracking_app/core/base_states/base_states.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
+import 'package:tracking_app/core/services/active_order_firestore_service.dart';
 import 'package:tracking_app/core/services/firebase_order_service.dart';
 import 'package:tracking_app/core/services/location_service.dart';
 
@@ -24,6 +25,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
   final LocationService _locationService;
   final FirebaseOrderService _firebaseService;
   final GetDirectionsUseCase _getDirectionsUseCase;
+  final ActiveOrderFirestoreService _activeOrderFirestoreService;
 
   StreamSubscription<Position>? _locationSubscription;
 
@@ -33,6 +35,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
     this._locationService,
     this._firebaseService,
     this._getDirectionsUseCase,
+    this._activeOrderFirestoreService,
   ) : super(const TrackOrderStatusState());
 
   void doIntent(BuildContext context, TrackOrderStatusEvent event) {
@@ -108,9 +111,15 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
         userId: state.orderState?.data?.user.userId ?? '',
       );
 
-      if (status == OrderStatus.delivered) {
+      // On accepted status, lock the driver in via Firestore
+      if (status == OrderStatus.accepted) {
         final prefs = await SharedPreferences.getInstance();
-        await prefs.remove(ApiConstants.currentOrderIdKey);
+        final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';
+        if (driverId.isNotEmpty) {
+          await _activeOrderFirestoreService.saveActiveOrder(driverId, orderId);
+        }
+      } else if (status == OrderStatus.delivered) {
+        _locationSubscription?.cancel();
       }
 
       emit(
@@ -157,7 +166,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
     }
 
     _locationService.getCurrentLocation().then((pos) {
-      if (pos != null) {
+      if (!isClosed && pos != null) {
         emit(state.copyWith(currentDriverPosition: pos));
         _updateRoute(pos);
       }
@@ -167,15 +176,17 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
     _locationSubscription = _locationService.getLocationStream().listen((
       position,
     ) {
-      _firebaseService.updateOrderLocation(orderId, {
-        'trackingLocation': {
-          'lat': position.latitude,
-          'long': position.longitude,
-        },
-        'updatedAt': DateTime.now().toIso8601String(),
-      });
-      emit(state.copyWith(currentDriverPosition: position));
-      _updateRoute(position);
+      if (!isClosed) {
+        _firebaseService.updateOrderLocation(orderId, {
+          'trackingLocation': {
+            'lat': position.latitude,
+            'long': position.longitude,
+          },
+          'updatedAt': DateTime.now().toIso8601String(),
+        });
+        emit(state.copyWith(currentDriverPosition: position));
+        _updateRoute(position);
+      }
     });
   }
 

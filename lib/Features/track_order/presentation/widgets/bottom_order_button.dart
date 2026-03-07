@@ -4,6 +4,7 @@ import 'package:tracking_app/Features/track_order/domain/entities/order_status.d
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_event.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_view_model.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/track_order_action_button.dart';
+import 'package:tracking_app/Features/track_order/presentation/widgets/waiting_confirmation_button.dart';
 import 'package:tracking_app/core/constants/app_colors.dart';
 import 'package:tracking_app/core/extension/context_extension.dart';
 
@@ -21,6 +22,8 @@ class BuildBottomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWaitingConfirmation = currentStatus == OrderStatus.delivered;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -33,24 +36,26 @@ class BuildBottomButton extends StatelessWidget {
           ),
         ],
       ),
-      child: OrderActionButton(
-        status: currentStatus,
-        onPressed: () {
-          final next = currentStatus.next;
+      child: isWaitingConfirmation
+          ? const WaitingConfirmationButton()
+          : OrderActionButton(
+              status: currentStatus,
+              onPressed: () {
+                final next = currentStatus.next;
 
-          if (next != null) {
-            context.read<OrderStatusViewModel>().doIntent(
-              context,
-              UpdateOrderStatusEvent(
-                title: context.l10n.orderUpdated,
-                orderId: orderId,
-                status: next,
-                userToken: userToken,
-              ),
-            );
-          }
-        },
-      ),
+                if (next != null) {
+                  context.read<OrderStatusViewModel>().doIntent(
+                    context,
+                    UpdateOrderStatusEvent(
+                      title: context.l10n.orderUpdated,
+                      orderId: orderId,
+                      status: next,
+                      userToken: userToken,
+                    ),
+                  );
+                }
+              },
+            ),
     );
   }
 }

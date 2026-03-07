@@ -16,3 +16,5 @@ class RejectOrderEvent extends HomeEvent {
   final String orderId;
   RejectOrderEvent(this.orderId);
 }
+
+class ResetAcceptOrderStateEvent extends HomeEvent {}

@@ -110,6 +110,9 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                 child: RefreshIndicator(
                   onRefresh: () async {
                     context.read<HomeViewModel>().doIntent(
+                      ResetAcceptOrderStateEvent(),
+                    );
+                    context.read<HomeViewModel>().doIntent(
                       GetPendingOrdersEvent(isRefresh: true),
                     );
                   },

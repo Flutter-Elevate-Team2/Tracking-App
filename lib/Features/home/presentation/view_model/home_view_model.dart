@@ -27,6 +27,9 @@ class HomeViewModel extends Cubit<HomeState> {
       case RejectOrderEvent():
         _rejectOrder(event);
         break;
+      case ResetAcceptOrderStateEvent():
+        _resetAcceptOrderState();
+        break;
     }
   }
 
@@ -172,5 +175,9 @@ class HomeViewModel extends Cubit<HomeState> {
         ordersState: state.ordersState?.copyWith(data: currentOrders),
       ),
     );
+  }
+
+  void _resetAcceptOrderState() {
+    emit(state.copyWith(acceptOrderState: const BaseState()));
   }
 }
