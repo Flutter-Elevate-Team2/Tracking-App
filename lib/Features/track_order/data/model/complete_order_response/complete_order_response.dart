@@ -1,8 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'orders.order_response.dart';
+import 'orders.dart';
 
-part 'complete.order_response.g.dart';
+part 'complete_order_response.g.dart';
 
 @JsonSerializable()
 class CompleteOrderResponse {

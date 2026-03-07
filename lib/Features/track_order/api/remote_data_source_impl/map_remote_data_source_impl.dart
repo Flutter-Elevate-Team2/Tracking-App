@@ -2,7 +2,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mapbox;
 import 'package:tracking_app/Features/track_order/api/api_client/api_client.dart';
-import 'package:tracking_app/Features/track_order/data/model/complete/complete.order_response.dart';
+import 'package:tracking_app/Features/track_order/data/model/complete_order_response/complete_order_response.dart';
 import 'package:tracking_app/Features/track_order/data/remote_data_source_contract/map_remote_data_source_contract.dart';
 
 @Injectable(as: MapRemoteDataSourceContract)

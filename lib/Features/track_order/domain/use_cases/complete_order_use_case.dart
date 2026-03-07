@@ -7,11 +7,8 @@ import 'package:tracking_app/core/base_response/base_response.dart';
 class CompleteOrderUseCase {
   final TrackOrderRepoContract _trackOrderRepoContract;
   CompleteOrderUseCase(this._trackOrderRepoContract);
-  
-  Future<BaseResponse<CompleteOrderEntity>> call(
-    String orderId,
-  ) {
-    return _trackOrderRepoContract.changeOrderState(orderId,);
+
+  Future<BaseResponse<CompleteOrderEntity>> call(String orderId) {
+    return _trackOrderRepoContract.changeOrderState(orderId);
   }
-  
 }

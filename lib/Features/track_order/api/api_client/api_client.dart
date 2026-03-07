@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
-import 'package:tracking_app/Features/track_order/data/model/complete/complete.order_response.dart';
+import 'package:tracking_app/Features/track_order/data/model/complete_order_response/complete_order_response.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 
 part 'api_client.g.dart';

@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'order_item.order_response.dart';
-import 'shipping_address.order_response.dart';
+import 'order_item.dart';
+import 'shipping_address.dart';
 
-part 'orders.order_response.g.dart';
+part 'orders.g.dart';
 
 @JsonSerializable()
 class Orders {
