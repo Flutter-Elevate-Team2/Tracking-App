@@ -37,13 +37,24 @@ class _HomeViewBodyState extends State<HomeViewBody> {
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      context.read<HomeViewModel>().doIntent(GetPendingOrdersEvent());
+      final viewModel = context.read<HomeViewModel>();
+      final state = viewModel.state;
+
+      if (!state.isPaginationLoading && !state.hasReachedMax) {
+        viewModel.doIntent(GetPendingOrdersEvent());
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeViewModel, HomeState>(
+      listenWhen: (prev, next) =>
+          prev.acceptOrderState?.data != next.acceptOrderState?.data ||
+          prev.acceptOrderState?.isLoading !=
+              next.acceptOrderState?.isLoading ||
+          prev.acceptOrderState?.errorMessage !=
+              next.acceptOrderState?.errorMessage,
       listener: (context, state) {
         if (state.acceptOrderState?.isLoading == false) {
           if (Navigator.of(context, rootNavigator: true).canPop()) {
@@ -97,7 +108,11 @@ class _HomeViewBodyState extends State<HomeViewBody> {
         }
       },
       builder: (context, state) {
-        final isLoading = state.ordersState?.isLoading ?? false;
+        final isInitialLoading =
+            (state.ordersState?.isLoading ?? false) &&
+            (state.ordersState?.data == null ||
+                state.ordersState!.data!.isEmpty);
+
         final orders = state.ordersState?.data ?? [];
         final errorMessage = state.ordersState?.errorMessage;
 
@@ -109,29 +124,29 @@ class _HomeViewBodyState extends State<HomeViewBody> {
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: () async {
-                    context.read<HomeViewModel>().doIntent(
+                    await context.read<HomeViewModel>().doIntent(
                       GetPendingOrdersEvent(isRefresh: true),
                     );
                   },
-                  child: isLoading
+                  child: isInitialLoading
                       ? const HomeShimmerLoading()
                       : errorMessage != null
                       ? Center(child: Text(errorMessage))
                       : orders.isEmpty
                       ? const Center(child: Text('No pending orders'))
                       : ListView.builder(
-                    controller: _scrollController,
-                    itemCount:
-                    orders.length +
-                        (state.isPaginationLoading ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index < orders.length) {
-                        return OrderCard(order: orders[index]);
-                      } else {
-                        return const _PaginatingShimmer();
-                      }
-                    },
-                  ),
+                          controller: _scrollController,
+                          itemCount:
+                              orders.length +
+                              (state.isPaginationLoading ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index < orders.length) {
+                              return OrderCard(order: orders[index]);
+                            } else {
+                              return const _PaginatingShimmer();
+                            }
+                          },
+                        ),
                 ),
               ),
             ],

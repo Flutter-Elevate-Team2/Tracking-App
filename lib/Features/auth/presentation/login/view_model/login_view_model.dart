@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +27,7 @@ class LoginViewModel extends Cubit<LoginState> {
     this._sessionController,
     this._activeOrderFirestoreService,
     this._getDriverProfileUseCase,
-  ) : super(LoginState());
+  ) : super(const LoginState());
 
   void doIntent(LoginEvent event) {
     switch (event) {
@@ -46,14 +47,14 @@ class LoginViewModel extends Cubit<LoginState> {
   }
 
   void _onInit() {
-    emit(LoginState());
+    emit(const LoginState());
   }
 
   void _toggleRememberMe() {
     emit(
       state.copyWith(
         isRememberMe: !state.isRememberMe,
-        loginState: BaseState(),
+        loginState: const BaseState(),
       ),
     );
   }
@@ -61,12 +62,12 @@ class LoginViewModel extends Cubit<LoginState> {
   void _resetErrorState() {
     if (state.loginState?.errorMessage != null ||
         state.loginState?.isLoading == true) {
-      emit(state.copyWith(loginState: BaseState()));
+      emit(state.copyWith(loginState: const BaseState()));
     }
   }
 
   Future<void> _handleLogin(LoginButtonClickedEvent event) async {
-    emit(state.copyWith(loginState: BaseState(isLoading: true)));
+    emit(state.copyWith(loginState: const BaseState(isLoading: true)));
 
     final response = await _loginUseCase.call(
       LoginRequest(email: event.email, password: event.password),
@@ -77,25 +78,25 @@ class LoginViewModel extends Cubit<LoginState> {
       case SuccessResponse<LoginEntity>():
         _sessionController.notifyLogin();
 
-        // Fetch driver profile to get the fresh driverId
-        // This handles the "Clear Data" scenario where SharedPreferences is empty
         String? activeOrderId;
         String driverId = '';
-        final profileResult = await _getDriverProfileUseCase.call();
-        if (profileResult is SuccessResponse<DriverEntity>) {
-          driverId = profileResult.data.id;
-          _sessionController.saveUser(profileResult.data);
 
-          // Persist driverId so router redirect can use it on cold start
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString(ApiConstants.driverIdKey, driverId);
-        }
+        try {
+          final profileResult = await _getDriverProfileUseCase.call();
+          if (profileResult is SuccessResponse<DriverEntity>) {
+            driverId = profileResult.data.id;
+            _sessionController.saveUser(profileResult.data);
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString(ApiConstants.driverIdKey, driverId);
 
-        // Check Firestore for active order (login-time trap)
-        if (driverId.isNotEmpty) {
-          activeOrderId = await _activeOrderFirestoreService.getActiveOrder(
-            driverId,
-          );
+            activeOrderId = await _activeOrderFirestoreService.getActiveOrder(driverId);
+            
+            if (activeOrderId != null && activeOrderId.isNotEmpty) {
+               await prefs.setString(ApiConstants.currentOrderIdKey, activeOrderId);
+            }
+          }
+        } catch (e) {
+          debugPrint("Sub-tasks failed during login: $e");
         }
 
         emit(

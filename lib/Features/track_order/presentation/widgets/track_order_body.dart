@@ -72,14 +72,13 @@ class _TrackOrderBodyState extends State<TrackOrderBody>
     if (state == AppLifecycleState.resumed) {
       if (!mounted) return;
       SharedPreferences.getInstance().then((prefs) {
-        // Force reload to sync across isolates
         prefs.reload().then((_) {
+          if (!mounted)
+            return;
           final activeOrderId = prefs.getString(ApiConstants.currentOrderIdKey);
           if (activeOrderId == null || activeOrderId != widget.orderId) {
-            // Background handler completed the order
             context.go(Routes.homePath);
           } else {
-            // Still active, refresh state
             context.read<OrderStatusViewModel>().doIntent(
               context,
               FetchOrderDetailsEvent(widget.orderId),

@@ -24,9 +24,7 @@ import 'package:tracking_app/Features/track_order/presentation/views/success_scr
 import 'package:tracking_app/Features/track_order/presentation/views/track_order_screen.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/di/di.dart';
-import 'package:tracking_app/core/services/active_order_firestore_service.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/views/my_orders_screen.dart';
-// coverage:ignore-file
 
 class Routes {
   static const String onBoardingPath = '/onBoarding';
@@ -50,7 +48,6 @@ class Routes {
   static const String resetPasswordPath = '/resetpassword';
   static const String resetPasswordName = 'resetPassword';
 
-  // Home Tabs Paths
   static const String homePath = '/home';
   static const String homeName = 'home';
 
@@ -117,14 +114,11 @@ class AppRouter {
       }
 
       if (isLoggedIn) {
-        // Cold-start trap: Check Firestore for active orders
         final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';
+        final activeOrderId = prefs.getString(ApiConstants.currentOrderIdKey);
+
         if (driverId.isNotEmpty && !isTrackingRoute) {
-          final activeOrderService = getIt<ActiveOrderFirestoreService>();
-          final activeOrderId = await activeOrderService.getActiveOrder(
-            driverId,
-          );
-          if (activeOrderId != null) {
+          if (activeOrderId != null && activeOrderId.isNotEmpty) {
             return '${Routes.trackOrderPath}/$activeOrderId';
           }
         }
@@ -135,14 +129,6 @@ class AppRouter {
       return null;
     },
     routes: [
-      // final authRepo = getIt<AuthRepoContract>();
-      // final bool isLoggedIn = await authRepo.isLoggedIn();
-      // final bool isLoggingIn = state.uri.toString() == Routes.signInPath;
-      //
-      // if (isLoggedIn && isLoggingIn) {
-      //   return Routes.homePath;
-      // }
-      // return null;
       GoRoute(
         path: Routes.onBoardingPath,
         name: Routes.onBoardingName,
@@ -153,7 +139,6 @@ class AppRouter {
         name: Routes.orderDetailsName,
         builder: (context, state) {
           final order = state.extra as DriverOrdersEntity?;
-
           return OrderDetailsDisplayBody(order: order!);
         },
       ),
@@ -172,7 +157,6 @@ class AppRouter {
         name: Routes.successApplyName,
         builder: (context, state) => SuccessApplyScreen(),
       ),
-
       GoRoute(
         path: Routes.forgetPasswordPath,
         name: Routes.forgetPasswordName,
@@ -183,7 +167,6 @@ class AppRouter {
         name: Routes.verifyCodeName,
         builder: (context, state) => Container(),
       ),
-
       GoRoute(
         path: Routes.editVehiclePath,
         name: Routes.editVehicleName,
@@ -212,7 +195,6 @@ class AppRouter {
         name: Routes.trackOrderName,
         builder: (context, state) {
           final orderId = state.pathParameters['orderId'] ?? '';
-
           return TrackOrderScreen(orderId: orderId);
         },
       ),
@@ -223,23 +205,19 @@ class AppRouter {
           final extras = state.extra as Map<String, dynamic>;
           final order = extras['order'] as OrderTrackingEntity;
           final isPickup = extras['isPickup'] as bool;
-
           return OrderMapScreen(order: order, initialShowPickup: isPickup);
         },
       ),
-
       GoRoute(
         path: Routes.successPath,
         name: Routes.successName,
         builder: (context, state) => const SuccessScreen(),
       ),
-      // / ====== MAIN SHELL ROUTE (BOTTOM NAV BAR) ======
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return HomeScreen(navigationShell: navigationShell);
         },
         branches: [
-          // Branch 1: Home
           StatefulShellBranch(
             navigatorKey: _homeNavigatorKey,
             routes: [
@@ -250,7 +228,6 @@ class AppRouter {
               ),
             ],
           ),
-          // Branch 2: Orders
           StatefulShellBranch(
             navigatorKey: _ordersNavigatorKey,
             routes: [
@@ -261,8 +238,6 @@ class AppRouter {
               ),
             ],
           ),
-
-          // Branch 3: Profile
           StatefulShellBranch(
             navigatorKey: _profileNavigatorKey,
             routes: [

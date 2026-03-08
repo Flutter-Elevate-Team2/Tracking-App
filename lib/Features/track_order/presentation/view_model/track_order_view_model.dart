@@ -111,7 +111,6 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
         userId: state.orderState?.data?.user.userId ?? '',
       );
 
-      // On accepted status, lock the driver in via Firestore
       if (status == OrderStatus.accepted) {
         final prefs = await SharedPreferences.getInstance();
         final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';
@@ -120,7 +119,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
         }
       } else if (status == OrderStatus.delivered) {
         _locationSubscription?.cancel();
-      }
+      } 
 
       emit(
         state.copyWith(updateStatusState: const BaseState(isLoading: false)),
@@ -153,7 +152,8 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
     );
   }
 
-  void startTracking(String orderId) {
+  // 🌟🌟 التعديل هنا: الدالة بقت async ومستنية الصلاحيات 🌟🌟
+  Future<void> startTracking(String orderId) async {
     final order = state.orderState?.data;
 
     if (order != null) {
@@ -165,29 +165,36 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
       _updateRoute(initialPos);
     }
 
-    _locationService.getCurrentLocation().then((pos) {
-      if (!isClosed && pos != null) {
-        emit(state.copyWith(currentDriverPosition: pos));
-        _updateRoute(pos);
-      }
-    });
+    // 🌟 بنستنى السواق يوافق على الصلاحيات براحته
+    final pos = await _locationService.getCurrentLocation();
+    
+    // لو قفل الشاشة أو التطبيق نخرج بأمان
+    if (isClosed) return;
 
-    _locationSubscription?.cancel();
-    _locationSubscription = _locationService.getLocationStream().listen((
-      position,
-    ) {
-      if (!isClosed) {
-        _firebaseService.updateOrderLocation(orderId, {
-          'trackingLocation': {
-            'lat': position.latitude,
-            'long': position.longitude,
-          },
-          'updatedAt': DateTime.now().toIso8601String(),
-        });
-        emit(state.copyWith(currentDriverPosition: position));
-        _updateRoute(position);
-      }
-    });
+    if (pos != null) {
+      emit(state.copyWith(currentDriverPosition: pos));
+      _updateRoute(pos);
+
+      _locationSubscription?.cancel();
+      _locationSubscription = _locationService.getLocationStream().listen(
+        (position) {
+          if (!isClosed) {
+            _firebaseService.updateOrderLocation(orderId, {
+              'trackingLocation': {
+                'lat': position.latitude,
+                'long': position.longitude,
+              },
+              'updatedAt': DateTime.now().toIso8601String(),
+            });
+            emit(state.copyWith(currentDriverPosition: position));
+            _updateRoute(position);
+          }
+        },
+        onError: (error) {
+          debugPrint("Location Stream Error: $error");
+        },
+      );
+    }
   }
 
   void changeTarget(bool showPickupFirst) {

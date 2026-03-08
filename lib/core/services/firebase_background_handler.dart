@@ -19,6 +19,9 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     if (orderId != null) {
       try {
         final prefs = await SharedPreferences.getInstance();
+        // Force a fresh read from disk — background isolates can hold a
+        // stale in-memory cache that doesn't reflect writes from other isolates.
+        await prefs.reload();
 
         // Unconditionally clear local state when customer confirms
         final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';

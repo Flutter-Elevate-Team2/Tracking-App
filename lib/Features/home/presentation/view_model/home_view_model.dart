@@ -16,13 +16,13 @@ class HomeViewModel extends Cubit<HomeState> {
   HomeViewModel(this._getPendingOrdersUseCase, this._acceptOrderUseCase)
     : super(const HomeState());
 
-  void doIntent(HomeEvent event) {
+  Future<void> doIntent(HomeEvent event) async {
     switch (event) {
       case GetPendingOrdersEvent():
-        _getPendingOrders(isRefresh: event.isRefresh);
+        await _getPendingOrders(isRefresh: event.isRefresh);
         break;
       case AcceptOrderEvent():
-        _acceptOrder(event);
+        await _acceptOrder(event);
         break;
       case RejectOrderEvent():
         _rejectOrder(event);
@@ -31,130 +31,156 @@ class HomeViewModel extends Cubit<HomeState> {
   }
 
   Future<void> _getPendingOrders({bool isRefresh = false}) async {
+    emit(state.copyWith(acceptOrderState: const BaseState()));
+
     if ((state.hasReachedMax && !isRefresh) || state.isPaginationLoading) {
       return;
     }
 
-    final isFirstPage =
+    final isFirstLoad =
         isRefresh ||
         (state.currentPage == 1 &&
             (state.ordersState?.data == null ||
                 state.ordersState!.data!.isEmpty));
 
-    if (isFirstPage) {
-      emit(
-        state.copyWith(
-          ordersState: const BaseState(isLoading: true),
-          currentPage: 1,
-          hasReachedMax: false,
-        ),
-      );
+    try {
+      if (isFirstLoad) {
+        emit(
+          state.copyWith(
+            ordersState: BaseState(
+              isLoading: true,
+              data: isRefresh ? state.ordersState?.data : null,
+            ),
+            hasReachedMax: false,
+          ),
+        );
 
-      final response = await _getPendingOrdersUseCase(1);
+        final initialRes = await _getPendingOrdersUseCase(1);
+        if (isClosed) return;
 
-      if (response is SuccessResponse<HomeOrdersEntity>) {
-        final totalPages = response.data.totalPages;
-        if (totalPages > 1) {
-          final lastPageResponse = await _getPendingOrdersUseCase(totalPages);
-          if (lastPageResponse is SuccessResponse<HomeOrdersEntity>) {
-            emit(
-              state.copyWith(
-                ordersState: BaseState(
-                  isLoading: false,
-                  data: lastPageResponse.data.orders.reversed.toList(),
-                ),
-                currentPage: totalPages,
-                hasReachedMax: totalPages <= 1,
-              ),
-            );
-          } else {
-            emit(
-              state.copyWith(
-                ordersState: const BaseState(
-                  isLoading: false,
-                  errorMessage: "Failed to fetch orders",
-                ),
-              ),
-            );
+        if (initialRes is SuccessResponse<HomeOrdersEntity>) {
+          final totalPages = initialRes.data.totalPages;
+          List<OrderEntity> allFetchedOrders = [];
+
+          int cursor = totalPages;
+
+          while (cursor >= 1 && allFetchedOrders.length < 10) {
+            if (cursor == 1) {
+              allFetchedOrders.addAll(initialRes.data.orders.reversed);
+              cursor--;
+              break;
+            }
+
+            final pageRes = await _getPendingOrdersUseCase(cursor);
+            if (isClosed) return;
+
+            if (pageRes is SuccessResponse<HomeOrdersEntity>) {
+              allFetchedOrders.addAll(pageRes.data.orders.reversed);
+              cursor--;
+            } else {
+              break;
+            }
           }
-        } else {
+
+          emit(
+            state.copyWith(
+              ordersState: BaseState(isLoading: false, data: allFetchedOrders),
+              currentPage: cursor,
+              hasReachedMax: cursor < 1,
+            ),
+          );
+        } else if (initialRes is ErrorResponse<HomeOrdersEntity>) {
           emit(
             state.copyWith(
               ordersState: BaseState(
                 isLoading: false,
-                data: response.data.orders.reversed.toList(),
+                errorMessage: initialRes.errorMessage,
               ),
-              currentPage: 1,
-              hasReachedMax: true,
             ),
           );
         }
-      } else if (response is ErrorResponse<HomeOrdersEntity>) {
-        emit(
-          state.copyWith(
-            ordersState: BaseState(
-              isLoading: false,
-              errorMessage: response.errorMessage,
+      } else {
+        emit(state.copyWith(isPaginationLoading: true));
+
+        final pageToFetch = state.currentPage;
+
+        if (pageToFetch < 1) {
+          emit(state.copyWith(isPaginationLoading: false, hasReachedMax: true));
+          return;
+        }
+
+        final response = await _getPendingOrdersUseCase(pageToFetch);
+        if (isClosed) return;
+
+        if (response is SuccessResponse<HomeOrdersEntity>) {
+          final newOrders = response.data.orders.reversed.toList();
+          final currentOrders = List<OrderEntity>.from(
+            state.ordersState?.data ?? [],
+          );
+
+          emit(
+            state.copyWith(
+              ordersState: state.ordersState?.copyWith(
+                data:
+                    currentOrders +
+                    newOrders,
+              ),
+              isPaginationLoading: false,
+              currentPage: pageToFetch - 1,
+              hasReachedMax: (pageToFetch - 1) < 1,
             ),
-          ),
-        );
+          );
+        } else if (response is ErrorResponse<HomeOrdersEntity>) {
+          emit(state.copyWith(isPaginationLoading: false));
+        }
       }
-    } else {
-      emit(state.copyWith(isPaginationLoading: true));
-
-      final pageToFetch = state.currentPage - 1;
-      if (pageToFetch < 1) {
-        emit(state.copyWith(isPaginationLoading: false, hasReachedMax: true));
-        return;
-      }
-      final response = await _getPendingOrdersUseCase(pageToFetch);
-
-      if (response is SuccessResponse<HomeOrdersEntity>) {
-        final newOrders = response.data.orders.reversed.toList();
-        final currentOrders = List<OrderEntity>.from(
-          state.ordersState?.data ?? [],
-        );
-
-        emit(
-          state.copyWith(
-            ordersState: state.ordersState?.copyWith(
-              data: currentOrders + newOrders,
-            ),
-            isPaginationLoading: false,
-            currentPage: pageToFetch,
-            hasReachedMax: pageToFetch <= 1,
-          ),
-        );
-      } else if (response is ErrorResponse<HomeOrdersEntity>) {
-        emit(state.copyWith(isPaginationLoading: false));
-      }
+    } catch (e) {
+      if (isClosed) return;
+      emit(
+        state.copyWith(
+          ordersState: BaseState(isLoading: false, errorMessage: e.toString()),
+          isPaginationLoading: false,
+        ),
+      );
     }
   }
 
   Future<void> _acceptOrder(AcceptOrderEvent event) async {
     emit(state.copyWith(acceptOrderState: const BaseState(isLoading: true)));
 
-    final response = await _acceptOrderUseCase(event.order);
+    try {
+      final response = await _acceptOrderUseCase(event.order);
+      if (isClosed) return;
 
-    if (response is SuccessResponse<OrderEntity>) {
-      // Remove accepted order from the pending list
-      final currentOrders = List<OrderEntity>.from(
-        state.ordersState?.data ?? [],
-      );
-      currentOrders.removeWhere((o) => o.id == event.order.id);
+      if (response is SuccessResponse<OrderEntity>) {
+        final currentOrders = List<OrderEntity>.from(
+          state.ordersState?.data ?? [],
+        );
+        currentOrders.removeWhere((o) => o.id == event.order.id);
 
-      emit(
-        state.copyWith(
-          acceptOrderState: BaseState(isLoading: false, data: response.data),
-          ordersState: state.ordersState?.copyWith(data: currentOrders),
-        ),
-      );
-    } else if (response is ErrorResponse<OrderEntity>) {
+        emit(
+          state.copyWith(
+            acceptOrderState: BaseState(isLoading: false, data: response.data),
+            ordersState: state.ordersState?.copyWith(data: currentOrders),
+          ),
+        );
+      } else if (response is ErrorResponse<OrderEntity>) {
+        emit(
+          state.copyWith(
+            acceptOrderState: BaseState(
+              isLoading: false,
+              errorMessage: response.errorMessage,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (isClosed) return;
       emit(
         state.copyWith(
           acceptOrderState: BaseState(
             isLoading: false,
-            errorMessage: response.errorMessage,
+            errorMessage: e.toString(),
           ),
         ),
       );
