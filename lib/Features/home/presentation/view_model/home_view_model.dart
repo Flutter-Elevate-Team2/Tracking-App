@@ -14,7 +14,7 @@ class HomeViewModel extends Cubit<HomeState> {
   final AcceptOrderUseCase _acceptOrderUseCase;
 
   HomeViewModel(this._getPendingOrdersUseCase, this._acceptOrderUseCase)
-      : super(const HomeState());
+    : super(const HomeState());
 
   void doIntent(HomeEvent event) {
     switch (event) {
@@ -37,9 +37,9 @@ class HomeViewModel extends Cubit<HomeState> {
 
     final isFirstPage =
         isRefresh ||
-            (state.currentPage == 1 &&
-                (state.ordersState?.data == null ||
-                    state.ordersState!.data!.isEmpty));
+        (state.currentPage == 1 &&
+            (state.ordersState?.data == null ||
+                state.ordersState!.data!.isEmpty));
 
     if (isFirstPage) {
       emit(
@@ -53,16 +53,42 @@ class HomeViewModel extends Cubit<HomeState> {
       final response = await _getPendingOrdersUseCase(1);
 
       if (response is SuccessResponse<HomeOrdersEntity>) {
-        emit(
-          state.copyWith(
-            ordersState: BaseState(
-              isLoading: false,
-              data: response.data.orders,
+        final totalPages = response.data.totalPages;
+        if (totalPages > 1) {
+          final lastPageResponse = await _getPendingOrdersUseCase(totalPages);
+          if (lastPageResponse is SuccessResponse<HomeOrdersEntity>) {
+            emit(
+              state.copyWith(
+                ordersState: BaseState(
+                  isLoading: false,
+                  data: lastPageResponse.data.orders.reversed.toList(),
+                ),
+                currentPage: totalPages,
+                hasReachedMax: totalPages <= 1,
+              ),
+            );
+          } else {
+            emit(
+              state.copyWith(
+                ordersState: const BaseState(
+                  isLoading: false,
+                  errorMessage: "Failed to fetch orders",
+                ),
+              ),
+            );
+          }
+        } else {
+          emit(
+            state.copyWith(
+              ordersState: BaseState(
+                isLoading: false,
+                data: response.data.orders.reversed.toList(),
+              ),
+              currentPage: 1,
+              hasReachedMax: true,
             ),
-            currentPage: 1,
-            hasReachedMax: 1 >= response.data.totalPages,
-          ),
-        );
+          );
+        }
       } else if (response is ErrorResponse<HomeOrdersEntity>) {
         emit(
           state.copyWith(
@@ -74,14 +100,17 @@ class HomeViewModel extends Cubit<HomeState> {
         );
       }
     } else {
-      // Pagination Logic (fetching forward)
       emit(state.copyWith(isPaginationLoading: true));
 
-      final pageToFetch = state.currentPage + 1;
+      final pageToFetch = state.currentPage - 1;
+      if (pageToFetch < 1) {
+        emit(state.copyWith(isPaginationLoading: false, hasReachedMax: true));
+        return;
+      }
       final response = await _getPendingOrdersUseCase(pageToFetch);
 
       if (response is SuccessResponse<HomeOrdersEntity>) {
-        final newOrders = response.data.orders;
+        final newOrders = response.data.orders.reversed.toList();
         final currentOrders = List<OrderEntity>.from(
           state.ordersState?.data ?? [],
         );
@@ -93,7 +122,7 @@ class HomeViewModel extends Cubit<HomeState> {
             ),
             isPaginationLoading: false,
             currentPage: pageToFetch,
-            hasReachedMax: pageToFetch >= response.data.totalPages,
+            hasReachedMax: pageToFetch <= 1,
           ),
         );
       } else if (response is ErrorResponse<HomeOrdersEntity>) {

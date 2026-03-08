@@ -49,5 +49,23 @@ void main() {
         verify(mockRepo.changeOrderState(orderId)).called(1);
       },
     );
+
+    test(
+      'should return ErrorResponse when repository succeeds with error',
+      () async {
+        // Arrange
+        when(
+          mockRepo.changeOrderState(orderId),
+        ).thenAnswer((_) async => const ErrorResponse(errorMessage: 'Failure'));
+
+        // Act
+        final result = await useCase(orderId);
+
+        // Assert
+        expect(result, isA<ErrorResponse<CompleteOrderEntity>>());
+        expect((result as ErrorResponse).errorMessage, 'Failure');
+        verify(mockRepo.changeOrderState(orderId)).called(1);
+      },
+    );
   });
 }

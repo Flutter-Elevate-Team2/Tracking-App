@@ -17,10 +17,7 @@ void main() {
   setUp(() {
     mockFirebaseService = MockFirebaseOrderService();
     mockPushService = MockPushNotificationService();
-    useCase = UpdateOrderStatusUseCase(
-      mockFirebaseService,
-      mockPushService,
-    );
+    useCase = UpdateOrderStatusUseCase(mockFirebaseService, mockPushService);
   });
 
   const tOrderId = 'order_123';
@@ -51,7 +48,7 @@ void main() {
         userToken: tUserToken,
         title: tTitle,
         body: tBody,
-        userId: ''
+        userId: '',
       );
 
       // Assert
@@ -77,7 +74,7 @@ void main() {
         userToken: '',
         title: tTitle,
         body: tBody,
-        userId: ''
+        userId: '',
       );
 
       verify(mockFirebaseService.uploadTrackingOrder(any, any)).called(1);
@@ -90,5 +87,52 @@ void main() {
         ),
       );
     });
+
+    test('should throw exception when firebase upload fails', () async {
+      when(
+        mockFirebaseService.uploadTrackingOrder(any, any),
+      ).thenThrow(Exception('Firebase Error'));
+
+      expect(
+        () => useCase.call(
+          orderId: tOrderId,
+          status: tStatus,
+          userToken: tUserToken,
+          title: tTitle,
+          body: tBody,
+          userId: '',
+        ),
+        throwsException,
+      );
+    });
+
+    test(
+      'should NOT suppress exception when push notification fails',
+      () async {
+        when(
+          mockFirebaseService.uploadTrackingOrder(any, any),
+        ).thenAnswer((_) async => {});
+        when(
+          mockPushService.sendNotification(
+            token: anyNamed('token'),
+            title: anyNamed('title'),
+            body: anyNamed('body'),
+            data: anyNamed('data'),
+          ),
+        ).thenThrow(Exception('Notification Error'));
+
+        expect(
+          () => useCase.call(
+            orderId: tOrderId,
+            status: tStatus,
+            userToken: tUserToken,
+            title: tTitle,
+            body: tBody,
+            userId: '',
+          ),
+          throwsException,
+        );
+      },
+    );
   });
 }

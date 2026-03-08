@@ -5,6 +5,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:tracking_app/Features/track_order/api/api_client/api_client.dart';
 import 'package:tracking_app/Features/track_order/api/remote_data_source_impl/map_remote_data_source_impl.dart';
+import 'package:tracking_app/Features/track_order/data/model/complete_order_response/complete_order_response.dart';
 
 import 'map_remote_data_source_impl_test.mocks.dart';
 
@@ -98,6 +99,37 @@ void main() {
       ).thenThrow(Exception("Network Error"));
 
       expect(() => dataSource.getRoute(startPos, endPos), throwsException);
+    });
+
+    group('changeOrderState', () {
+      const orderId = '123';
+      const body = {'state': 'completed'};
+
+      test(
+        'should call apiClient.changeOrderState and return response',
+        () async {
+          final tResponse = CompleteOrderResponse(message: 'Success');
+          when(
+            mockApiClient.changeOrderState(orderId, body),
+          ).thenAnswer((_) async => tResponse);
+
+          final result = await dataSource.changeOrderState(orderId, body);
+
+          expect(result, tResponse);
+          verify(mockApiClient.changeOrderState(orderId, body)).called(1);
+        },
+      );
+
+      test('should throw exception when apiClient fails', () async {
+        when(
+          mockApiClient.changeOrderState(any, any),
+        ).thenThrow(Exception('API Error'));
+
+        expect(
+          () => dataSource.changeOrderState(orderId, body),
+          throwsException,
+        );
+      });
     });
   });
 }

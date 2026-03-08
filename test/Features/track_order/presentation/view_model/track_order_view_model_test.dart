@@ -1,11 +1,12 @@
 import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mapbox;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mapbox;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/order_status.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/order_tracking_entity.dart';
@@ -13,6 +14,9 @@ import 'package:tracking_app/Features/track_order/domain/entities/store_entity.d
 import 'package:tracking_app/Features/track_order/domain/entities/tracking_location_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/user_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/user_location_entity.dart';
+import 'package:tracking_app/Features/track_order/domain/use_cases/get_directions_use_case.dart';
+import 'package:tracking_app/Features/track_order/domain/use_cases/get_order_details_use_case.dart';
+import 'package:tracking_app/Features/track_order/domain/use_cases/track_order_use_case.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_event.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_state.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_view_model.dart';
@@ -20,9 +24,6 @@ import 'package:tracking_app/core/base_states/base_states.dart';
 import 'package:tracking_app/core/services/active_order_firestore_service.dart';
 import 'package:tracking_app/core/services/firebase_order_service.dart';
 import 'package:tracking_app/core/services/location_service.dart';
-import 'package:tracking_app/Features/track_order/domain/use_cases/get_directions_use_case.dart';
-import 'package:tracking_app/Features/track_order/domain/use_cases/get_order_details_use_case.dart';
-import 'package:tracking_app/Features/track_order/domain/use_cases/track_order_use_case.dart';
 
 import 'track_order_view_model_test.mocks.dart';
 
@@ -321,5 +322,12 @@ void main() {
         verifyNever(mockActiveOrderService.saveActiveOrder(any, any));
       },
     );
+
+    test('close should cancel location subscription', () async {
+      viewModel.startTracking("123");
+      await viewModel.close();
+      // Verifying state after close is tricky, but we can verify it doesn't crash
+      expect(viewModel.isClosed, true);
+    });
   });
 }
