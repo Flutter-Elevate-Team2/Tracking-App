@@ -68,6 +68,10 @@ class $AssetsImagesGen {
   AssetGenImage get successApplyImage =>
       const AssetGenImage('assets/images/successApplyImage.png');
 
+  /// File path: assets/images/tracking.png
+  AssetGenImage get tracking =>
+      const AssetGenImage('assets/images/tracking.png');
+
   /// File path: assets/images/user_location.png
   AssetGenImage get userLocation =>
       const AssetGenImage('assets/images/user_location.png');
@@ -87,6 +91,7 @@ class $AssetsImagesGen {
     onBoardingImage,
     storeLocation,
     successApplyImage,
+    tracking,
     userLocation,
     whatsappIcon,
   ];

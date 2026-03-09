@@ -35,7 +35,10 @@ class AuthRepoImpl with ApiExecutionMixin implements AuthRepoContract {
   AuthRepoImpl(this._remoteDataSource, this._localDataSource);
 
   @override
-  Future<BaseResponse<LoginEntity>> login(LoginRequest request, bool isRememberMe) async {
+  Future<BaseResponse<LoginEntity>> login(
+    LoginRequest request,
+    bool isRememberMe,
+  ) async {
     final result = await execute<LoginResponse, LoginEntity>(
       action: () async => await _remoteDataSource.login(request),
       mapper: (response) => response.toEntity(),
@@ -80,7 +83,9 @@ class AuthRepoImpl with ApiExecutionMixin implements AuthRepoContract {
   }
 
   @override
-  Future<BaseResponse<ForgetPasswordEntity>> forgetPassword(ForgetPasswordRequest request) async {
+  Future<BaseResponse<ForgetPasswordEntity>> forgetPassword(
+    ForgetPasswordRequest request,
+  ) async {
     return execute<ForgetPasswordResponse, ForgetPasswordEntity>(
       action: () async => await _remoteDataSource.forgetPassword(request),
       mapper: (response) => response.toEntity(),
@@ -88,7 +93,9 @@ class AuthRepoImpl with ApiExecutionMixin implements AuthRepoContract {
   }
 
   @override
-  Future<BaseResponse<VerifyResetPasswordEntity>> verifyPassword(VerifyResetPasswordRequest request) async {
+  Future<BaseResponse<VerifyResetPasswordEntity>> verifyPassword(
+    VerifyResetPasswordRequest request,
+  ) async {
     return execute<VerifyResetPasswordResponse, VerifyResetPasswordEntity>(
       action: () async => await _remoteDataSource.verifyPassword(request),
       mapper: (response) => response.toEntity(),
@@ -96,10 +103,17 @@ class AuthRepoImpl with ApiExecutionMixin implements AuthRepoContract {
   }
 
   @override
-  Future<BaseResponse<ResetPasswordEntity>> resetPassword(ResetPasswordRequest request) async {
+  Future<BaseResponse<ResetPasswordEntity>> resetPassword(
+    ResetPasswordRequest request,
+  ) async {
     return execute<ResetPasswordResponse, ResetPasswordEntity>(
       action: () async => await _remoteDataSource.resetPassword(request),
       mapper: (response) => response.toEntity(),
     );
+  }
+
+  @override
+  void clearSession() {
+    _isCurrentSessionActive = false;
   }
 }

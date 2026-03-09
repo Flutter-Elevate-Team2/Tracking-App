@@ -1,17 +1,22 @@
 import 'package:dio/dio.dart';
-import 'package:tracking_app/core/constants/api_constants.dart';
-import 'package:tracking_app/core/controller/session_controller.dart';
+import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/foundation.dart';
+import 'package:tracking_app/core/constants/api_constants.dart';
+import 'package:tracking_app/core/controller/session_controller.dart';
 
 @injectable
 class AuthInterceptor extends Interceptor {
   final SharedPreferences _prefs;
-  final SessionController _sessionController;
   bool _isLoggingOut = false;
 
-  AuthInterceptor(this._prefs, this._sessionController);
+  AuthInterceptor(this._prefs);
+
+  // Lazily resolve SessionController to break the circular dependency:
+  // AuthInterceptor -> SessionController -> AuthRepoContract -> AuthRemoteDataSource -> AuthApi -> Dio -> AuthInterceptor
+  SessionController get _sessionController =>
+      GetIt.instance<SessionController>();
 
   final _publicPaths = [
     ApiConstants.login,

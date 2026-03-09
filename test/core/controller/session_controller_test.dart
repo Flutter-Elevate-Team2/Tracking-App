@@ -2,16 +2,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tracking_app/Features/auth/domain/auth_repo_contract/auth_repo_contract.dart';
 import 'package:tracking_app/Features/profile/domain/entities/driver_entity.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/controller/session_controller.dart';
 
-@GenerateMocks([SharedPreferences])
+@GenerateMocks([SharedPreferences, AuthRepoContract])
 import 'session_controller_test.mocks.dart';
 
 void main() {
   late SessionController sessionController;
   late MockSharedPreferences mockPrefs;
+  late MockAuthRepoContract mockAuthRepo;
 
   final testUser = DriverEntity(
     id: '1',
@@ -32,7 +34,8 @@ void main() {
 
   setUp(() {
     mockPrefs = MockSharedPreferences();
-    sessionController = SessionController(mockPrefs);
+    mockAuthRepo = MockAuthRepoContract();
+    sessionController = SessionController(mockPrefs, mockAuthRepo);
   });
 
   tearDown(() {
@@ -98,6 +101,7 @@ void main() {
       await sessionController.expireSession();
 
       verify(mockPrefs.remove(ApiConstants.tokenKey)).called(1);
+      verify(mockAuthRepo.clearSession()).called(1);
     });
 
     test('clears current user', () async {
@@ -111,6 +115,7 @@ void main() {
       await sessionController.expireSession();
 
       expect(sessionController.user, isNull);
+      verify(mockAuthRepo.clearSession()).called(1);
     });
 
     test('emits session expired event', () async {
@@ -120,6 +125,7 @@ void main() {
 
       expectLater(sessionController.onSessionExpired, emits(null));
       await sessionController.expireSession();
+      verify(mockAuthRepo.clearSession()).called(1);
     });
   });
 
@@ -139,6 +145,7 @@ void main() {
       await sessionController.notifyLogout(SessionEndReason.logout);
 
       verify(mockPrefs.remove(ApiConstants.tokenKey)).called(1);
+      verify(mockAuthRepo.clearSession()).called(1);
     });
 
     test('clears current user', () async {
@@ -152,6 +159,7 @@ void main() {
       await sessionController.notifyLogout(SessionEndReason.logout);
 
       expect(sessionController.user, isNull);
+      verify(mockAuthRepo.clearSession()).called(1);
     });
 
     test('emits logout reason', () async {

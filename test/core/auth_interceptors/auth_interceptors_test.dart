@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:tracking_app/core/auth_interceptors/auth_interceptors.dart';
-import 'package:tracking_app/core/constants/api_constants.dart';
-import 'package:tracking_app/core/controller/session_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tracking_app/core/auth_interceptors/auth_interceptors.dart';
+import 'package:tracking_app/core/constants/api_constants.dart';
+import 'package:tracking_app/core/controller/session_controller.dart';
 
 import 'auth_interceptors_test.mocks.dart';
 
@@ -28,7 +29,22 @@ void main() {
     mockRequestHandler = MockRequestInterceptorHandler();
     mockErrorHandler = MockErrorInterceptorHandler();
 
-    authInterceptor = AuthInterceptor(mockPrefs, mockSessionController);
+    // Register mock SessionController in GetIt so AuthInterceptor can lazily
+    // resolve it (we broke the circular dep by removing it from the constructor).
+    final getIt = GetIt.instance;
+    if (getIt.isRegistered<SessionController>()) {
+      getIt.unregister<SessionController>();
+    }
+    getIt.registerSingleton<SessionController>(mockSessionController);
+
+    authInterceptor = AuthInterceptor(mockPrefs);
+  });
+
+  tearDown(() {
+    final getIt = GetIt.instance;
+    if (getIt.isRegistered<SessionController>()) {
+      getIt.unregister<SessionController>();
+    }
   });
 
   group('AuthInterceptor', () {
@@ -38,8 +54,7 @@ void main() {
         () async {
           // Arrange
           final options = RequestOptions(path: '/private/endpoint');
-          when(mockPrefs.reload()).thenAnswer((_) async {
-          });
+          when(mockPrefs.reload()).thenAnswer((_) async {});
           when(
             mockPrefs.getString(ApiConstants.tokenKey),
           ).thenReturn('test_token');
@@ -57,9 +72,7 @@ void main() {
 
       test('does not add Authorization header for public paths', () async {
         // Arrange
-        final options = RequestOptions(
-          path: ApiConstants.login,
-        ); // Public path
+        final options = RequestOptions(path: ApiConstants.login); // Public path
 
         // Act
         authInterceptor.onRequest(options, mockRequestHandler);
@@ -73,8 +86,7 @@ void main() {
       test('does not add header if token is null', () async {
         // Arrange
         final options = RequestOptions(path: '/private/endpoint');
-        when(mockPrefs.reload()).thenAnswer((_) async {
-        });
+        when(mockPrefs.reload()).thenAnswer((_) async {});
         when(mockPrefs.getString(ApiConstants.tokenKey)).thenReturn(null);
 
         // Act
@@ -117,8 +129,7 @@ void main() {
 
       test('does not trigger logout on 401 for public path', () async {
         // Arrange
-        final requestOptions = RequestOptions(path: ApiConstants.login
-        );
+        final requestOptions = RequestOptions(path: ApiConstants.login);
         final response = Response(
           requestOptions: requestOptions,
           statusCode: 401,

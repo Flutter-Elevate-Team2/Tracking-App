@@ -1,8 +1,37 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:tracking_app/Features/auth/domain/auth_repo_contract/auth_repo_contract.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
 
+import 'app_router_test.mocks.dart';
+
+@GenerateMocks([AuthRepoContract])
 void main() {
+  late MockAuthRepoContract mockAuthRepo;
+
+  setUpAll(() {
+    mockAuthRepo = MockAuthRepoContract();
+    // AppRouter.router calls getIt<AuthRepoContract>() inside its redirect,
+    // so we must register a mock before accessing the static router.
+    final getIt = GetIt.instance;
+    if (!getIt.isRegistered<AuthRepoContract>()) {
+      getIt.registerSingleton<AuthRepoContract>(mockAuthRepo);
+    }
+
+    // Stub isLoggedIn so the redirect doesn't throw
+    when(mockAuthRepo.isLoggedIn()).thenAnswer((_) async => false);
+  });
+
+  tearDownAll(() {
+    final getIt = GetIt.instance;
+    if (getIt.isRegistered<AuthRepoContract>()) {
+      getIt.unregister<AuthRepoContract>();
+    }
+  });
+
   group('Routes Constants', () {
     test('should have correct onBoarding route paths', () {
       expect(Routes.onBoardingPath, '/onBoarding');
@@ -108,7 +137,6 @@ void main() {
       final location = router.namedLocation(Routes.forgetPasswordName);
       expect(location, equals(Routes.forgetPasswordPath));
     });
-
 
     test('should be able to navigate to resetPassword route', () {
       final location = router.namedLocation(Routes.resetPasswordName);
