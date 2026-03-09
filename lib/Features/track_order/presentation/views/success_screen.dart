@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
 import 'package:tracking_app/core/extension/context_extension.dart';
 import 'package:tracking_app/core/widget/custom_button.dart';
@@ -51,8 +52,13 @@ class SuccessScreen extends StatelessWidget {
 
                 CustomButton(
                   title: context.l10n.done,
-                  onPressed: () {
-                    context.goNamed(Routes.homeName);
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.remove('show_success_screen');
+
+                    if (context.mounted) {
+                      context.goNamed(Routes.homeName);
+                    }
                   },
                 ),
               ],

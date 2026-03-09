@@ -6,6 +6,10 @@ class FetchOrderDetailsEvent extends TrackOrderStatusEvent {
   final String orderId;
   FetchOrderDetailsEvent(this.orderId);
 }
+class SyncOrderWithBackendEvent extends TrackOrderStatusEvent {
+  final String orderId;
+  SyncOrderWithBackendEvent(this.orderId);
+}
 
 class UpdateOrderStatusEvent extends TrackOrderStatusEvent {
   final String orderId;

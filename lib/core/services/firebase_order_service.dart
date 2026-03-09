@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:tracking_app/Features/home/data/models/order_tracking_firebase_model.dart';
 
@@ -56,5 +57,14 @@ class FirebaseOrderService {
     Map<String, dynamic> data,
   ) async {
     await _firestore.collection('active_orders').doc(orderId).update(data);
+  }
+  Future<void> updateDriverTokenInActiveOrder(String orderId, String newToken) async {
+    try {
+      await _firestore.collection('active_orders').doc(orderId).update({
+        'driverData.driverToken': newToken,
+      });
+    } catch (e) {
+      debugPrint("Failed to update driver token in active order: $e");
+    }
   }
 }

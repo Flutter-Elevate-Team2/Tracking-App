@@ -14,6 +14,8 @@ import 'package:tracking_app/core/base_states/base_states.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/controller/session_controller.dart';
 import 'package:tracking_app/core/services/active_order_firestore_service.dart';
+import 'package:tracking_app/core/services/firebase_order_service.dart';
+import 'package:tracking_app/core/services/push_notification_service.dart';
 
 @injectable
 class LoginViewModel extends Cubit<LoginState> {
@@ -21,12 +23,14 @@ class LoginViewModel extends Cubit<LoginState> {
   final SessionController _sessionController;
   final ActiveOrderFirestoreService _activeOrderFirestoreService;
   final GetDriverProfileUseCase _getDriverProfileUseCase;
+  final FirebaseOrderService _firebaseOrderService; // <-- تمت الإضافة
 
   LoginViewModel(
     this._loginUseCase,
     this._sessionController,
     this._activeOrderFirestoreService,
     this._getDriverProfileUseCase,
+    this._firebaseOrderService, // <-- تمت الإضافة
   ) : super(const LoginState());
 
   void doIntent(LoginEvent event) {
@@ -93,6 +97,11 @@ class LoginViewModel extends Cubit<LoginState> {
             
             if (activeOrderId != null && activeOrderId.isNotEmpty) {
                await prefs.setString(ApiConstants.currentOrderIdKey, activeOrderId);
+               
+               final newToken = await PushNotificationService.getDeviceTokenAsync();
+               if (newToken != null) {
+                 await _firebaseOrderService.updateDriverTokenInActiveOrder(activeOrderId, newToken);
+               }
             }
           }
         } catch (e) {

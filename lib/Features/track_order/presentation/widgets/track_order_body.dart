@@ -42,9 +42,9 @@ class _TrackOrderBodyState extends State<TrackOrderBody>
     WidgetsBinding.instance.addObserver(this);
     _listenToForegroundNotification();
     context.read<OrderStatusViewModel>().doIntent(
-      context,
-      FetchOrderDetailsEvent(widget.orderId),
-    );
+          context,
+          FetchOrderDetailsEvent(widget.orderId),
+        );
   }
 
   void _listenToForegroundNotification() {
@@ -54,8 +54,8 @@ class _TrackOrderBodyState extends State<TrackOrderBody>
       if (message.data['action'] == 'customer_confirmed' &&
           message.data['orderId'] == widget.orderId) {
         context.read<CompleteOrderViewModel>().doIntent(
-          CompleteOrderEvent(orderId: widget.orderId),
-        );
+              CompleteOrderEvent(orderId: widget.orderId),
+            );
       }
     });
   }
@@ -73,16 +73,22 @@ class _TrackOrderBodyState extends State<TrackOrderBody>
       if (!mounted) return;
       SharedPreferences.getInstance().then((prefs) {
         prefs.reload().then((_) {
-          if (!mounted)
+          if (!mounted) return;
+
+          final showSuccess = prefs.getBool('show_success_screen') ?? false;
+          if (showSuccess) {
+            context.goNamed(Routes.successName);
             return;
+          }
+
           final activeOrderId = prefs.getString(ApiConstants.currentOrderIdKey);
           if (activeOrderId == null || activeOrderId != widget.orderId) {
             context.go(Routes.homePath);
           } else {
             context.read<OrderStatusViewModel>().doIntent(
-              context,
-              FetchOrderDetailsEvent(widget.orderId),
-            );
+                  context,
+                  FetchOrderDetailsEvent(widget.orderId),
+                );
           }
         });
       });
@@ -113,14 +119,14 @@ class _TrackOrderBodyState extends State<TrackOrderBody>
         ),
         BlocListener<OrderStatusViewModel, TrackOrderStatusState>(
           listenWhen: (prev, next) =>
-              prev.orderState?.errorMessage != next.orderState?.errorMessage,
+              prev.orderState?.errorMessage != next.orderState?.errorMessage ||
+              prev.orderState?.data?.status != next.orderState?.data?.status,
           listener: (context, trackState) {
+            // 1. If we can't find the order
             if (trackState.orderState?.errorMessage != null) {
-              // Ensure we clear any local locks if the backend says order not found
               SharedPreferences.getInstance().then((prefs) {
                 prefs.remove(ApiConstants.currentOrderIdKey);
-                final driverId =
-                    prefs.getString(ApiConstants.driverIdKey) ?? '';
+                final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';
                 if (driverId.isNotEmpty) {
                   getIt<ActiveOrderFirestoreService>().clearActiveOrder(
                     driverId,
@@ -128,6 +134,19 @@ class _TrackOrderBodyState extends State<TrackOrderBody>
                 }
               });
               context.go(Routes.homePath);
+            }
+
+            // 2. Auto-check: If order is completed (done by customer while driver was offline)
+            final orderData = trackState.orderState?.data;
+            if (orderData != null && orderData.status == 'completed') {
+              SharedPreferences.getInstance().then((prefs) {
+                prefs.remove(ApiConstants.currentOrderIdKey);
+                final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';
+                if (driverId.isNotEmpty) {
+                  getIt<ActiveOrderFirestoreService>().clearActiveOrder(driverId);
+                }
+              });
+              context.pushReplacementNamed(Routes.successName);
             }
           },
         ),
@@ -160,6 +179,17 @@ class _TrackOrderBodyState extends State<TrackOrderBody>
                     );
                   },
                 ),
+               actions: [
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () {
+                      context.read<OrderStatusViewModel>().doIntent(
+                            context,
+                            SyncOrderWithBackendEvent(widget.orderId),
+                          );
+                    },
+                  )
+                ],
               ),
               body: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),

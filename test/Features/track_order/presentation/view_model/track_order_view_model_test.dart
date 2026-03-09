@@ -17,6 +17,7 @@ import 'package:tracking_app/Features/track_order/domain/entities/user_location_
 import 'package:tracking_app/Features/track_order/domain/use_cases/get_directions_use_case.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/get_order_details_use_case.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/track_order_use_case.dart';
+import 'package:tracking_app/Features/order/domain/use_cases/get_all_driver_orders.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_event.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_state.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_view_model.dart';
@@ -35,6 +36,7 @@ import 'track_order_view_model_test.mocks.dart';
     LocationService,
     FirebaseOrderService,
     ActiveOrderFirestoreService,
+    GetAllDriverOrdersUseCase,
   ],
   customMocks: [
     MockSpec<BuildContext>(onMissingStub: OnMissingStub.returnDefault),
@@ -48,6 +50,7 @@ void main() {
   late MockLocationService mockLocationService;
   late MockFirebaseOrderService mockFirebaseService;
   late MockActiveOrderFirestoreService mockActiveOrderService;
+  late MockGetAllDriverOrdersUseCase mockGetAllDriverOrdersUseCase;
   late MockBuildContext mockContext;
 
   final fakeOrder = OrderTrackingEntity(
@@ -98,6 +101,7 @@ void main() {
     mockLocationService = MockLocationService();
     mockFirebaseService = MockFirebaseOrderService();
     mockActiveOrderService = MockActiveOrderFirestoreService();
+    mockGetAllDriverOrdersUseCase = MockGetAllDriverOrdersUseCase();
     mockContext = MockBuildContext();
 
     when(
@@ -121,6 +125,7 @@ void main() {
       mockFirebaseService,
       mockGetDirectionsUseCase,
       mockActiveOrderService,
+      mockGetAllDriverOrdersUseCase,
     );
   });
 

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mockito/mockito.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracking_app/Features/track_order/presentation/views/success_screen.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
 import 'package:tracking_app/core/l10n/app_localizations.dart';
@@ -17,6 +18,7 @@ void main() {
 
   setUp(() {
     mockRouter = MockGoRouter();
+    SharedPreferences.setMockInitialValues({});
   });
 
   Widget createWidgetUnderTest() {

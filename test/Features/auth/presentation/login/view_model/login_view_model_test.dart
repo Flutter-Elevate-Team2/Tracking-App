@@ -15,6 +15,7 @@ import 'package:tracking_app/core/base_response/base_response.dart';
 import 'package:tracking_app/core/base_states/base_states.dart';
 import 'package:tracking_app/core/controller/session_controller.dart';
 import 'package:tracking_app/core/services/active_order_firestore_service.dart';
+import 'package:tracking_app/core/services/firebase_order_service.dart';
 
 import 'login_view_model_test.mocks.dart';
 
@@ -24,6 +25,7 @@ import 'login_view_model_test.mocks.dart';
   LoginEntity,
   ActiveOrderFirestoreService,
   GetDriverProfileUseCase,
+  FirebaseOrderService,
 ])
 void main() {
   provideDummy<BaseResponse<LoginEntity>>(
@@ -37,6 +39,7 @@ void main() {
   late MockSessionController mockSessionController;
   late MockActiveOrderFirestoreService mockActiveOrderService;
   late MockGetDriverProfileUseCase mockGetProfileUseCase;
+  late MockFirebaseOrderService mockFirebaseOrderService;
   late LoginViewModel loginViewModel;
 
   final tDriver = DriverEntity(
@@ -61,6 +64,7 @@ void main() {
     mockSessionController = MockSessionController();
     mockActiveOrderService = MockActiveOrderFirestoreService();
     mockGetProfileUseCase = MockGetDriverProfileUseCase();
+    mockFirebaseOrderService = MockFirebaseOrderService();
 
     when(
       mockActiveOrderService.getActiveOrder(any),
@@ -75,6 +79,7 @@ void main() {
       mockSessionController,
       mockActiveOrderService,
       mockGetProfileUseCase,
+      mockFirebaseOrderService,
     );
   });
 

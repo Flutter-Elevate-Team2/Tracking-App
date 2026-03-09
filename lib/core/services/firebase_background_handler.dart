@@ -19,19 +19,26 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     if (orderId != null) {
       try {
         final prefs = await SharedPreferences.getInstance();
-        // Force a fresh read from disk — background isolates can hold a
-        // stale in-memory cache that doesn't reflect writes from other isolates.
         await prefs.reload();
 
-        // Unconditionally clear local state when customer confirms
         final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';
         if (driverId.isNotEmpty) {
           final firestore = FirebaseFirestore.instance;
+          
           await firestore.collection('active_orders').doc(driverId).delete();
-          // Force Firestore to sync the deletion immediately before OS kills the isolate
+          
+          try {
+            await firestore.collection('active_orders').doc(orderId).update({
+              'status': 'completed',
+              'updatedAt': FieldValue.serverTimestamp(),
+            });
+          } catch (_) {}
+
           await firestore.waitForPendingWrites();
         }
+        
         await prefs.remove(ApiConstants.currentOrderIdKey);
+        await prefs.setBool('show_success_screen', true);
         debugPrint(
           "✅ Active order cleared for driver after background completion",
         );

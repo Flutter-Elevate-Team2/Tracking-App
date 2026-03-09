@@ -95,6 +95,7 @@ class AppRouter {
     redirect: (context, state) async {
       final authRepo = getIt<AuthRepoContract>();
       final prefs = await SharedPreferences.getInstance();
+      await prefs.reload();
 
       final bool isLoggedIn = await authRepo.isLoggedIn();
 
@@ -109,11 +110,12 @@ class AppRouter {
           state.uri.toString().startsWith(Routes.trackOrderPath) ||
           state.uri.toString().startsWith(Routes.mapPath);
 
-      if (!isLoggedIn) {
-        return isAuthRoute ? null : Routes.loginPath;
-      }
+     if (isLoggedIn) {
+        final showSuccess = prefs.getBool('show_success_screen') ?? false;
+        if (showSuccess && state.uri.toString() != Routes.successPath) {
+          return Routes.successPath;
+        }
 
-      if (isLoggedIn) {
         final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';
         final activeOrderId = prefs.getString(ApiConstants.currentOrderIdKey);
 

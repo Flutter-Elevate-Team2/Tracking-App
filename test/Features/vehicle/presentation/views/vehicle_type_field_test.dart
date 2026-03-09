@@ -39,6 +39,7 @@ void main() {
     return MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      theme: ThemeData(splashFactory: NoSplash.splashFactory),
       home: Scaffold(body: VehicleTypeField(onChanged: onChanged)),
     );
   }

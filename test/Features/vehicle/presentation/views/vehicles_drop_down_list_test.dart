@@ -18,15 +18,14 @@ void main() {
   testWidgets('VehicleDropDown handles selection and images without errors', (
     tester,
   ) async {
-    // استخدمنا mockNetworkImagesFor للتعامل مع صور الشبكة في التست
-    await mockNetworkImagesFor(() async {
+  await mockNetworkImagesFor(() async {
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
+          theme: ThemeData(splashFactory: NoSplash.splashFactory),
           home: Scaffold(
             body: VehiclesDropDownList(
-              // هنا كان الخطأ، قمنا باستدعاء الكلاس مباشرة
               vehicles: tVehicles,
               selectedVehicleId: null,
               onVehicleSelected: (id) {},
@@ -35,21 +34,14 @@ void main() {
         ),
       );
 
-      // 1. التأكد من وجود الـ Dropdown
       final dropdown = find.byKey(const Key("vehicleTypeDropdown"));
       expect(dropdown, findsOneWidget);
 
-      // 2. فتح القائمة
       await tester.tap(dropdown);
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
 
-      // 3. التأكد من وجود الصورة (المركبة الثانية لها رابط صورة)
-      // بما أن الـ Dropdown يعرض العناصر في القائمة المنسدلة، سنجد صورة واحدة
       expect(find.byType(Image), findsOneWidget);
-
-      // 4. اختيار العنصر الثاني
-      // استخدمنا .last لأن الـ DropdownMenuItem قد يتكرر في الـ Overlay الخاص بـ Flutter
       final item2 = find.byKey(const Key("vehicleItem_2")).last;
       await tester.ensureVisible(item2);
       await tester.tap(item2, warnIfMissed: false);

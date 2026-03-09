@@ -6,12 +6,15 @@ import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mapbox;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tracking_app/Features/order/domain/use_cases/get_all_driver_orders.dart';
+import 'package:tracking_app/Features/order/presentation/my_orders/view_model/my_orders_state.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/order_status.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/get_directions_use_case.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/get_order_details_use_case.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/track_order_use_case.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_event.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_state.dart';
+import 'package:tracking_app/core/base_response/base_response.dart';
 import 'package:tracking_app/core/base_states/base_states.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/services/active_order_firestore_service.dart';
@@ -26,6 +29,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
   final FirebaseOrderService _firebaseService;
   final GetDirectionsUseCase _getDirectionsUseCase;
   final ActiveOrderFirestoreService _activeOrderFirestoreService;
+  final GetAllDriverOrdersUseCase _getAllDriverOrdersUseCase; 
 
   StreamSubscription<Position>? _locationSubscription;
 
@@ -36,6 +40,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
     this._firebaseService,
     this._getDirectionsUseCase,
     this._activeOrderFirestoreService,
+    this._getAllDriverOrdersUseCase, 
   ) : super(const TrackOrderStatusState());
 
   void doIntent(BuildContext context, TrackOrderStatusEvent event) {
@@ -52,7 +57,46 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
           title: event.title,
         );
         break;
+      case SyncOrderWithBackendEvent(): 
+        _syncOrderWithBackend(event.orderId);
+        break;
     }
+  }
+
+  Future<void> _syncOrderWithBackend(String orderId) async {
+    emit(state.copyWith(updateStatusState: const BaseState(isLoading: true)));
+
+    try {
+      final response = await _getAllDriverOrdersUseCase.call();
+
+      if (response is SuccessResponse<MyOrdersState>) {
+        final allOrders = response.data.allOrders;
+        final targetOrders = allOrders.where((o) => o.order?.id == orderId).toList();
+
+        if (targetOrders.isNotEmpty) {
+          final targetOrder = targetOrders.first;
+          
+          if (targetOrder.order?.state == 'completed') {
+            await _firebaseService.uploadTrackingOrder(orderId, {
+              "status": "completed",
+              "updatedAt": DateTime.now().toIso8601String(),
+            });
+
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.remove(ApiConstants.currentOrderIdKey);
+            final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';
+            if (driverId.isNotEmpty) {
+              await _activeOrderFirestoreService.clearActiveOrder(driverId);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint("Sync Error: $e");
+    }
+
+    emit(state.copyWith(updateStatusState: const BaseState(isLoading: false)));
+    _fetchOrderDetails(orderId); 
   }
 
   Future<void> _fetchOrderDetails(String orderId) async {
@@ -152,7 +196,6 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
     );
   }
 
-  // 🌟🌟 التعديل هنا: الدالة بقت async ومستنية الصلاحيات 🌟🌟
   Future<void> startTracking(String orderId) async {
     final order = state.orderState?.data;
 
@@ -165,10 +208,8 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
       _updateRoute(initialPos);
     }
 
-    // 🌟 بنستنى السواق يوافق على الصلاحيات براحته
     final pos = await _locationService.getCurrentLocation();
     
-    // لو قفل الشاشة أو التطبيق نخرج بأمان
     if (isClosed) return;
 
     if (pos != null) {
