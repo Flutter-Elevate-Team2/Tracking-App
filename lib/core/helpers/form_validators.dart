@@ -68,6 +68,10 @@ class FormValidators {
       return AppLocalizations.of(context)!.passwordRequired;
     }
 
+    if (trimmedValue.length < 8) {
+      return AppLocalizations.of(context)!.passwordTooShort;
+    }
+
     return null;
   }
 
@@ -106,6 +110,4 @@ class FormValidators {
 
     return null;
   }
-
-
 }

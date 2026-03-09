@@ -23,7 +23,6 @@ class EmailField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: context.l10n.emailLabel,
         hintText: context.l10n.emailHint,
-        helperText: "",
       ),
     );
   }

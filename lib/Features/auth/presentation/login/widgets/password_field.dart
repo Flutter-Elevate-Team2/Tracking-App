@@ -24,7 +24,6 @@ class _PasswordFieldState extends State<PasswordField> {
   Widget build(BuildContext context) {
     return TextFormField(
       key: Key('passwordField'),
-      autovalidateMode: AutovalidateMode.onUserInteraction,
       textInputAction: TextInputAction.done,
       validator: (value) =>
           FormValidators.validateLoginPassword(context, value),

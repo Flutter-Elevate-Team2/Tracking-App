@@ -9,7 +9,6 @@ import 'package:tracking_app/Features/auth/presentation/login/widgets/login_subm
 import 'package:tracking_app/Features/auth/presentation/login/widgets/password_field.dart';
 import 'package:tracking_app/Features/auth/presentation/login/widgets/remember_me_row.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
-import 'package:tracking_app/core/helpers/form_validators.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -19,20 +18,20 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final _formKey = GlobalKey<FormState>(); // الـ Key هنا
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
 
-  bool get _isFormValid {
-    final emailError = FormValidators.validateEmail(
-      context,
-      _emailController.text,
-    );
-    final passwordError = FormValidators.validateLoginPassword(
-      context,
-      _passwordController.text,
-    );
-    return emailError == null && passwordError == null;
+  /// Button is enabled only when both fields have text typed in them.
+  bool get _isFilled =>
+      _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -41,6 +40,7 @@ class _LoginFormState extends State<LoginForm> {
 
     return Form(
       key: _formKey,
+      autovalidateMode: _autovalidateMode,
       child: BlocBuilder<LoginViewModel, LoginState>(
         builder: (context, state) {
           return Column(
@@ -71,8 +71,12 @@ class _LoginFormState extends State<LoginForm> {
               const SizedBox(height: 16),
               LoginSubmitButton(
                 isLoading: state.loginState?.isLoading == true,
-                enabled: _isFormValid,
+                enabled: _isFilled,
                 onPressed: () {
+                  // First tap activates real-time validation on all fields.
+                  setState(() {
+                    _autovalidateMode = AutovalidateMode.always;
+                  });
                   if (_formKey.currentState?.validate() ?? false) {
                     viewModel.doIntent(
                       LoginButtonClickedEvent(

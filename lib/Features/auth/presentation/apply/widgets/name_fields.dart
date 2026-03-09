@@ -16,43 +16,38 @@ class NameFields extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Padding(
-      padding: EdgeInsetsGeometry.symmetric(vertical: 16),
-      child: Column(
-        children: [
-          TextFormField(
-            key: const Key('firstNameField'),
-            textInputAction: TextInputAction.next,
-            controller: firstNameController,
-            validator: (value) => FormValidators.validateRequired(
-              value,
-              context.l10n.firstNameRequired,
-            ),
-            style: theme.textTheme.bodySmall,
-            decoration: InputDecoration(
-              labelText: context.l10n.firstNameLabel,
-              hintText: context.l10n.firstNameHint,
-              helperText: "",
-            ),
+    return Column(
+      children: [
+        TextFormField(
+          key: const Key('firstNameField'),
+          textInputAction: TextInputAction.next,
+          controller: firstNameController,
+          validator: (value) => FormValidators.validateRequired(
+            value,
+            context.l10n.firstNameRequired,
           ),
-          SizedBox(height: 6,),
-          TextFormField(
-            key: const Key('lastNameField'),
-            textInputAction: TextInputAction.next,
-            controller: lastNameController,
-            validator: (value) => FormValidators.validateRequired(
-              value,
-              context.l10n.secondNameRequired,
-            ),
-            style: theme.textTheme.bodySmall,
-            decoration: InputDecoration(
-              labelText: context.l10n.secondNameLabel,
-              hintText: context.l10n.secondNameHint,
-              helperText: "",
-            ),
+          style: theme.textTheme.bodySmall,
+          decoration: InputDecoration(
+            labelText: context.l10n.firstNameLabel,
+            hintText: context.l10n.firstNameHint,
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 25),
+        TextFormField(
+          key: const Key('lastNameField'),
+          textInputAction: TextInputAction.next,
+          controller: lastNameController,
+          validator: (value) => FormValidators.validateRequired(
+            value,
+            context.l10n.secondNameRequired,
+          ),
+          style: theme.textTheme.bodySmall,
+          decoration: InputDecoration(
+            labelText: context.l10n.secondNameLabel,
+            hintText: context.l10n.secondNameHint,
+          ),
+        ),
+      ],
     );
   }
 }
