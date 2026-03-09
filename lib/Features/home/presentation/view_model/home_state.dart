@@ -5,6 +5,7 @@ import 'package:tracking_app/core/base_states/base_states.dart';
 class HomeState extends Equatable {
   final BaseState<List<OrderEntity>>? ordersState;
   final BaseState<OrderEntity>? acceptOrderState;
+  final String? acceptingOrderId;
 
   final int currentPage;
   final bool hasReachedMax;
@@ -13,6 +14,7 @@ class HomeState extends Equatable {
   const HomeState({
     this.ordersState = const BaseState(),
     this.acceptOrderState = const BaseState(),
+    this.acceptingOrderId,
     this.currentPage = 1,
     this.hasReachedMax = false,
     this.isPaginationLoading = false,
@@ -21,6 +23,8 @@ class HomeState extends Equatable {
   HomeState copyWith({
     BaseState<List<OrderEntity>>? ordersState,
     BaseState<OrderEntity>? acceptOrderState,
+    String? acceptingOrderId,
+    bool clearAcceptingOrderId = false,
     int? currentPage,
     bool? hasReachedMax,
     bool? isPaginationLoading,
@@ -28,6 +32,9 @@ class HomeState extends Equatable {
     return HomeState(
       ordersState: ordersState ?? this.ordersState,
       acceptOrderState: acceptOrderState ?? this.acceptOrderState,
+      acceptingOrderId: clearAcceptingOrderId
+          ? null
+          : (acceptingOrderId ?? this.acceptingOrderId),
       currentPage: currentPage ?? this.currentPage,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       isPaginationLoading: isPaginationLoading ?? this.isPaginationLoading,
@@ -38,6 +45,7 @@ class HomeState extends Equatable {
   List<Object?> get props => [
     ordersState,
     acceptOrderState,
+    acceptingOrderId,
     currentPage,
     hasReachedMax,
     isPaginationLoading,

@@ -116,11 +116,7 @@ class OrderCard extends StatelessWidget {
                   flex: 2,
                   child: BlocBuilder<HomeViewModel, HomeState>(
                     builder: (context, state) {
-                      final isAccepting =
-                          state.acceptOrderState?.isLoading == true &&
-                          state.acceptOrderState?.data?.id ==
-                              order
-                                  .id; // Corrected to distinguish which order is loading if needed
+                      final isAccepting = state.acceptingOrderId == order.id;
 
                       return Row(
                         children: [

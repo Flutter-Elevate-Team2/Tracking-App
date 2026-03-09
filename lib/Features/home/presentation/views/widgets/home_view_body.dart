@@ -21,6 +21,7 @@ class HomeViewBody extends StatefulWidget {
 
 class _HomeViewBodyState extends State<HomeViewBody> {
   final ScrollController _scrollController = ScrollController();
+  bool _isAcceptDialogOpen = false;
 
   @override
   void initState() {
@@ -56,55 +57,55 @@ class _HomeViewBodyState extends State<HomeViewBody> {
           prev.acceptOrderState?.errorMessage !=
               next.acceptOrderState?.errorMessage,
       listener: (context, state) {
-        if (state.acceptOrderState?.isLoading == false) {
-          if (Navigator.of(context, rootNavigator: true).canPop()) {
-            Navigator.of(context, rootNavigator: true).pop();
-          }
-        }
-
-        if (state.acceptOrderState?.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.acceptOrderState!.errorMessage!)),
-          );
-        }
-
         if (state.acceptOrderState?.isLoading == true) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            useRootNavigator: true,
-            builder: (_) => AlertDialog(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-              ),
-              content: Row(
-                children: [
-                  const SizedBox(
-                    height: 24,
-                    width: 24,
-                    child: CircularProgressIndicator(strokeWidth: 3),
-                  ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child: Text(
-                      context.l10n.acceptingOrder,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
+          if (!_isAcceptDialogOpen) {
+            _isAcceptDialogOpen = true;
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              useRootNavigator: true,
+              builder: (_) => AlertDialog(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                ),
+                content: Row(
+                  children: [
+                    const SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(strokeWidth: 3),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 20),
+                    Expanded(
+                      child: Text(
+                        context.l10n.acceptingOrder,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        }
+            ).then((_) {
+              _isAcceptDialogOpen = false;
+            });
+          }
+        } else if (state.acceptOrderState?.isLoading == false) {
+          if (_isAcceptDialogOpen) {
+            Navigator.of(context, rootNavigator: true).pop();
+            _isAcceptDialogOpen = false;
+          }
 
-        if (state.acceptOrderState?.data != null &&
-            state.acceptOrderState?.isLoading == false) {
-          final String orderId = state.acceptOrderState!.data!.id.toString();
-
-          context.pushNamed(
-            Routes.trackOrderName,
-            pathParameters: {'orderId': orderId},
-          );
+          if (state.acceptOrderState?.errorMessage != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.acceptOrderState!.errorMessage!)),
+            );
+          } else if (state.acceptOrderState?.data != null) {
+            final String orderId = state.acceptOrderState!.data!.id.toString();
+            context.pushNamed(
+              Routes.trackOrderName,
+              pathParameters: {'orderId': orderId},
+            );
+          }
         }
       },
       builder: (context, state) {

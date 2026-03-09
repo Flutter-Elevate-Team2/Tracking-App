@@ -25,6 +25,7 @@ extension OrderMapper on OrderDto {
       isPaid: isPaid,
       isDelivered: isDelivered,
       state: state,
+      createdAt: DateTime.tryParse(createdAt ?? ""),
       orderNumber: orderNumber,
       shippingAddress: shippingAddress?.toEntity(),
       store: store?.toEntity(),

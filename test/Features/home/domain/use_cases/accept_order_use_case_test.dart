@@ -170,7 +170,13 @@ void main() {
     });
 
     test('failure to start order stops execution', () async {
-      // Arrange
+      // Arrange - pre-validation stubs (these now run BEFORE startOrder)
+      when(
+        mockLocation.getCurrentLocation(),
+      ).thenAnswer((_) async => tPosition);
+
+      when(mockSession.user).thenReturn(tDriver);
+
       when(
         mockFirebase.getUserDataByUserId(any),
       ).thenAnswer((_) async => {'userId': 'u1'});
@@ -185,7 +191,7 @@ void main() {
       // Assert
       expect(result, isA<ErrorResponse<OrderEntity>>());
 
-      // نتحقق أن الرفع لـ Firebase لم يتم لأن الـ API فشل
+      // Firebase upload should NOT be called because the API failed
       verifyNever(mockFirebase.uploadTrackingOrder(any, any));
       verifyNever(mockPrefs.setString(any, any));
     });

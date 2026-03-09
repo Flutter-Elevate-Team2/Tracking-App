@@ -39,108 +39,123 @@ class AcceptOrderUseCase {
   );
 
   Future<BaseResponse<OrderEntity>> call(OrderEntity order) async {
-    // 1. Get user data from firebase (userid, device token)
+    // ── Step 1: Pre-validate GPS ──────────────────────────────────
+    final position = await _locationService.getCurrentLocation();
+    if (position == null) {
+      return const ErrorResponse(
+        errorMessage:
+            'Location services are required to accept an order. '
+            'Please enable GPS and grant location permissions.',
+      );
+    }
+
+    // ── Step 2: Pre-validate driver profile ───────────────────────
+    var driver = _sessionController.user;
+    if (driver == null) {
+      final profileResult = await _getDriverProfileUseCase.call();
+      if (profileResult is SuccessResponse<DriverEntity>) {
+        driver = profileResult.data;
+        _sessionController.saveUser(driver);
+      }
+    }
+    if (driver == null) {
+      return const ErrorResponse(
+        errorMessage:
+            'Driver profile not found. '
+            'Please log in again to accept orders.',
+      );
+    }
+
+    // ── Step 3: Fetch Firebase user data ──────────────────────────
     final userDataFirestore = await _firebaseService.getUserDataByUserId(
       order.user?.id ?? "",
     );
-    // 2. Start order API
+
+    // ── Step 4: Call startOrder API (point of no return) ──────────
     final response = await _startOrderUseCase(order.id);
 
     if (response is SuccessResponse<OrderEntity>) {
-      // 3. Upload tracking object to firebase
-      var driver = _sessionController.user;
-
-      // If driver is null, try to fetch profile
-      if (driver == null) {
-        final profileResult = await _getDriverProfileUseCase.call();
-        if (profileResult is SuccessResponse<DriverEntity>) {
-          driver = profileResult.data;
-          _sessionController.saveUser(driver);
-        }
-      }
-
-      String? vehicleImage;
-      if (driver?.vehicleType != null) {
-        final vehicleResult = await _getVehicleUseCase.call(
-          driver!.vehicleType,
-        );
+      // ── Step 5: Post-API operations (wrapped in try-catch) ─────
+      try {
+        String? vehicleImage;
+        final vehicleResult = await _getVehicleUseCase.call(driver.vehicleType);
         if (vehicleResult is SuccessResponse<VehicleEntity>) {
           vehicleImage = vehicleResult.data.image;
         }
-      }
 
-      final position = await _locationService.getCurrentLocation();
-
-      final trackingModel = OrderTrackingFirebaseModel(
-        userData: {
-          'userId': userDataFirestore?['userId'] ?? order.user?.id,
-          'deviceToken': userDataFirestore?['deviceToken'],
-          'userName': order.user?.fullName,
-          'userPhone': order.user?.phone,
-          'userImage': order.user?.photo,
-        },
-        orderData: {
-          'orderId': order.id,
-          'orderNumber': order.orderNumber,
-          'totalPrice': order.totalPrice,
-          'paymentType': order.paymentType,
-          'shippingAddress': {
-            'street': order.shippingAddress?.street,
-            'city': order.shippingAddress?.city,
-            'location': {
-              'lat': double.tryParse(order.shippingAddress?.lat ?? '') ?? 0.0,
-              'long': double.tryParse(order.shippingAddress?.long ?? '') ?? 0.0,
+        final trackingModel = OrderTrackingFirebaseModel(
+          userData: {
+            'userId': userDataFirestore?['userId'] ?? order.user?.id,
+            'deviceToken': userDataFirestore?['deviceToken'],
+            'userName': order.user?.fullName,
+            'userPhone': order.user?.phone,
+            'userImage': order.user?.photo,
+          },
+          orderData: {
+            'orderId': order.id,
+            'orderNumber': order.orderNumber,
+            'totalPrice': order.totalPrice,
+            'paymentType': order.paymentType,
+            'shippingAddress': {
+              'street': order.shippingAddress?.street,
+              'city': order.shippingAddress?.city,
+              'location': {
+                'lat': double.tryParse(order.shippingAddress?.lat ?? ''),
+                'long': double.tryParse(order.shippingAddress?.long ?? ''),
+              },
             },
           },
-        },
-        driverData: {
-          'driverId': driver?.id,
-          'driverName': driver != null
-              ? "${driver.firstName} ${driver.lastName}"
-              : null,
-          'driverPhone': driver?.phone,
-          'vehicleNumber': driver?.vehicleNumber,
-          'driverToken': await PushNotificationService.getDeviceTokenAsync(),
-          'vehicleImage': vehicleImage,
-        },
-        trackingLocation: {
-          'lat': position?.latitude,
-          'long': position?.longitude,
-        },
-        storeData: {
-          'storeName': order.store?.name,
-          'storeAddress': order.store?.address,
-          'storePhone': order.store?.phoneNumber,
-          'storeImage': order.store?.image,
-        },
-        orderItems: (order.orderItems ?? [])
-            .map(
-              (item) => {
-                'productId': item.product?.id,
-                'productTitle': item.product?.title,
-                'productQuantity': item.quantity,
-                'productPrice': item.price,
-                'productImage': item.product?.imgCover,
-              },
-            )
-            .toList(),
-        status: 'accepted',
-        updatedAt: DateTime.now(),
-      );
+          driverData: {
+            'driverId': driver.id,
+            'driverName': "${driver.firstName} ${driver.lastName}",
+            'driverPhone': driver.phone,
+            'vehicleNumber': driver.vehicleNumber,
+            'driverToken': await PushNotificationService.getDeviceTokenAsync(),
+            'vehicleImage': vehicleImage,
+          },
+          trackingLocation: {
+            'lat': position.latitude,
+            'long': position.longitude,
+          },
+          storeData: {
+            'storeName': order.store?.name,
+            'storeAddress': order.store?.address,
+            'storePhone': order.store?.phoneNumber,
+            'storeImage': order.store?.image,
+          },
+          orderItems: (order.orderItems ?? [])
+              .map(
+                (item) => {
+                  'productId': item.product?.id,
+                  'productTitle': item.product?.title,
+                  'productQuantity': item.quantity,
+                  'productPrice': item.price,
+                  'productImage': item.product?.imgCover,
+                },
+              )
+              .toList(),
+          status: 'accepted',
+          updatedAt: DateTime.now(),
+        );
 
-      await _firebaseService.uploadTrackingOrder(
-        order.id,
-        trackingModel.toJson(),
-      );
+        await _firebaseService.uploadTrackingOrder(
+          order.id,
+          trackingModel.toJson(),
+        );
 
-      // 4. Store order id to shared preferences
-      await _prefs.setString(ApiConstants.currentOrderIdKey, order.id);
+        await _prefs.setString(ApiConstants.currentOrderIdKey, order.id);
 
-      // 5. Lock the driver in via Firestore + persist driverId
-      final driverId = driver?.id ?? '';
-      if (driverId.isNotEmpty) {
-        await _prefs.setString(ApiConstants.driverIdKey, driverId);
-        await _activeOrderFirestoreService.saveActiveOrder(driverId, order.id);
+        final driverId = driver.id;
+        if (driverId.isNotEmpty) {
+          await _prefs.setString(ApiConstants.driverIdKey, driverId);
+          await _activeOrderFirestoreService.saveActiveOrder(
+            driverId,
+            order.id,
+          );
+        }
+      } catch (_) {
+        // Post-API ops failed, but the order IS accepted server-side.
+        // Swallow the error so the UI reflects the successful accept.
       }
     }
 

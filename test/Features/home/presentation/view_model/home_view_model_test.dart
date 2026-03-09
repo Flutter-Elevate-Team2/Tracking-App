@@ -41,49 +41,55 @@ void main() {
     });
 
     blocTest<HomeViewModel, HomeState>(
-      'emits [loading, success] when GetPendingOrdersEvent is successful (reverse pagination)',
+      'emits [clearAccept, loading, success] when GetPendingOrdersEvent is successful',
       build: () {
-        // Page 1 to get metadata
-        when(mockGetOrders.call(1)).thenAnswer(
-          (_) async => const SuccessResponse(
-            data: HomeOrdersEntity(orders: [], totalPages: 2),
-          ),
-        );
-        // Page 2 (last page) as entry point
-        when(mockGetOrders.call(2)).thenAnswer(
+        when(mockGetOrders.call(currentPage: 1, isRefresh: false)).thenAnswer(
           (_) async => SuccessResponse(
-            data: HomeOrdersEntity(orders: tOrders, totalPages: 2),
+            data: HomeOrdersEntity(
+              orders: tOrders,
+              totalPages: 1,
+              currentPage: 1,
+            ),
           ),
         );
         return viewModel;
       },
       act: (bloc) => bloc.doIntent(GetPendingOrdersEvent()),
       expect: () => [
-        const HomeState(ordersState: BaseState(isLoading: true)),
-        HomeState(
-          ordersState: BaseState(
-            isLoading: false,
-            data: tOrders.reversed.toList(),
-          ),
-          currentPage: 2,
+        const HomeState(acceptOrderState: BaseState()),
+        const HomeState(
+          ordersState: BaseState(isLoading: true),
+          acceptOrderState: BaseState(),
           hasReachedMax: false,
+        ),
+        HomeState(
+          ordersState: BaseState(isLoading: false, data: tOrders),
+          acceptOrderState: const BaseState(),
+          currentPage: 1,
+          hasReachedMax: true,
         ),
       ],
     );
 
     blocTest<HomeViewModel, HomeState>(
-      'emits [loading, error] when GetPendingOrdersEvent fails at initial call',
+      'emits [clearAccept, loading, error] when GetPendingOrdersEvent fails at initial call',
       build: () {
         when(
-          mockGetOrders.call(1),
+          mockGetOrders.call(currentPage: 1, isRefresh: false),
         ).thenAnswer((_) async => const ErrorResponse(errorMessage: 'error'));
         return viewModel;
       },
       act: (bloc) => bloc.doIntent(GetPendingOrdersEvent()),
       expect: () => [
-        const HomeState(ordersState: BaseState(isLoading: true)),
+        const HomeState(acceptOrderState: BaseState()),
+        const HomeState(
+          ordersState: BaseState(isLoading: true),
+          acceptOrderState: BaseState(),
+          hasReachedMax: false,
+        ),
         const HomeState(
           ordersState: BaseState(isLoading: false, errorMessage: 'error'),
+          acceptOrderState: BaseState(),
         ),
       ],
     );
@@ -102,6 +108,7 @@ void main() {
         HomeState(
           ordersState: BaseState(data: tOrders),
           acceptOrderState: const BaseState(isLoading: true),
+          acceptingOrderId: '1',
         ),
         HomeState(
           ordersState: const BaseState(data: []),
@@ -124,6 +131,7 @@ void main() {
         HomeState(
           ordersState: BaseState(data: tOrders),
           acceptOrderState: const BaseState(isLoading: true),
+          acceptingOrderId: '1',
         ),
         HomeState(
           ordersState: BaseState(data: tOrders),

@@ -29,31 +29,35 @@ void main() {
       const tOrders = [OrderEntity(id: '1', orderNumber: '#1')];
       const tHomeOrders = HomeOrdersEntity(orders: tOrders, totalPages: 1);
       when(
-        mockRepo.getPendingOrders(1),
+        mockRepo.getPendingOrders(currentPage: 1, isRefresh: false),
       ).thenAnswer((_) async => SuccessResponse(data: tHomeOrders));
 
-      final result = await useCase.call(1);
+      final result = await useCase.call(currentPage: 1, isRefresh: false);
 
       expect(result, isA<SuccessResponse<HomeOrdersEntity>>());
       expect((result as SuccessResponse<HomeOrdersEntity>).data, tHomeOrders);
-      verify(mockRepo.getPendingOrders(1)).called(1);
+      verify(
+        mockRepo.getPendingOrders(currentPage: 1, isRefresh: false),
+      ).called(1);
       verifyNoMoreInteractions(mockRepo);
     });
 
     test('should return ErrorResponse from the repository', () async {
       const errorMessage = 'An error occurred';
       when(
-        mockRepo.getPendingOrders(1),
+        mockRepo.getPendingOrders(currentPage: 1, isRefresh: false),
       ).thenAnswer((_) async => ErrorResponse(errorMessage: errorMessage));
 
-      final result = await useCase.call(1);
+      final result = await useCase.call(currentPage: 1, isRefresh: false);
 
       expect(result, isA<ErrorResponse<HomeOrdersEntity>>());
       expect(
         (result as ErrorResponse<HomeOrdersEntity>).errorMessage,
         errorMessage,
       );
-      verify(mockRepo.getPendingOrders(1)).called(1);
+      verify(
+        mockRepo.getPendingOrders(currentPage: 1, isRefresh: false),
+      ).called(1);
       verifyNoMoreInteractions(mockRepo);
     });
   });

@@ -29,7 +29,10 @@ void main() {
       );
       when(mockDataSource.getPendingOrders(1)).thenAnswer((_) async => mockDto);
 
-      final result = await repo.getPendingOrders(1);
+      final result = await repo.getPendingOrders(
+        currentPage: 1,
+        isRefresh: true,
+      );
 
       expect(result, isA<SuccessResponse<HomeOrdersEntity>>());
       final data = (result as SuccessResponse<HomeOrdersEntity>).data;
@@ -55,7 +58,10 @@ void main() {
     test('getPendingOrders returns ErrorResponse on failure', () async {
       when(mockDataSource.getPendingOrders(1)).thenThrow(Exception('error'));
 
-      final result = await repo.getPendingOrders(1);
+      final result = await repo.getPendingOrders(
+        currentPage: 1,
+        isRefresh: true,
+      );
 
       expect(result, isA<ErrorResponse<HomeOrdersEntity>>());
     });

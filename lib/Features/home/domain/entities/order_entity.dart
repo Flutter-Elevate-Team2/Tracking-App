@@ -9,6 +9,7 @@ class OrderEntity extends Equatable {
   final bool? isPaid;
   final bool? isDelivered;
   final String? state;
+  final DateTime? createdAt;
   final String? orderNumber;
   final ShippingAddressEntity? shippingAddress;
   final StoreEntity? store;
@@ -22,6 +23,7 @@ class OrderEntity extends Equatable {
     this.isPaid,
     this.isDelivered,
     this.state,
+    this.createdAt,
     this.orderNumber,
     this.shippingAddress,
     this.store,
@@ -37,6 +39,7 @@ class OrderEntity extends Equatable {
     isPaid,
     isDelivered,
     state,
+    createdAt,
     orderNumber,
     shippingAddress,
     store,
@@ -141,9 +144,14 @@ class StoreEntity extends Equatable {
 class HomeOrdersEntity extends Equatable {
   final List<OrderEntity> orders;
   final int totalPages;
+  final int currentPage;
 
-  const HomeOrdersEntity({required this.orders, required this.totalPages});
+  const HomeOrdersEntity({
+    required this.orders,
+    required this.totalPages,
+    this.currentPage = 1,
+  });
 
   @override
-  List<Object?> get props => [orders, totalPages];
+  List<Object?> get props => [orders, totalPages, currentPage];
 }
