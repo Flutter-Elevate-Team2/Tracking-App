@@ -19,7 +19,9 @@ class OrderItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String fullImageUrl = "https://flower.elevateegy.com/uploads/$image";
+    final String fullImageUrl = image.startsWith('http')
+        ? image
+        : "https://flower.elevateegy.com/uploads/$image";
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),

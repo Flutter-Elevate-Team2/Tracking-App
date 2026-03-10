@@ -21,15 +21,22 @@ class MyOrdersViewModel extends Cubit<MyOrdersState> {
     final BaseResponse<MyOrdersState> response = await getDriverOrders.call();
 
     if (response is SuccessResponse<MyOrdersState>) {
+      final completedOrders = response.data.allOrders
+          .where((order) => order.order?.state == 'completed')
+          .toList();
+
       emit(
         state.copyWith(
           isLoading: false,
-          allOrders: response.data.allOrders,
+          allOrders: completedOrders,
           completedOrdersCount: response.data.completedOrdersCount,
           canceledOrdersCount: response.data.canceledOrdersCount,
         ),
       );
     } else if (response is ErrorResponse<MyOrdersState>) {
-      emit(state.copyWith(isLoading: false, errorMessage: response.errorMessage));
+      emit(
+        state.copyWith(isLoading: false, errorMessage: response.errorMessage),
+      );
     }
-  }}
+  }
+}
