@@ -149,7 +149,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(EditProfileScreen), findsOneWidget);
-      expect(find.text('Edit Profile'), findsOneWidget);
+      expect(find.text('Edit profile'), findsOneWidget);
     });
   });
 }

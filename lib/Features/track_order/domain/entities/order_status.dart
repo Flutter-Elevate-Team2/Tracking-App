@@ -7,7 +7,7 @@ enum OrderStatus {
   startDeliver('start_deliver'),
   arrivedUser('arrived_user'),
   delivered('delivered'),
-  completed('completed'); // ✅ إضافة الـ completed
+  completed('completed');
 
   final String firebaseValue;
   const OrderStatus(this.firebaseValue);
@@ -23,24 +23,40 @@ enum OrderStatus {
       case OrderStatus.arrivedUser:
         return context.l10n.arrived;
       case OrderStatus.delivered:
-      case OrderStatus.completed: // ✅
+      case OrderStatus.completed:
         return context.l10n.delivered;
+    }
+  }
+
+  String getNotificationTitle(BuildContext context) {
+    switch (this) {
+      case OrderStatus.accepted:
+        return context.l10n.notifAcceptedTitle;
+      case OrderStatus.arrivedPickup:
+        return context.l10n.notifArrivedPickupTitle;
+      case OrderStatus.startDeliver:
+        return context.l10n.notifStartDeliverTitle;
+      case OrderStatus.arrivedUser:
+        return context.l10n.notifArrivedUserTitle;
+      case OrderStatus.delivered:
+      case OrderStatus.completed:
+        return context.l10n.notifDeliveredTitle;
     }
   }
 
   String getNotificationBody(BuildContext context) {
     switch (this) {
       case OrderStatus.accepted:
-        return context.l10n.orderAcceptedBody;
+        return context.l10n.notifAcceptedBody;
       case OrderStatus.arrivedPickup:
-        return context.l10n.notificationArrivedPickup;
+        return context.l10n.notifArrivedPickupBody;
       case OrderStatus.startDeliver:
-        return context.l10n.notificationStartDeliver;
+        return context.l10n.notifStartDeliverBody;
       case OrderStatus.arrivedUser:
-        return context.l10n.notificationArrivedUser;
+        return context.l10n.notifArrivedUserBody;
       case OrderStatus.delivered:
       case OrderStatus.completed:
-        return context.l10n.notificationDelivered;
+        return context.l10n.notifDeliveredBody;
     }
   }
 
@@ -62,7 +78,6 @@ enum OrderStatus {
 
   OrderStatus? get next {
     final currentIndex = OrderStatus.values.indexOf(this);
-    // إيقاف الزرار عند الانتهاء
     if (this == OrderStatus.delivered || this == OrderStatus.completed) return null;
 
     if (currentIndex < OrderStatus.values.length - 1) {

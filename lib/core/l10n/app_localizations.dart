@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// The main title of the application
   ///
   /// In en, this message translates to:
-  /// **'Flowery ride'**
+  /// **'Flowery Rider'**
   String get appTitle;
 
   /// App Name Logo Text
@@ -110,22 +110,22 @@ abstract class AppLocalizations {
   /// **'Flowery'**
   String get flowery;
 
-  /// No description provided for @onBoardingDescription.
+  /// Description of onboarding
   ///
   /// In en, this message translates to:
-  /// **'Welcome to Flowery rider app'**
+  /// **'Welcome to Flowery Rider App'**
   String get onBoardingDescription;
 
-  /// No description provided for @welcomeTo.
+  /// Welcome message
   ///
   /// In en, this message translates to:
   /// **'Welcome to'**
   String get welcomeTo;
 
-  /// No description provided for @floweryRiderApp.
+  /// App Name in onboarding
   ///
   /// In en, this message translates to:
-  /// **'Flowery rider app'**
+  /// **'Flowery Rider App'**
   String get floweryRiderApp;
 
   /// Title for the login screen
@@ -200,53 +200,53 @@ abstract class AppLocalizations {
   /// **'Invalid password'**
   String get invalidPasswordError;
 
-  /// No description provided for @nationalIdRequired.
+  /// Error message for missing national ID
   ///
   /// In en, this message translates to:
   /// **'National ID is required'**
   String get nationalIdRequired;
 
-  /// No description provided for @nationalIdInvalidLength.
+  /// Error message for invalid length of national ID
   ///
   /// In en, this message translates to:
   /// **'National ID must be 14 digits'**
   String get nationalIdInvalidLength;
 
-  /// No description provided for @nationalIdInvalidChars.
+  /// Error message for invalid chars in national ID
   ///
   /// In en, this message translates to:
   /// **'National ID must contain only numbers'**
   String get nationalIdInvalidChars;
 
-  /// No description provided for @vehicleNumberLength.
+  /// Error message for invalid length of vehicle number
   ///
   /// In en, this message translates to:
   /// **'Vehicle number must be between 3 and 10 characters'**
   String get vehicleNumberLength;
 
-  /// No description provided for @vehicleNumberInvalidChars.
+  /// Error message for invalid chars in vehicle number
   ///
   /// In en, this message translates to:
   /// **'Vehicle number must contain only letters and numbers'**
   String get vehicleNumberInvalidChars;
 
-  /// No description provided for @uploadLicensePhoto.
+  /// Button to upload license image
   ///
   /// In en, this message translates to:
   /// **'Upload license image'**
   String get uploadLicensePhoto;
 
-  /// No description provided for @uploadIdImage.
+  /// Button to upload ID image
   ///
   /// In en, this message translates to:
   /// **'Upload ID image'**
   String get uploadIdImage;
 
-  /// No description provided for @errorLoadingCountries.
+  /// Error loading countries message
   ///
   /// In en, this message translates to:
   /// **'Error loading countries: {error}'**
-  String errorLoadingCountries(Object error);
+  String errorLoadingCountries(String error);
 
   /// Label for selecting or displaying the user's country
   ///
@@ -278,17 +278,23 @@ abstract class AppLocalizations {
   /// **'Enter first legal name'**
   String get firstNameHint;
 
-  /// No description provided for @secondNameLabel.
+  /// Label for the second name input field
   ///
   /// In en, this message translates to:
   /// **'Second legal name'**
   String get secondNameLabel;
 
-  /// No description provided for @secondNameHint.
+  /// Hint text for the second name input field
   ///
   /// In en, this message translates to:
   /// **'Enter second legal name'**
   String get secondNameHint;
+
+  /// Hint text for the last name input field
+  ///
+  /// In en, this message translates to:
+  /// **'Enter second legal name'**
+  String get lastNameHint;
 
   /// Label for selecting or entering the type of vehicle
   ///
@@ -338,11 +344,17 @@ abstract class AppLocalizations {
   /// **'Enter national ID number'**
   String get idNumberHint;
 
-  /// No description provided for @idImageLabel.
+  /// Label for the id image input field
   ///
   /// In en, this message translates to:
   /// **'ID image'**
   String get idImageLabel;
+
+  /// Label for the id image input field
+  ///
+  /// In en, this message translates to:
+  /// **'ID image'**
+  String get idLabel;
 
   /// Hint text for the ID image
   ///
@@ -710,7 +722,7 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get profile;
 
-  /// No description provided for @status.
+  /// Status label
   ///
   /// In en, this message translates to:
   /// **'Status: '**
@@ -1088,13 +1100,13 @@ abstract class AppLocalizations {
   /// **'Please log in again to continue.'**
   String get sessionExpiredMessage;
 
-  /// No description provided for @includeTax.
+  /// Tax inclusion note
   ///
   /// In en, this message translates to:
   /// **'All prices include tax'**
   String get includeTax;
 
-  /// No description provided for @description.
+  /// Description label for details
   ///
   /// In en, this message translates to:
   /// **'Description'**
@@ -1118,7 +1130,7 @@ abstract class AppLocalizations {
   /// **'No results found'**
   String get searchNoResults;
 
-  /// No description provided for @searchFor.
+  /// Hint text when searching for products
   ///
   /// In en, this message translates to:
   /// **'Search For Any Product You Want'**
@@ -1412,31 +1424,31 @@ abstract class AppLocalizations {
   /// **'Your order status has been updated.'**
   String get notificationStatusUpdated;
 
-  /// No description provided for @orderNotFound.
+  /// Error message when order is not found
   ///
   /// In en, this message translates to:
   /// **'Order not found'**
   String get orderNotFound;
 
-  /// No description provided for @noAddressFound.
+  /// Error message when address is missing
   ///
   /// In en, this message translates to:
   /// **'No Address Found'**
   String get noAddressFound;
 
-  /// No description provided for @notApplicable.
+  /// Stands for Not Applicable
   ///
   /// In en, this message translates to:
   /// **'N/A'**
   String get notApplicable;
 
-  /// No description provided for @exitDeliveredOrderWarning.
+  /// Warning message when trying to go back during an active delivery
   ///
   /// In en, this message translates to:
   /// **'You can\'t exit until the order is delivered!'**
   String get exitDeliveredOrderWarning;
 
-  /// No description provided for @orderAcceptedBody.
+  /// Notification body when an order is accepted
   ///
   /// In en, this message translates to:
   /// **'Your order has been accepted.'**
@@ -1453,6 +1465,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Waiting for customer confirmation...'**
   String get waitingCustomerConfirmation;
+
+  /// Title for accepted order notification
+  ///
+  /// In en, this message translates to:
+  /// **'Order Accepted'**
+  String get notifAcceptedTitle;
+
+  /// Body for accepted order notification
+  ///
+  /// In en, this message translates to:
+  /// **'Your driver is heading to the store to pick up your blooms.'**
+  String get notifAcceptedBody;
+
+  /// Title for arrived at pickup notification
+  ///
+  /// In en, this message translates to:
+  /// **'At the Store'**
+  String get notifArrivedPickupTitle;
+
+  /// Body for arrived at pickup notification
+  ///
+  /// In en, this message translates to:
+  /// **'We are picking up your fresh bouquet right now.'**
+  String get notifArrivedPickupBody;
+
+  /// Title for start delivery notification
+  ///
+  /// In en, this message translates to:
+  /// **'On the Way'**
+  String get notifStartDeliverTitle;
+
+  /// Body for start delivery notification
+  ///
+  /// In en, this message translates to:
+  /// **'Your flowers are on the way! Track your driver now.'**
+  String get notifStartDeliverBody;
+
+  /// Title for arrived at user notification
+  ///
+  /// In en, this message translates to:
+  /// **'We\'re Here '**
+  String get notifArrivedUserTitle;
+
+  /// Body for arrived at user notification
+  ///
+  /// In en, this message translates to:
+  /// **'Your driver has arrived with your flowers. Please step out to receive them.'**
+  String get notifArrivedUserBody;
+
+  /// Title for delivered notification
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered Successfully '**
+  String get notifDeliveredTitle;
+
+  /// Body for delivered notification
+  ///
+  /// In en, this message translates to:
+  /// **'We hope our flowers brought a smile to your face today!'**
+  String get notifDeliveredBody;
 }
 
 class _AppLocalizationsDelegate

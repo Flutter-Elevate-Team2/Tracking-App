@@ -147,6 +147,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
     _orderSub?.cancel();
 
     _orderSub = _firebaseService.watchOrder(orderId).listen((order) async {
+      if (isClosed) return;
       final orderEntity = order.toEntity();
       final driverPos = mapbox.Position(
         orderEntity.trackingLocation.long,
@@ -182,6 +183,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
                 : waypoints[2], // End (Store or User)
           );
 
+          if (isClosed) return;
           _lastCalculatedDriverPos = driverPos; // حفظ المكان الجديد
 
           emit(
@@ -191,6 +193,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
             ),
           );
         } catch (e) {
+          if (isClosed) return;
           emit(
             state.copyWith(
               orderState: BaseState(isLoading: false, data: orderEntity),
@@ -199,6 +202,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
           debugPrint("Directions Error: $e");
         }
       } else {
+        if (isClosed) return;
         // تحديث حالة الأوردر في ה- UI بدون رسم خط سير جديد (توفير فلوس Mapbox)
         emit(
           state.copyWith(

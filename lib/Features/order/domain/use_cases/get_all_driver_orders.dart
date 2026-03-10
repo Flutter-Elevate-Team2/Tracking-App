@@ -10,15 +10,20 @@ class GetAllDriverOrdersUseCase {
 
   GetAllDriverOrdersUseCase(this._orderRepoContract);
 
-  Future<BaseResponse<MyOrdersState>> call() async {
-    final response = await _orderRepoContract.getAllDriverOrders();
+  Future<BaseResponse<MyOrdersState>> call({int limit = 100}) async {
+    final response = await _orderRepoContract.getAllDriverOrders(limit: limit);
 
     if (response is SuccessResponse<DriverOrdersResponseEntity>) {
       final orders = response.data.orders ?? [];
-      final completedCount =
-          orders.where((o) => o.order?.state == "completed").length;
-      final canceledCount =
-          orders.where((o) => o.order?.state == "canceled").length;
+      final completedCount = orders.where((o) {
+        final state = o.order?.state?.toLowerCase();
+        return state == 'completed' ||
+            state == 'delivered' ||
+            o.order?.isDelivered == true;
+      }).length;
+      final canceledCount = orders
+          .where((o) => o.order?.state == "canceled")
+          .length;
 
       return SuccessResponse<MyOrdersState>(
         data: MyOrdersState(
@@ -28,10 +33,9 @@ class GetAllDriverOrdersUseCase {
         ),
       );
     } else if (response is ErrorResponse<DriverOrdersResponseEntity>) {
-      return ErrorResponse<MyOrdersState>(
-          errorMessage:  response.errorMessage);
+      return ErrorResponse<MyOrdersState>(errorMessage: response.errorMessage);
     }
 
-    return ErrorResponse<MyOrdersState>(errorMessage:  "Unknown error");
+    return ErrorResponse<MyOrdersState>(errorMessage: "Unknown error");
   }
 }

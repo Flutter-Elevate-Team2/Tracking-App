@@ -6,7 +6,6 @@ import 'package:tracking_app/Features/track_order/presentation/view_model/track_
 import 'package:tracking_app/Features/track_order/presentation/widgets/track_order_action_button.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/waiting_confirmation_button.dart';
 import 'package:tracking_app/core/constants/app_colors.dart';
-import 'package:tracking_app/core/extension/context_extension.dart';
 
 class BuildBottomButton extends StatelessWidget {
   final String orderId;
@@ -42,15 +41,14 @@ class BuildBottomButton extends StatelessWidget {
               status: currentStatus,
               onPressed: () {
                 final next = currentStatus.next;
-
                 if (next != null) {
                   context.read<OrderStatusViewModel>().doIntent(
                     context,
                     UpdateOrderStatusEvent(
-                      title: context.l10n.orderUpdated,
                       orderId: orderId,
                       status: next,
                       userToken: userToken,
+                      title: next.getNotificationTitle(context),
                     ),
                   );
                 }

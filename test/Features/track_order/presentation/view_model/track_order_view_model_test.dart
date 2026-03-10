@@ -8,6 +8,7 @@ import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mapbox;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tracking_app/Features/order/domain/use_cases/get_all_driver_orders.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/order_status.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/order_tracking_entity.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/store_entity.dart';
@@ -17,7 +18,6 @@ import 'package:tracking_app/Features/track_order/domain/entities/user_location_
 import 'package:tracking_app/Features/track_order/domain/use_cases/get_directions_use_case.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/get_order_details_use_case.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/track_order_use_case.dart';
-import 'package:tracking_app/Features/order/domain/use_cases/get_all_driver_orders.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_event.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_state.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_view_model.dart';
@@ -116,6 +116,9 @@ void main() {
     when(
       mockActiveOrderService.saveActiveOrder(any, any),
     ).thenAnswer((_) async {});
+    when(
+      mockFirebaseService.watchOrder(any),
+    ).thenAnswer((_) => const Stream.empty());
 
     SharedPreferences.setMockInitialValues({'driver_id': 'test_driver_id'});
     viewModel = OrderStatusViewModel(

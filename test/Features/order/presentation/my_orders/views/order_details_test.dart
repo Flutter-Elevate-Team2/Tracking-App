@@ -2,17 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:tracking_app/Features/home/data/models/order_tracking_firebase_model.dart';
 import 'package:tracking_app/Features/order/domain/entities/driver_order_entity.dart';
 import 'package:tracking_app/Features/order/domain/entities/order_entity.dart';
 import 'package:tracking_app/Features/order/domain/entities/orders_item_entity.dart';
-import 'package:tracking_app/Features/order/domain/entities/store_entity.dart';
 import 'package:tracking_app/Features/order/domain/entities/product_entity.dart';
+import 'package:tracking_app/Features/order/domain/entities/store_entity.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/views/order_details.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/widget/address_info_row.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/widget/order_state.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/order_item_tile.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/order_summary_card.dart';
+import 'package:tracking_app/core/di/di.dart';
 import 'package:tracking_app/core/l10n/app_localizations.dart';
+import 'package:tracking_app/core/services/firebase_order_service.dart';
+
+class FakeFirebaseOrderService implements FirebaseOrderService {
+  @override
+  Future<OrderTrackingFirebaseModel?> getTrackingOrderById(
+    String orderId,
+  ) async {
+    return null; // Return null so the UI falls back to the api data passed in the order entity.
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 void main() {
   final fakeOrder = DriverOrdersEntity(
@@ -57,6 +72,13 @@ void main() {
   }
 
   group('OrderDetailsDisplayBody Widget Tests', () {
+    setUp(() async {
+      await getIt.reset();
+      getIt.registerLazySingleton<FirebaseOrderService>(
+        () => FakeFirebaseOrderService(),
+      );
+    });
+
     testWidgets(
       'should render order number, state, and address rows correctly',
       (tester) async {

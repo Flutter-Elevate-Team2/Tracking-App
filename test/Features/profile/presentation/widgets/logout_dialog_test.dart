@@ -32,8 +32,8 @@ void main() {
       ),
     );
 
-    expect(find.text('LOGOUT'), findsOneWidget);
-    expect(find.text('Confirm logout!!'), findsOneWidget);
+    expect(find.text('Logout'), findsWidgets); // Found in Title and Button
+    expect(find.text('Are you sure you want to logout?'), findsOneWidget);
     expect(find.text('cancel'), findsOneWidget);
   });
 
@@ -52,9 +52,12 @@ void main() {
       );
 
       // Click the logout button in the dialog
-      // There might be two 'Logout' texts: title and button.
-      // We want the button.
-      final logoutButton = find.widgetWithText(ElevatedButton, 'Logout');
+      // There are two 'Logout' texts: title and action button.
+      // We target the one specifically inside ElevatedButton or find by type.
+      final logoutButton = find.descendant(
+        of: find.byType(ElevatedButton),
+        matching: find.text('Logout'),
+      );
       await tester.tap(logoutButton);
       await tester.pump();
 

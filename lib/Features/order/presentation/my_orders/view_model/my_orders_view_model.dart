@@ -5,7 +5,7 @@ import 'package:tracking_app/Features/order/presentation/my_orders/view_model/my
 import 'package:tracking_app/Features/order/presentation/my_orders/view_model/my_orders_state.dart';
 import 'package:tracking_app/core/base_response/base_response.dart';
 
-@Injectable()
+@lazySingleton
 class MyOrdersViewModel extends Cubit<MyOrdersState> {
   final GetAllDriverOrdersUseCase getDriverOrders;
   MyOrdersViewModel(this.getDriverOrders) : super(const MyOrdersState());

@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "Flowery ride",
+  "appTitle": "Flowery Rider",
   "@appTitle": {
     "description": "The main title of the application"
   },
@@ -8,9 +8,18 @@
   "@flowery": {
     "description": "App Name Logo Text"
   },
-  "onBoardingDescription": "Welcome to Flowery rider app",
+  "onBoardingDescription": "Welcome to Flowery Rider App",
+  "@onBoardingDescription": {
+    "description": "Description of onboarding"
+  },
   "welcomeTo": "Welcome to",
-  "floweryRiderApp": "Flowery rider app",
+  "@welcomeTo": {
+    "description": "Welcome message"
+  },
+  "floweryRiderApp": "Flowery Rider App",
+  "@floweryRiderApp": {
+    "description": "App Name in onboarding"
+  },
   "loginTitle": "Login",
   "@loginTitle": {
     "description": "Title for the login screen"
@@ -60,13 +69,42 @@
     "description": "Generic error message for incorrect password"
   },
   "nationalIdRequired": "National ID is required",
+  "@nationalIdRequired": {
+    "description": "Error message for missing national ID"
+  },
   "nationalIdInvalidLength": "National ID must be 14 digits",
+  "@nationalIdInvalidLength": {
+    "description": "Error message for invalid length of national ID"
+  },
   "nationalIdInvalidChars": "National ID must contain only numbers",
+  "@nationalIdInvalidChars": {
+    "description": "Error message for invalid chars in national ID"
+  },
   "vehicleNumberLength": "Vehicle number must be between 3 and 10 characters",
+  "@vehicleNumberLength": {
+    "description": "Error message for invalid length of vehicle number"
+  },
   "vehicleNumberInvalidChars": "Vehicle number must contain only letters and numbers",
+  "@vehicleNumberInvalidChars": {
+    "description": "Error message for invalid chars in vehicle number"
+  },
   "uploadLicensePhoto": "Upload license image",
+  "@uploadLicensePhoto": {
+    "description": "Button to upload license image"
+  },
   "uploadIdImage": "Upload ID image",
+  "@uploadIdImage": {
+    "description": "Button to upload ID image"
+  },
   "errorLoadingCountries": "Error loading countries: {error}",
+  "@errorLoadingCountries": {
+    "description": "Error loading countries message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "country": "Country",
   "@country": {
     "description": "Label for selecting or displaying the user's country"
@@ -80,7 +118,7 @@
     "description": "Label for the first name input field"
   },
   "lastNameLabel": "Last Name",
-  "@lastNameLabell": {
+  "@lastNameLabel": {
     "description": "Label for the last name input field"
   },
   "firstNameHint": "Enter first legal name",
@@ -88,12 +126,16 @@
     "description": "Hint text for the first name input field"
   },
   "secondNameLabel": "Second legal name",
-  "@lastNameLabel": {
-    "description": "Label for the last name input field"
+  "@secondNameLabel": {
+    "description": "Label for the second name input field"
   },
   "secondNameHint": "Enter second legal name",
-  "@lastNameHint": {
+  "@secondNameHint": {
     "description": "Hint text for the second name input field"
+  },
+  "lastNameHint": "Enter second legal name",
+  "@lastNameHint": {
+    "description": "Hint text for the last name input field"
   },
   "vehicleType": "Vehicle type",
   "@vehicleType": {
@@ -128,6 +170,10 @@
     "description": "Hint text for the ID number input field"
   },
   "idImageLabel": "ID image",
+  "@idImageLabel": {
+    "description": "Label for the id image input field"
+  },
+  "idLabel": "ID image",
   "@idLabel": {
     "description": "Label for the id image input field"
   },
@@ -376,6 +422,9 @@
     "description": "Label for the profile navigation tab"
   },
   "status": "Status: ",
+  "@status": {
+    "description": "Status label"
+  },
   "flowerOrder": "Flower order",
   "@flowerOrder": {
     "description": "Label for a flower order"
@@ -625,7 +674,13 @@
     "description": "Content message for the session expired dialog"
   },
   "includeTax": "All prices include tax",
+  "@includeTax": {
+    "description": "Tax inclusion note"
+  },
   "description": "Description",
+  "@description": {
+    "description": "Description label for details"
+  },
   "searchLabel": "Search",
   "@searchLabel": {
     "description": "Label for the search input field"
@@ -639,6 +694,9 @@
     "description": "Message displayed when no search results are found"
   },
   "searchFor": "Search For Any Product You Want",
+  "@searchFor": {
+    "description": "Hint text when searching for products"
+  },
   "addToCart": "Add to Cart",
   "@addToCart": {
     "description": "Button text to add an item to the cart"
@@ -837,10 +895,25 @@
     "description": "Fallback notification body shown when the order status changes but no specific message is defined."
   },
   "orderNotFound": "Order not found",
+  "@orderNotFound": {
+    "description": "Error message when order is not found"
+  },
   "noAddressFound": "No Address Found",
+  "@noAddressFound": {
+    "description": "Error message when address is missing"
+  },
   "notApplicable": "N/A",
+  "@notApplicable": {
+    "description": "Stands for Not Applicable"
+  },
   "exitDeliveredOrderWarning": "You can't exit until the order is delivered!",
+  "@exitDeliveredOrderWarning": {
+    "description": "Warning message when trying to go back during an active delivery"
+  },
   "orderAcceptedBody": "Your order has been accepted.",
+  "@orderAcceptedBody": {
+    "description": "Notification body when an order is accepted"
+  },
   "acceptingOrder": "Accepting order...",
   "@acceptingOrder": {
     "description": "Fallback notification body shown when the order is accepted"
@@ -848,5 +921,45 @@
   "waitingCustomerConfirmation": "Waiting for customer confirmation...",
   "@waitingCustomerConfirmation": {
     "description": "Button text shown while waiting for customer to confirm delivery"
+  },
+  "notifAcceptedTitle": "Order Accepted",
+  "@notifAcceptedTitle": {
+    "description": "Title for accepted order notification"
+  },
+  "notifAcceptedBody": "Your driver is heading to the store to pick up your blooms.",
+  "@notifAcceptedBody": {
+    "description": "Body for accepted order notification"
+  },
+  "notifArrivedPickupTitle": "At the Store",
+  "@notifArrivedPickupTitle": {
+    "description": "Title for arrived at pickup notification"
+  },
+  "notifArrivedPickupBody": "We are picking up your fresh bouquet right now.",
+  "@notifArrivedPickupBody": {
+    "description": "Body for arrived at pickup notification"
+  },
+  "notifStartDeliverTitle": "On the Way",
+  "@notifStartDeliverTitle": {
+    "description": "Title for start delivery notification"
+  },
+  "notifStartDeliverBody": "Your flowers are on the way! Track your driver now.",
+  "@notifStartDeliverBody": {
+    "description": "Body for start delivery notification"
+  },
+  "notifArrivedUserTitle": "We're Here ",
+  "@notifArrivedUserTitle": {
+    "description": "Title for arrived at user notification"
+  },
+  "notifArrivedUserBody": "Your driver has arrived with your flowers. Please step out to receive them.",
+  "@notifArrivedUserBody": {
+    "description": "Body for arrived at user notification"
+  },
+  "notifDeliveredTitle": "Delivered Successfully ",
+  "@notifDeliveredTitle": {
+    "description": "Title for delivered notification"
+  },
+  "notifDeliveredBody": "We hope our flowers brought a smile to your face today!",
+  "@notifDeliveredBody": {
+    "description": "Body for delivered notification"
   }
 }

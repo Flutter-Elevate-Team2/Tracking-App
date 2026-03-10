@@ -9,19 +9,19 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Flowery ride';
+  String get appTitle => 'Flowery Rider';
 
   @override
   String get flowery => 'Flowery';
 
   @override
-  String get onBoardingDescription => 'Welcome to Flowery rider app';
+  String get onBoardingDescription => 'Welcome to Flowery Rider App';
 
   @override
   String get welcomeTo => 'Welcome to';
 
   @override
-  String get floweryRiderApp => 'Flowery rider app';
+  String get floweryRiderApp => 'Flowery Rider App';
 
   @override
   String get loginTitle => 'Login';
@@ -83,7 +83,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadIdImage => 'Upload ID image';
 
   @override
-  String errorLoadingCountries(Object error) {
+  String errorLoadingCountries(String error) {
     return 'Error loading countries: $error';
   }
 
@@ -107,6 +107,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get secondNameHint => 'Enter second legal name';
+
+  @override
+  String get lastNameHint => 'Enter second legal name';
 
   @override
   String get vehicleType => 'Vehicle type';
@@ -134,6 +137,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get idImageLabel => 'ID image';
+
+  @override
+  String get idLabel => 'ID image';
 
   @override
   String get idHint => 'Upload ID image';
@@ -706,4 +712,39 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get waitingCustomerConfirmation =>
       'Waiting for customer confirmation...';
+
+  @override
+  String get notifAcceptedTitle => 'Order Accepted';
+
+  @override
+  String get notifAcceptedBody =>
+      'Your driver is heading to the store to pick up your blooms.';
+
+  @override
+  String get notifArrivedPickupTitle => 'At the Store';
+
+  @override
+  String get notifArrivedPickupBody =>
+      'We are picking up your fresh bouquet right now.';
+
+  @override
+  String get notifStartDeliverTitle => 'On the Way';
+
+  @override
+  String get notifStartDeliverBody =>
+      'Your flowers are on the way! Track your driver now.';
+
+  @override
+  String get notifArrivedUserTitle => 'We\'re Here ';
+
+  @override
+  String get notifArrivedUserBody =>
+      'Your driver has arrived with your flowers. Please step out to receive them.';
+
+  @override
+  String get notifDeliveredTitle => 'Delivered Successfully ';
+
+  @override
+  String get notifDeliveredBody =>
+      'We hope our flowers brought a smile to your face today!';
 }

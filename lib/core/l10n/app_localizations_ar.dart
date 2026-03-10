@@ -9,19 +9,19 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'ركوب الزهور';
+  String get appTitle => 'Flowery Rider';
 
   @override
   String get flowery => 'Flowery';
 
   @override
-  String get onBoardingDescription => 'مرحبًا بك في تطبيق rider Flowery';
+  String get onBoardingDescription => 'مرحبًا بك في تطبيق Flowery Rider';
 
   @override
   String get welcomeTo => 'مرحبًا بك في';
 
   @override
-  String get floweryRiderApp => 'تطبيق rider Flowery';
+  String get floweryRiderApp => 'تطبيق Flowery Rider';
 
   @override
   String get loginTitle => 'تسجيل الدخول';
@@ -84,7 +84,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get uploadIdImage => 'ارفع صورة البطاقة';
 
   @override
-  String errorLoadingCountries(Object error) {
+  String errorLoadingCountries(String error) {
     return 'حدث خطأ أثناء تحميل الدول: $error';
   }
 
@@ -108,6 +108,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get secondNameHint => 'أدخل الاسم الثاني القانوني';
+
+  @override
+  String get lastNameHint => 'أدخل الاسم الثاني القانوني';
 
   @override
   String get vehicleType => 'نوع المركبة';
@@ -135,6 +138,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get idImageLabel => 'صورة الهوية';
+
+  @override
+  String get idLabel => 'صورة الهوية';
 
   @override
   String get idHint => 'ارفع صورة الهوية';
@@ -653,7 +659,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get egp => 'ج.م';
 
   @override
-  String get homeBrandName => 'Flowery rider';
+  String get homeBrandName => 'Flowery Rider';
 
   @override
   String get floweryStore => 'متجر الزهور';
@@ -703,4 +709,37 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get waitingCustomerConfirmation => 'في انتظار تأكيد العميل...';
+
+  @override
+  String get notifAcceptedTitle => 'تم قبول الطلب ';
+
+  @override
+  String get notifAcceptedBody => 'سائقنا في طريقه الآن لاستلام زهورك.';
+
+  @override
+  String get notifArrivedPickupTitle => 'في المتجر ';
+
+  @override
+  String get notifArrivedPickupBody =>
+      'نحن الآن نقوم باستلام باقتك الطازجة وتجهيزها.';
+
+  @override
+  String get notifStartDeliverTitle => 'في الطريق إليك ';
+
+  @override
+  String get notifStartDeliverBody => 'زهورك في الطريق! تتبع موقع السائق الآن.';
+
+  @override
+  String get notifArrivedUserTitle => 'لقد وصلنا ';
+
+  @override
+  String get notifArrivedUserBody =>
+      'السائق بالخارج الآن ومعه زهورك، يرجى الاستلام.';
+
+  @override
+  String get notifDeliveredTitle => 'تم التوصيل ';
+
+  @override
+  String get notifDeliveredBody =>
+      'نتمنى أن تكون زهورنا قد رسمت ابتسامة على وجهك!';
 }

@@ -1,24 +1,41 @@
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tracking_app/Features/order/presentation/my_orders/view_model/my_orders_state.dart';
+import 'package:tracking_app/Features/order/presentation/my_orders/view_model/my_orders_view_model.dart';
 import 'package:tracking_app/Features/track_order/presentation/views/success_screen.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
 import 'package:tracking_app/core/l10n/app_localizations.dart';
 import 'package:tracking_app/core/widget/custom_button.dart';
-// ignore: depend_on_referenced_packages
-import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'success_screen_test.mocks.dart';
 
 class MockGoRouter extends Mock implements GoRouter {}
 
+@GenerateMocks([MyOrdersViewModel])
 void main() {
   late MockGoRouter mockRouter;
+  late MockMyOrdersViewModel mockMyOrdersViewModel;
 
   setUp(() {
     mockRouter = MockGoRouter();
+    mockMyOrdersViewModel = MockMyOrdersViewModel();
     SharedPreferences.setMockInitialValues({});
+
+    GetIt.instance.allowReassignment = true;
+    GetIt.instance.registerSingleton<MyOrdersViewModel>(mockMyOrdersViewModel);
+
+    when(mockMyOrdersViewModel.state).thenReturn(const MyOrdersState());
+    when(
+      mockMyOrdersViewModel.stream,
+    ).thenAnswer((_) => Stream.value(const MyOrdersState()));
   });
 
   Widget createWidgetUnderTest() {
@@ -58,9 +75,11 @@ void main() {
       final doneButton = find.byType(CustomButton);
       await tester.tap(doneButton);
 
-      await tester.pump();
+      // pumpAndSettle() would time out because Lottie uses repeat:true (infinite animation).
+      // Using pump() with a duration is sufficient to let the async button callback complete.
+      await tester.pump(const Duration(seconds: 3));
 
-      verify(mockRouter.goNamed(Routes.homeName)).called(1);
+      verify(mockRouter.goNamed(Routes.ordersName)).called(1);
     });
 
     testWidgets('Should apply correct layout and padding', (tester) async {

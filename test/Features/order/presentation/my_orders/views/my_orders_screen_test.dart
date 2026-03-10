@@ -21,7 +21,9 @@ void main() {
     mockViewModel = MockMyOrdersViewModel();
 
     when(mockViewModel.state).thenReturn(const MyOrdersState());
-    when(mockViewModel.stream).thenAnswer((_) => Stream.value(const MyOrdersState()));
+    when(
+      mockViewModel.stream,
+    ).thenAnswer((_) => Stream.value(const MyOrdersState()));
     when(mockViewModel.close()).thenAnswer((_) async => {});
 
     await getIt.reset();
@@ -37,8 +39,9 @@ void main() {
   }
 
   group('MyOrdersScreen Widget Tests', () {
-
-    testWidgets('should render AppBar with correct title and back button', (tester) async {
+    testWidgets('should render AppBar with correct title and back button', (
+      tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pump();
 
@@ -51,32 +54,29 @@ void main() {
       // Verify MyOrdersBody is rendered (inside BlocProvider)
       expect(find.byType(MyOrdersBody), findsOneWidget);
     });
-    testWidgets('should call close on ViewModel when screen is disposed', (tester) async {
-      await tester.pumpWidget(createWidgetUnderTest());
 
-      await tester.pumpWidget(Container());
-
-      verify(mockViewModel.close()).called(1);
-    });
-
-    testWidgets('should show MyOrdersLoading when state is loading', (tester) async {
+    testWidgets('should show MyOrdersLoading when state is loading', (
+      tester,
+    ) async {
       // 1. Arrange
       final loadingState = const MyOrdersState(isLoading: true);
 
       when(mockViewModel.state).thenReturn(loadingState);
-       when(mockViewModel.stream).thenAnswer((_) => Stream.value(loadingState));
+      when(mockViewModel.stream).thenAnswer((_) => Stream.value(loadingState));
 
       // 2. Act
       await tester.pumpWidget(createWidgetUnderTest());
 
-       await tester.pump();
+      await tester.pump();
 
       // 3. Assert
-       expect(find.byType(MyOrdersLoading), findsOneWidget);
+      expect(find.byType(MyOrdersLoading), findsOneWidget);
 
-       expect(find.byType(AppShimmer), findsWidgets);
+      expect(find.byType(AppShimmer), findsWidgets);
     });
-    testWidgets('should display error message when state has errorMessage', (tester) async {
+    testWidgets('should display error message when state has errorMessage', (
+      tester,
+    ) async {
       // Arrange
       final errorState = const MyOrdersState(
         isLoading: false,
