@@ -52,8 +52,10 @@ class _HomeViewBodyState extends State<HomeViewBody> {
     return BlocListener<HomeViewModel, HomeState>(
       listenWhen: (prev, next) =>
           prev.acceptOrderState?.data != next.acceptOrderState?.data ||
-          prev.acceptOrderState?.isLoading != next.acceptOrderState?.isLoading ||
-          prev.acceptOrderState?.errorMessage != next.acceptOrderState?.errorMessage,
+          prev.acceptOrderState?.isLoading !=
+              next.acceptOrderState?.isLoading ||
+          prev.acceptOrderState?.errorMessage !=
+              next.acceptOrderState?.errorMessage,
       listener: (context, state) {
         if (!mounted) return;
 
@@ -144,7 +146,7 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                     }
 
                     if (orders.isEmpty) {
-                      return const Center(child: Text('No pending orders'));
+                      return Center(child: Text(context.l10n.noPendingOrders));
                     }
 
                     return ListView.builder(

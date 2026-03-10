@@ -659,13 +659,13 @@ abstract class AppLocalizations {
   /// Title for logout confirmation dialog
   ///
   /// In en, this message translates to:
-  /// **'LOGOUT'**
+  /// **'Logout'**
   String get logoutTitle;
 
   /// Message asking user to confirm logout
   ///
   /// In en, this message translates to:
-  /// **'Confirm logout!!'**
+  /// **'Are you sure you want to logout?'**
   String get confirmLogout;
 
   /// Label for current password field
@@ -1316,11 +1316,17 @@ abstract class AppLocalizations {
   /// **'Delivered on'**
   String get deliveredOn;
 
-  /// No description provided for @noOrdersFound.
+  /// Message displayed when no orders are found
   ///
   /// In en, this message translates to:
   /// **'No orders found'**
   String get noOrdersFound;
+
+  /// Message displayed when no pending orders are found
+  ///
+  /// In en, this message translates to:
+  /// **'No pending orders'**
+  String get noPendingOrders;
 
   /// Title for image source selection bottom sheet
   ///

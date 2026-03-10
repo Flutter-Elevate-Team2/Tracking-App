@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 // coverage:ignore-file
 
 abstract class AppColors {
-  static MaterialColor white = const MaterialColor(0xFFF9F9F9, <int, Color>{
+  static const MaterialColor white = MaterialColor(0xFFF9F9F9, <int, Color>{
     10: Color(0xFFFFFFFF),
     20: Color(0xFFfdfdfd),
     30: Color(0xFFfcfcfc),
@@ -15,7 +15,7 @@ abstract class AppColors {
     100: Color(0xFF323232),
   });
 
-  static MaterialColor mainColor = const MaterialColor(0xFFD21E6A, <int, Color>{
+  static const MaterialColor mainColor = MaterialColor(0xFFD21E6A, <int, Color>{
     10: Color(0xFFf6d2e1),
     20: Color(0xFFf0b4cd),
     30: Color(0xFFe98fb5),
@@ -28,7 +28,7 @@ abstract class AppColors {
     100: Color(0xFF2a0615),
   });
 
-  static MaterialColor black = const MaterialColor(0xFF0C1015, <int, Color>{
+  static const MaterialColor black = MaterialColor(0xFF0C1015, <int, Color>{
     10: Color(0xFFcecfd0),
     20: Color(0xFFAEAFB1),
     30: Color(0xFF86888a),

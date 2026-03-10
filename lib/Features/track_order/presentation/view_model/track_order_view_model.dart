@@ -34,7 +34,6 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
 
   StreamSubscription<Position>? _locationSubscription;
   StreamSubscription? _orderSub;
-  String? _currentOrderId;
 
   mapbox.Position? _lastCalculatedDriverPos;
 
@@ -107,7 +106,6 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
   }
 
   Future<void> _fetchOrderDetails(String orderId) async {
-    _currentOrderId = orderId;
     if (state.orderState?.data == null) {
       emit(state.copyWith(orderState: const BaseState(isLoading: true)));
     } else {

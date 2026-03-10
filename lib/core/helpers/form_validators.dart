@@ -1,5 +1,5 @@
-import 'package:tracking_app/core/l10n/app_localizations.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tracking_app/core/extension/context_extension.dart';
 import 'package:tracking_app/core/helpers/app_regex.dart';
 
 class FormValidators {
@@ -8,10 +8,10 @@ class FormValidators {
   static String? validateEmail(BuildContext context, String? value) {
     final trimmedValue = value?.trim();
     if (trimmedValue == null || trimmedValue.isEmpty) {
-      return AppLocalizations.of(context)!.emailRequired;
+      return context.l10n.emailRequired;
     }
     if (!AppRegex.isEmailValid(trimmedValue)) {
-      return AppLocalizations.of(context)!.emailInvalid;
+      return context.l10n.emailInvalid;
     }
     return null;
   }
@@ -19,13 +19,13 @@ class FormValidators {
   static String? validatePassword(BuildContext context, String? value) {
     final trimmedValue = value?.trim();
     if (trimmedValue == null || trimmedValue.isEmpty) {
-      return AppLocalizations.of(context)!.passwordRequired;
+      return context.l10n.passwordRequired;
     }
     if (!AppRegex.hasMinLength(trimmedValue)) {
-      return AppLocalizations.of(context)!.passwordTooShort;
+      return context.l10n.passwordTooShort;
     }
     if (!AppRegex.isPasswordValid(trimmedValue)) {
-      return AppLocalizations.of(context)!.passwordWeak;
+      return context.l10n.passwordWeak;
     }
     return null;
   }
@@ -36,20 +36,20 @@ class FormValidators {
     String password,
   ) {
     if (value == null || value.isEmpty) {
-      return AppLocalizations.of(context)!.passwordRequired;
+      return context.l10n.passwordRequired;
     }
     if (value != password) {
-      return AppLocalizations.of(context)!.passwordMismatch;
+      return context.l10n.passwordMismatch;
     }
     return null;
   }
 
   static String? validatePhone(BuildContext context, String? value) {
     if (value == null || value.isEmpty) {
-      return AppLocalizations.of(context)!.phoneRequired;
+      return context.l10n.phoneRequired;
     }
     if (!AppRegex.isPhoneNumberValid(value)) {
-      return AppLocalizations.of(context)!.phoneInvalid;
+      return context.l10n.phoneInvalid;
     }
     return null;
   }
@@ -65,11 +65,11 @@ class FormValidators {
     final trimmedValue = value?.trim();
 
     if (trimmedValue == null || trimmedValue.isEmpty) {
-      return AppLocalizations.of(context)!.passwordRequired;
+      return context.l10n.passwordRequired;
     }
 
     if (trimmedValue.length < 8) {
-      return AppLocalizations.of(context)!.passwordTooShort;
+      return context.l10n.passwordTooShort;
     }
 
     return null;
@@ -79,15 +79,15 @@ class FormValidators {
     final trimmedValue = value?.trim();
 
     if (trimmedValue == null || trimmedValue.isEmpty) {
-      return AppLocalizations.of(context)!.nationalIdRequired; //
+      return context.l10n.nationalIdRequired; //
     }
 
     if (trimmedValue.length != 14) {
-      return AppLocalizations.of(context)!.nationalIdInvalidLength;
+      return context.l10n.nationalIdInvalidLength;
     }
 
     if (!RegExp(r'^\d+$').hasMatch(trimmedValue)) {
-      return AppLocalizations.of(context)!.nationalIdInvalidChars;
+      return context.l10n.nationalIdInvalidChars;
     }
 
     return null;
@@ -97,15 +97,15 @@ class FormValidators {
     final trimmedValue = value?.trim();
 
     if (trimmedValue == null || trimmedValue.isEmpty) {
-      return AppLocalizations.of(context)!.vehicleNumberRequired;
+      return context.l10n.vehicleNumberRequired;
     }
 
     if (trimmedValue.length < 3 || trimmedValue.length > 10) {
-      return AppLocalizations.of(context)!.vehicleNumberLength;
+      return context.l10n.vehicleNumberLength;
     }
 
     if (!RegExp(r'^[A-Za-z0-9]+$').hasMatch(trimmedValue)) {
-      return AppLocalizations.of(context)!.vehicleNumberInvalidChars;
+      return context.l10n.vehicleNumberInvalidChars;
     }
 
     return null;

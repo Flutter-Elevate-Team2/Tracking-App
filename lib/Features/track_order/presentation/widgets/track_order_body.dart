@@ -1,15 +1,17 @@
 import 'dart:async';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/order_status.dart';
-import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_event.dart';
-import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_view_model.dart';
-import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_state.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/complet_order/complete_order_events.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/complet_order/complete_order_state.dart';
 import 'package:tracking_app/Features/track_order/presentation/view_model/complet_order/complete_order_view_model.dart';
+import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_event.dart';
+import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_state.dart';
+import 'package:tracking_app/Features/track_order/presentation/view_model/track_order_view_model.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/bottom_order_button.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/order_addresses_section.dart';
 import 'package:tracking_app/Features/track_order/presentation/widgets/order_items_section.dart';
@@ -21,7 +23,6 @@ import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/di/di.dart';
 import 'package:tracking_app/core/extension/context_extension.dart';
 import 'package:tracking_app/core/services/active_order_firestore_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class TrackOrderBody extends StatefulWidget {
   final String orderId;
@@ -42,21 +43,21 @@ class _TrackOrderBodyState extends State<TrackOrderBody>
     WidgetsBinding.instance.addObserver(this);
     _listenToForegroundNotification();
     context.read<OrderStatusViewModel>().doIntent(
-          context,
-          FetchOrderDetailsEvent(widget.orderId),
-        );
+      context,
+      FetchOrderDetailsEvent(widget.orderId),
+    );
   }
 
- void _listenToForegroundNotification() {
+  void _listenToForegroundNotification() {
     _fcmSubscription = FirebaseMessaging.onMessage.listen((
       RemoteMessage message,
     ) {
       if (message.data['action'] == 'customer_confirmed' &&
           message.data['orderId'] == widget.orderId) {
-
+        if (!mounted) return;
         context.read<CompleteOrderViewModel>().doIntent(
-              CompleteOrderEvent(orderId: widget.orderId),
-            );
+          CompleteOrderEvent(orderId: widget.orderId),
+        );
       }
     });
   }
@@ -87,9 +88,9 @@ class _TrackOrderBodyState extends State<TrackOrderBody>
             context.go(Routes.homePath);
           } else {
             context.read<OrderStatusViewModel>().doIntent(
-                  context,
-                  FetchOrderDetailsEvent(widget.orderId),
-                );
+              context,
+              FetchOrderDetailsEvent(widget.orderId),
+            );
           }
         });
       });
@@ -127,7 +128,8 @@ class _TrackOrderBodyState extends State<TrackOrderBody>
             if (trackState.orderState?.errorMessage != null) {
               SharedPreferences.getInstance().then((prefs) {
                 prefs.remove(ApiConstants.currentOrderIdKey);
-                final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';
+                final driverId =
+                    prefs.getString(ApiConstants.driverIdKey) ?? '';
                 if (driverId.isNotEmpty) {
                   getIt<ActiveOrderFirestoreService>().clearActiveOrder(
                     driverId,
@@ -142,9 +144,12 @@ class _TrackOrderBodyState extends State<TrackOrderBody>
             if (orderData != null && orderData.status == 'completed') {
               SharedPreferences.getInstance().then((prefs) {
                 prefs.remove(ApiConstants.currentOrderIdKey);
-                final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';
+                final driverId =
+                    prefs.getString(ApiConstants.driverIdKey) ?? '';
                 if (driverId.isNotEmpty) {
-                  getIt<ActiveOrderFirestoreService>().clearActiveOrder(driverId);
+                  getIt<ActiveOrderFirestoreService>().clearActiveOrder(
+                    driverId,
+                  );
                 }
               });
               context.pushReplacementNamed(Routes.successName);
@@ -180,16 +185,16 @@ class _TrackOrderBodyState extends State<TrackOrderBody>
                     );
                   },
                 ),
-               actions: [
+                actions: [
                   IconButton(
                     icon: const Icon(Icons.refresh),
                     onPressed: () {
                       context.read<OrderStatusViewModel>().doIntent(
-                            context,
-                            SyncOrderWithBackendEvent(widget.orderId),
-                          );
+                        context,
+                        SyncOrderWithBackendEvent(widget.orderId),
+                      );
                     },
-                  )
+                  ),
                 ],
               ),
               body: SingleChildScrollView(

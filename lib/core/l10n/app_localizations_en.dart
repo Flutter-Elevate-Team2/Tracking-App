@@ -301,10 +301,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logout => 'Logout';
 
   @override
-  String get logoutTitle => 'LOGOUT';
+  String get logoutTitle => 'Logout';
 
   @override
-  String get confirmLogout => 'Confirm logout!!';
+  String get confirmLogout => 'Are you sure you want to logout?';
 
   @override
   String get currentPasswordLabel => 'Current password';
@@ -637,6 +637,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noOrdersFound => 'No orders found';
+
+  @override
+  String get noPendingOrders => 'No pending orders';
 
   @override
   String get chooseImageSource => 'Choose Image Source';

@@ -69,7 +69,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => LanguageCubit()),
+        BlocProvider(create: (_) => getIt<LanguageCubit>()),
         BlocProvider(
           create: (_) =>
               getIt<ProfileViewModel>()..doIntent(GetDriverProfileEvent()),
@@ -82,7 +82,7 @@ class _MyAppState extends State<MyApp> {
             routerConfig: AppRouter.router,
             debugShowCheckedModeBanner: false,
             onGenerateTitle: (context) =>
-            AppLocalizations.of(context)!.appTitle,
+                AppLocalizations.of(context)!.appTitle,
             supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             theme: AppTheme.lightTheme,

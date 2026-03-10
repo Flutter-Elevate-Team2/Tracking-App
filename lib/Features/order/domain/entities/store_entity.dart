@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 
-class StoreEntity extends Equatable  {
+class StoreEntity extends Equatable {
   final String? name;
   final String? image;
   final String? address;
   final String? phoneNumber;
   final String? latLong;
 
-  StoreEntity ({
+  const StoreEntity({
     this.name,
     this.image,
     this.address,
@@ -15,9 +15,5 @@ class StoreEntity extends Equatable  {
     this.latLong,
   });
   @override
-  List<Object?> get props => [
-   name, image , address , phoneNumber , latLong
-  ];
-
-  }
-
+  List<Object?> get props => [name, image, address, phoneNumber, latLong];
+}

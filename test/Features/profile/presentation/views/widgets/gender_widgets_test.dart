@@ -19,6 +19,7 @@ void main() {
 
       expect(find.text('Male'), findsOneWidget);
       final radio = tester.widget<Radio<bool>>(find.byType(Radio<bool>));
+      // ignore: deprecated_member_use
       expect(radio.groupValue, isTrue);
     });
 

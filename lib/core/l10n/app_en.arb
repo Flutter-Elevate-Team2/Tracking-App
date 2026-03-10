@@ -339,11 +339,11 @@
   "@logout": {
     "description": "Profile menu item for logout"
   },
-  "logoutTitle": "LOGOUT",
+  "logoutTitle": "Logout",
   "@logoutTitle": {
     "description": "Title for logout confirmation dialog"
   },
-  "confirmLogout": "Confirm logout!!",
+  "confirmLogout": "Are you sure you want to logout?",
   "@confirmLogout": {
     "description": "Message asking user to confirm logout"
   },
@@ -773,8 +773,12 @@
     "description": "Label for delivery status"
   },
   "noOrdersFound": "No orders found",
-  "@noOrderFound": {
+  "noPendingOrders": "No pending orders",
+  "@noOrdersFound": {
     "description": "Message displayed when no orders are found"
+  },
+  "@noPendingOrders": {
+    "description": "Message displayed when no pending orders are found"
   },
   "chooseImageSource": "Choose Image Source",
   "@chooseImageSource": {
@@ -840,21 +844,6 @@
   "acceptingOrder": "Accepting order...",
   "@acceptingOrder": {
     "description": "Fallback notification body shown when the order is accepted"
-  },
-  "@noOrderFound": {
-    "description": "Message displayed when no orders are found"
-  },
-  "floweryStore": "Flowery store",
-  "@floweryStore": {
-    "description": "Sample store name"
-  },
-  "sampleUserName": "Nour mohamed",
-  "@sampleUserName": {
-    "description": "Sample user name"
-  },
-  "sampleAddress": "20th st, Sheikh Zayed, Giza",
-  "@sampleAddress": {
-    "description": "Sample address"
   },
   "waitingCustomerConfirmation": "Waiting for customer confirmation...",
   "@waitingCustomerConfirmation": {

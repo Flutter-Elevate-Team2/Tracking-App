@@ -23,8 +23,10 @@ class GenderRadioButton extends StatelessWidget {
             height: 24,
             child: Radio<bool>(
               value: true,
+              // ignore: deprecated_member_use
               groupValue: isSelected,
               activeColor: Theme.of(context).colorScheme.primary,
+              // ignore: deprecated_member_use
               onChanged: onTap != null ? (_) => onTap!() : null,
               visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
             ),

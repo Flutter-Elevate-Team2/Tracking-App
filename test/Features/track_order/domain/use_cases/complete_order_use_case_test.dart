@@ -5,20 +5,23 @@ import 'package:tracking_app/Features/track_order/domain/entities/complete_order
 import 'package:tracking_app/Features/track_order/domain/repo/track_order_repo_contract.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/complete_order_use_case.dart';
 import 'package:tracking_app/core/base_response/base_response.dart';
+import 'package:tracking_app/core/services/active_order_firestore_service.dart';
 
 import 'complete_order_use_case_test.mocks.dart';
 
-@GenerateMocks([TrackOrderRepoContract])
+@GenerateMocks([TrackOrderRepoContract, ActiveOrderFirestoreService])
 void main() {
   provideDummy<BaseResponse<CompleteOrderEntity>>(
     const ErrorResponse(errorMessage: 'dummy'),
   );
   late CompleteOrderUseCase useCase;
   late MockTrackOrderRepoContract mockRepo;
+  late MockActiveOrderFirestoreService mockFirestoreService;
 
   setUp(() {
     mockRepo = MockTrackOrderRepoContract();
-    useCase = CompleteOrderUseCase(mockRepo);
+    mockFirestoreService = MockActiveOrderFirestoreService();
+    useCase = CompleteOrderUseCase(mockRepo, mockFirestoreService);
   });
 
   group('CompleteOrderUseCase Test', () {

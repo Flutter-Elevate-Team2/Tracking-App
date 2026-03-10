@@ -304,7 +304,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get logoutTitle => 'تسجيل الخروج';
 
   @override
-  String get confirmLogout => 'تأكيد تسجيل الخروج!!';
+  String get confirmLogout => 'هل أنت متأكد أنك تريد تسجيل الخروج؟';
 
   @override
   String get currentPasswordLabel => 'كلمة المرور الحالية';
@@ -636,6 +636,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noOrdersFound => 'لا توجد طلبات';
+
+  @override
+  String get noPendingOrders => 'لا توجد طلبات معلقة';
 
   @override
   String get chooseImageSource => 'اختر مصدر الصورة';

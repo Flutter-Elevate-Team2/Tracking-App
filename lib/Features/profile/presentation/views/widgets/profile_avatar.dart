@@ -162,7 +162,7 @@ class LoadingOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.black.withOpacity(0.5),
+      color: AppColors.black.withValues(alpha: 0.5),
       child: Center(
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
@@ -202,6 +202,7 @@ class ProfileImagePicker extends StatelessWidget {
     );
 
     if (source != null) {
+      if (!context.mounted) return;
       _pickImage(context, source);
     }
   }

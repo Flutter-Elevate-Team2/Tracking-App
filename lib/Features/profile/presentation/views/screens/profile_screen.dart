@@ -13,7 +13,8 @@ import 'package:tracking_app/Features/profile/presentation/views/widgets/profile
 import 'package:tracking_app/Features/profile/presentation/views/widgets/profile_version_footer.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
 import 'package:tracking_app/core/constants/app_colors.dart';
-import 'package:tracking_app/core/l10n/app_localizations.dart';
+import 'package:tracking_app/core/extension/context_extension.dart';
+import 'package:tracking_app/core/l10n/view_model/language_cubit.dart';
 import 'package:tracking_app/gen/assets.gen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -21,8 +22,6 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
@@ -35,7 +34,7 @@ class ProfileScreen extends StatelessWidget {
           },
         ),
         title: Text(
-          l10n?.profile ?? 'Profile',
+          context.l10n.profile,
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         actions: const [_NotificationAction()],
@@ -49,11 +48,11 @@ class ProfileScreen extends StatelessWidget {
               previous.profileState != current.profileState,
           builder: (context, state) {
             final profileState = state.profileState;
-    
+
             if (profileState?.isLoading == true) {
               return const ProfileShimmerLoading();
             }
-    
+
             if (profileState?.errorMessage != null) {
               return _ErrorStateWidget(
                 errorMessage: profileState!.errorMessage!,
@@ -64,7 +63,7 @@ class ProfileScreen extends StatelessWidget {
                 },
               );
             }
-    
+
             if (profileState?.data != null) {
               final driver = profileState!.data!;
               return SingleChildScrollView(
@@ -87,17 +86,23 @@ class ProfileScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     ProfileSettingsTile(
                       icon: Icons.translate,
-                      title: l10n?.language ?? 'Language',
-                      trailing: Text(
-                        l10n?.english ?? 'English',
-                        style: Theme.of(context).textTheme.bodyMedium
-                            ?.copyWith(color: AppColors.mainColor),
+                      title: context.l10n.language,
+                      trailing: BlocBuilder<LanguageCubit, Locale>(
+                        builder: (context, locale) {
+                          return Text(
+                            locale.languageCode == 'ar'
+                                ? context.l10n.arabic
+                                : context.l10n.english,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: AppColors.mainColor),
+                          );
+                        },
                       ),
                       onTap: () => _showLanguageDialog(context),
                     ),
                     ProfileSettingsTile(
                       icon: Icons.logout,
-                      title: l10n?.logout ?? 'Logout',
+                      title: context.l10n.logout,
                       onTap: () => _showLogoutDialog(context),
                     ),
                     const SizedBox(height: 24),
@@ -107,7 +112,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
               );
             }
-    
+
             return const SizedBox.shrink();
           },
         ),
@@ -204,7 +209,6 @@ class _ErrorStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -217,7 +221,7 @@ class _ErrorStateWidget extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: onRetry,
-            child: Text(l10n?.retryButton ?? 'Retry'),
+            child: Text(context.l10n.retryButton),
           ),
         ],
       ),

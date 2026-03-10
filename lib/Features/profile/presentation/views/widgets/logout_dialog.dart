@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/profile_events.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/profile_view_model.dart';
 import 'package:tracking_app/core/constants/app_colors.dart';
-import 'package:tracking_app/core/l10n/app_localizations.dart';
+import 'package:tracking_app/core/extension/context_extension.dart';
 import 'package:tracking_app/gen/assets.gen.dart';
 
 class LogoutDialog extends StatelessWidget {
@@ -11,8 +11,6 @@ class LogoutDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 0,
@@ -37,7 +35,7 @@ class LogoutDialog extends StatelessWidget {
             Assets.images.logouticon.image(width: 80, height: 80),
             const SizedBox(height: 24),
             Text(
-              l10n?.logoutTitle ?? 'Logout',
+              context.l10n.logoutTitle,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 22,
@@ -45,7 +43,7 @@ class LogoutDialog extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              l10n?.confirmLogout ?? 'Are you sure you want to logout?',
+              context.l10n.confirmLogout,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: AppColors.gray,
@@ -66,7 +64,7 @@ class LogoutDialog extends StatelessWidget {
                       side: BorderSide(color: AppColors.lightGray),
                     ),
                     child: Text(
-                      l10n?.cancelDialog ?? 'Cancel',
+                      context.l10n.cancelDialog,
                       style: TextStyle(
                         color: AppColors.black,
                         fontWeight: FontWeight.w500,
@@ -91,7 +89,7 @@ class LogoutDialog extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      l10n?.logout ?? 'Logout',
+                      context.l10n.logout,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
