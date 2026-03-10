@@ -6,7 +6,8 @@ enum OrderStatus {
   arrivedPickup('arrived_pickup'),
   startDeliver('start_deliver'),
   arrivedUser('arrived_user'),
-  delivered('delivered');
+  delivered('delivered'),
+  completed('completed'); // ✅ إضافة الـ completed
 
   final String firebaseValue;
   const OrderStatus(this.firebaseValue);
@@ -22,6 +23,7 @@ enum OrderStatus {
       case OrderStatus.arrivedUser:
         return context.l10n.arrived;
       case OrderStatus.delivered:
+      case OrderStatus.completed: // ✅
         return context.l10n.delivered;
     }
   }
@@ -37,6 +39,7 @@ enum OrderStatus {
       case OrderStatus.arrivedUser:
         return context.l10n.notificationArrivedUser;
       case OrderStatus.delivered:
+      case OrderStatus.completed:
         return context.l10n.notificationDelivered;
     }
   }
@@ -52,12 +55,16 @@ enum OrderStatus {
       case OrderStatus.arrivedUser:
         return context.l10n.deliveredToUser;
       case OrderStatus.delivered:
+      case OrderStatus.completed:
         return context.l10n.deliveredToUser;
     }
   }
 
   OrderStatus? get next {
     final currentIndex = OrderStatus.values.indexOf(this);
+    // إيقاف الزرار عند الانتهاء
+    if (this == OrderStatus.delivered || this == OrderStatus.completed) return null;
+
     if (currentIndex < OrderStatus.values.length - 1) {
       return OrderStatus.values[currentIndex + 1];
     }

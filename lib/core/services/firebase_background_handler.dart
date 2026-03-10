@@ -11,6 +11,7 @@ import 'package:tracking_app/firebase_options.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   if (message.data['action'] == 'customer_confirmed') {
@@ -24,24 +25,20 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
         final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';
         if (driverId.isNotEmpty) {
           final firestore = FirebaseFirestore.instance;
-          
+
           await firestore.collection('active_orders').doc(driverId).delete();
-          
+
           try {
             await firestore.collection('active_orders').doc(orderId).update({
               'status': 'completed',
               'updatedAt': FieldValue.serverTimestamp(),
             });
           } catch (_) {}
-
-          await firestore.waitForPendingWrites();
         }
-        
+
         await prefs.remove(ApiConstants.currentOrderIdKey);
         await prefs.setBool('show_success_screen', true);
-        debugPrint(
-          "✅ Active order cleared for driver after background completion",
-        );
+        debugPrint("✅ Active order cleared for driver after background completion");
 
         String? token = prefs.getString(ApiConstants.tokenKey);
         final url = Uri.parse(
@@ -57,7 +54,6 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
         );
 
         debugPrint("Background API Status: ${response.statusCode}");
-        debugPrint("Background API Body: ${response.body}");
       } catch (e) {
         debugPrint("❌ Background FCM Error: $e");
       }

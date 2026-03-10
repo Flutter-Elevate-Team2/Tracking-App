@@ -8,6 +8,7 @@ import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mapbox;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracking_app/Features/order/domain/use_cases/get_all_driver_orders.dart';
 import 'package:tracking_app/Features/order/presentation/my_orders/view_model/my_orders_state.dart';
+import 'package:tracking_app/Features/track_order/data/mapper/order_tracking_mapper.dart';
 import 'package:tracking_app/Features/track_order/domain/entities/order_status.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/get_directions_use_case.dart';
 import 'package:tracking_app/Features/track_order/domain/use_cases/get_order_details_use_case.dart';
@@ -29,9 +30,13 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
   final FirebaseOrderService _firebaseService;
   final GetDirectionsUseCase _getDirectionsUseCase;
   final ActiveOrderFirestoreService _activeOrderFirestoreService;
-  final GetAllDriverOrdersUseCase _getAllDriverOrdersUseCase; 
+  final GetAllDriverOrdersUseCase _getAllDriverOrdersUseCase;
 
   StreamSubscription<Position>? _locationSubscription;
+  StreamSubscription? _orderSub;
+  String? _currentOrderId;
+
+  mapbox.Position? _lastCalculatedDriverPos;
 
   OrderStatusViewModel(
     this._updateOrderStatusUseCase,
@@ -40,7 +45,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
     this._firebaseService,
     this._getDirectionsUseCase,
     this._activeOrderFirestoreService,
-    this._getAllDriverOrdersUseCase, 
+    this._getAllDriverOrdersUseCase,
   ) : super(const TrackOrderStatusState());
 
   void doIntent(BuildContext context, TrackOrderStatusEvent event) {
@@ -57,7 +62,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
           title: event.title,
         );
         break;
-      case SyncOrderWithBackendEvent(): 
+      case SyncOrderWithBackendEvent():
         _syncOrderWithBackend(event.orderId);
         break;
     }
@@ -71,11 +76,13 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
 
       if (response is SuccessResponse<MyOrdersState>) {
         final allOrders = response.data.allOrders;
-        final targetOrders = allOrders.where((o) => o.order?.id == orderId).toList();
+        final targetOrders = allOrders
+            .where((o) => o.order?.id == orderId)
+            .toList();
 
         if (targetOrders.isNotEmpty) {
           final targetOrder = targetOrders.first;
-          
+
           if (targetOrder.order?.state == 'completed') {
             await _firebaseService.uploadTrackingOrder(orderId, {
               "status": "completed",
@@ -96,10 +103,11 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
     }
 
     emit(state.copyWith(updateStatusState: const BaseState(isLoading: false)));
-    _fetchOrderDetails(orderId); 
+    _fetchOrderDetails(orderId);
   }
 
   Future<void> _fetchOrderDetails(String orderId) async {
+    _currentOrderId = orderId;
     if (state.orderState?.data == null) {
       emit(state.copyWith(orderState: const BaseState(isLoading: true)));
     } else {
@@ -117,6 +125,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
           ),
         );
         startTracking(orderId);
+        _watchOrderChanges(orderId);
       } else {
         emit(
           state.copyWith(
@@ -134,6 +143,72 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
         ),
       );
     }
+  }
+
+  void _watchOrderChanges(String orderId) {
+    _orderSub?.cancel();
+
+    _orderSub = _firebaseService.watchOrder(orderId).listen((order) async {
+      final orderEntity = order.toEntity();
+      final driverPos = mapbox.Position(
+        orderEntity.trackingLocation.long,
+        orderEntity.trackingLocation.lat,
+      );
+
+      final waypoints = [
+        driverPos,
+        mapbox.Position(
+          orderEntity.store.storeLong,
+          orderEntity.store.storeLat,
+        ),
+        mapbox.Position(
+          orderEntity.userLocationEntity.long,
+          orderEntity.userLocationEntity.lat,
+        ),
+      ];
+
+      bool shouldFetchRoute = false;
+      if (_lastCalculatedDriverPos == null) {
+        shouldFetchRoute = true;
+      } else if (_lastCalculatedDriverPos!.lat != driverPos.lat ||
+          _lastCalculatedDriverPos!.lng != driverPos.lng) {
+        shouldFetchRoute = true;
+      }
+
+      if (shouldFetchRoute) {
+        try {
+          final routePoints = await _getDirectionsUseCase.call(
+            waypoints[0], // Start (Driver)
+            state.showPickup
+                ? waypoints[1]
+                : waypoints[2], // End (Store or User)
+          );
+
+          _lastCalculatedDriverPos = driverPos; // حفظ المكان الجديد
+
+          emit(
+            state.copyWith(
+              orderState: BaseState(isLoading: false, data: orderEntity),
+              routePoints: routePoints,
+            ),
+          );
+        } catch (e) {
+          emit(
+            state.copyWith(
+              orderState: BaseState(isLoading: false, data: orderEntity),
+            ),
+          );
+          debugPrint("Directions Error: $e");
+        }
+      } else {
+        // تحديث حالة الأوردر في ה- UI بدون رسم خط سير جديد (توفير فلوس Mapbox)
+        emit(
+          state.copyWith(
+            orderState: BaseState(isLoading: false, data: orderEntity),
+          ),
+        );
+      }
+    });
   }
 
   Future<void> _updateStatus(
@@ -163,12 +238,12 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
         }
       } else if (status == OrderStatus.delivered) {
         _locationSubscription?.cancel();
-      } 
+      }
 
       emit(
         state.copyWith(updateStatusState: const BaseState(isLoading: false)),
       );
-      _fetchOrderDetails(orderId);
+      // _fetchOrderDetails(orderId); // 🛑 شلناها لأن الـ watchOrderChanges بتعمل التحديث أوتوماتيك دلوقتي
     } catch (e) {
       emit(
         state.copyWith(
@@ -209,7 +284,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
     }
 
     final pos = await _locationService.getCurrentLocation();
-    
+
     if (isClosed) return;
 
     if (pos != null) {
@@ -228,7 +303,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
               'updatedAt': DateTime.now().toIso8601String(),
             });
             emit(state.copyWith(currentDriverPosition: position));
-            _updateRoute(position);
+            // _updateRoute(position); 🛑 الـ watchOrderChanges هي اللي هتهندل ده دلوقتي عشان نمنع التكرار
           }
         },
         onError: (error) {
@@ -274,6 +349,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
   @override
   Future<void> close() {
     _locationSubscription?.cancel();
+    _orderSub?.cancel();
     return super.close();
   }
 }

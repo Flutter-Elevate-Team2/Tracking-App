@@ -21,7 +21,6 @@ class FirebaseOrderService {
     }
   }
 
-  /// Uploads or updates the tracking information for an active order.
   Future<void> uploadTrackingOrder(
     String orderId,
     Map<String, dynamic> trackingData,
@@ -66,5 +65,13 @@ class FirebaseOrderService {
     } catch (e) {
       debugPrint("Failed to update driver token in active order: $e");
     }
+  }
+  Stream<OrderTrackingFirebaseModel> watchOrder(String orderId) {
+    return _firestore
+        .collection('active_orders')
+        .doc(orderId)
+        .snapshots()
+        .where((doc) => doc.exists && doc.data() != null)
+        .map((doc) => OrderTrackingFirebaseModel.fromJson(doc.data()!));
   }
 }

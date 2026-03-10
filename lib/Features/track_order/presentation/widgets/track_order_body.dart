@@ -47,12 +47,13 @@ class _TrackOrderBodyState extends State<TrackOrderBody>
         );
   }
 
-  void _listenToForegroundNotification() {
+ void _listenToForegroundNotification() {
     _fcmSubscription = FirebaseMessaging.onMessage.listen((
       RemoteMessage message,
     ) {
       if (message.data['action'] == 'customer_confirmed' &&
           message.data['orderId'] == widget.orderId) {
+
         context.read<CompleteOrderViewModel>().doIntent(
               CompleteOrderEvent(orderId: widget.orderId),
             );

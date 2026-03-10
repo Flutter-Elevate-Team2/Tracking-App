@@ -49,14 +49,14 @@ class _HomeViewBodyState extends State<HomeViewBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<HomeViewModel, HomeState>(
+    return BlocListener<HomeViewModel, HomeState>(
       listenWhen: (prev, next) =>
           prev.acceptOrderState?.data != next.acceptOrderState?.data ||
-          prev.acceptOrderState?.isLoading !=
-              next.acceptOrderState?.isLoading ||
-          prev.acceptOrderState?.errorMessage !=
-              next.acceptOrderState?.errorMessage,
+          prev.acceptOrderState?.isLoading != next.acceptOrderState?.isLoading ||
+          prev.acceptOrderState?.errorMessage != next.acceptOrderState?.errorMessage,
       listener: (context, state) {
+        if (!mounted) return;
+
         if (state.acceptOrderState?.isLoading == true) {
           if (!_isAcceptDialogOpen) {
             _isAcceptDialogOpen = true;
@@ -86,7 +86,9 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                 ),
               ),
             ).then((_) {
-              _isAcceptDialogOpen = false;
+              if (mounted) {
+                _isAcceptDialogOpen = false;
+              }
             });
           }
         } else if (state.acceptOrderState?.isLoading == false) {
@@ -108,52 +110,62 @@ class _HomeViewBodyState extends State<HomeViewBody> {
           }
         }
       },
-      builder: (context, state) {
-        final isInitialLoading =
-            (state.ordersState?.isLoading ?? false) &&
-            (state.ordersState?.data == null ||
-                state.ordersState!.data!.isEmpty);
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const HomeHeader(),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await context.read<HomeViewModel>().doIntent(
+                    GetPendingOrdersEvent(isRefresh: true),
+                  );
+                },
+                child: BlocBuilder<HomeViewModel, HomeState>(
+                  buildWhen: (prev, next) =>
+                      prev.ordersState != next.ordersState ||
+                      prev.isPaginationLoading != next.isPaginationLoading,
+                  builder: (context, state) {
+                    final isInitialLoading =
+                        (state.ordersState?.isLoading ?? false) &&
+                        (state.ordersState?.data == null ||
+                            state.ordersState!.data!.isEmpty);
 
-        final orders = state.ordersState?.data ?? [];
-        final errorMessage = state.ordersState?.errorMessage;
+                    final orders = state.ordersState?.data ?? [];
+                    final errorMessage = state.ordersState?.errorMessage;
 
-        return SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const HomeHeader(),
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    await context.read<HomeViewModel>().doIntent(
-                      GetPendingOrdersEvent(isRefresh: true),
+                    if (isInitialLoading) {
+                      return const HomeShimmerLoading();
+                    }
+
+                    if (errorMessage != null) {
+                      return Center(child: Text(errorMessage));
+                    }
+
+                    if (orders.isEmpty) {
+                      return const Center(child: Text('No pending orders'));
+                    }
+
+                    return ListView.builder(
+                      controller: _scrollController,
+                      itemCount:
+                          orders.length + (state.isPaginationLoading ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index < orders.length) {
+                          return OrderCard(order: orders[index]);
+                        } else {
+                          return const _PaginatingShimmer();
+                        }
+                      },
                     );
                   },
-                  child: isInitialLoading
-                      ? const HomeShimmerLoading()
-                      : errorMessage != null
-                      ? Center(child: Text(errorMessage))
-                      : orders.isEmpty
-                      ? const Center(child: Text('No pending orders'))
-                      : ListView.builder(
-                          controller: _scrollController,
-                          itemCount:
-                              orders.length +
-                              (state.isPaginationLoading ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index < orders.length) {
-                              return OrderCard(order: orders[index]);
-                            } else {
-                              return const _PaginatingShimmer();
-                            }
-                          },
-                        ),
                 ),
               ),
-            ],
-          ),
-        );
-      },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
