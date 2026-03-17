@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/images/driver_app_logo.png" alt="Flowery Driver Logo" width="150" height="150" style="border-radius: 30px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);" />
+  <img src="assets/images/tracking.png" alt="Flowery Driver Logo" width="150" height="150" style="border-radius: 30px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);" />
 </p>
 
 <h1 align="center">🛵 Flowery Driver : Delivery Partner App</h1>
