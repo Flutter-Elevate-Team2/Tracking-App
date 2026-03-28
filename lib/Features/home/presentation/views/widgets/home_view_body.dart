@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tracking_app/Features/home/presentation/view_model/home_event.dart';
 import 'package:tracking_app/Features/home/presentation/view_model/home_state.dart';
 import 'package:tracking_app/Features/home/presentation/view_model/home_view_model.dart';
 import 'package:tracking_app/Features/home/presentation/views/widgets/home_header.dart';
 import 'package:tracking_app/Features/home/presentation/views/widgets/home_shimmer_loading.dart';
 import 'package:tracking_app/Features/home/presentation/views/widgets/order_card.dart';
+import 'package:tracking_app/core/app_router/app_router.dart';
 import 'package:tracking_app/core/constants/app_colors.dart';
+import 'package:tracking_app/core/extension/context_extension.dart';
 import 'package:tracking_app/core/widget/app_shimmer.dart';
 
 class HomeViewBody extends StatefulWidget {
@@ -42,9 +45,54 @@ class _HomeViewBodyState extends State<HomeViewBody> {
   Widget build(BuildContext context) {
     return BlocConsumer<HomeViewModel, HomeState>(
       listener: (context, state) {
+        if (state.acceptOrderState?.isLoading == false) {
+          if (Navigator.of(context, rootNavigator: true).canPop()) {
+            Navigator.of(context, rootNavigator: true).pop();
+          }
+        }
+
         if (state.acceptOrderState?.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.acceptOrderState!.errorMessage!)),
+          );
+        }
+
+        if (state.acceptOrderState?.isLoading == true) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            useRootNavigator: true,
+            builder: (_) => AlertDialog(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(16)),
+              ),
+              content: Row(
+                children: [
+                  const SizedBox(
+                    height: 24,
+                    width: 24,
+                    child: CircularProgressIndicator(strokeWidth: 3),
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Text(
+                      context.l10n.acceptingOrder,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        if (state.acceptOrderState?.data != null &&
+            state.acceptOrderState?.isLoading == false) {
+          final String orderId = state.acceptOrderState!.data!.id.toString();
+
+          context.pushNamed(
+            Routes.trackOrderName,
+            pathParameters: {'orderId': orderId},
           );
         }
       },

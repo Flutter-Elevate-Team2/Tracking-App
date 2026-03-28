@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:googleapis_auth/auth_io.dart' as auth;
+import 'package:http/http.dart' as http;
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -164,6 +168,60 @@ static Future<String?> getDeviceTokenAsync() async {
         ),
         payload: message.data.toString(),
       );
+    }
+  }
+
+  static Future<void> sendNotification({
+    required String token,
+    required String title,
+    required String body,
+    Map<String, dynamic>? data,
+  }) async {
+    try {
+      final String response = await rootBundle.loadString(
+        'assets/json/tracking-app-service.json',
+      );
+      final serviceAccountJson = json.decode(response);
+
+      final scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
+
+      final authClient = await auth.clientViaServiceAccount(
+        auth.ServiceAccountCredentials.fromJson(serviceAccountJson),
+        scopes,
+      );
+
+      final String accessToken = authClient.credentials.accessToken.data;
+      final String projectId = serviceAccountJson['project_id'];
+
+      final String url =
+          'https://fcm.googleapis.com/v1/projects/$projectId/messages:send';
+
+      final http.Response httpResponse = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: jsonEncode({
+          'message': {
+            'token': token,
+            'notification': {'title': title, 'body': body},
+            'data': data ?? {},
+          },
+        }),
+      );
+
+      if (httpResponse.statusCode == 200) {
+        if (kDebugMode) print("✅ Notification sent successfully via FCM V1");
+      } else {
+        if (kDebugMode) {
+          print("❌ Error sending notification: ${httpResponse.body}");
+        }
+      }
+
+      authClient.close();
+    } catch (e) {
+      if (kDebugMode) print("❌ Notification Service Error: $e");
     }
   }
 }
