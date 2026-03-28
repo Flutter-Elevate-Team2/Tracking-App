@@ -48,4 +48,16 @@ class FirebaseOrderService {
       return null;
     }
   }
+
+  Future<Map<String, dynamic>?> getUserDataByUserId(String userId) async {
+    try {
+      final doc = await _firestore.collection('user_data').doc(userId).get();
+      if (doc.exists) {
+        return doc.data();
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
 }
