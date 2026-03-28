@@ -22,7 +22,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await PushNotificationService.init();
 
   await dotenv.load(fileName: ".env");
   String mapboxToken = dotenv.get('MAPBOX_ACCESS_TOKEN', fallback: '');
@@ -30,6 +29,9 @@ Future<void> main() async {
     mapbox.MapboxOptions.setAccessToken(mapboxToken);
   }
   await configureDependencies();
+
+  final pushService = getIt<PushNotificationService>();
+  await pushService.init();
   // final prefs = getIt<SharedPreferences>();
   //
   // const String fixedToken =

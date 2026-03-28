@@ -4,10 +4,10 @@ import 'package:tracking_app/Features/home/data/models/order_tracking_firebase_m
 
 @singleton
 class FirebaseOrderService {
-  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore;
 
-  /// Gets user data (userId, deviceToken) from Firestore based on orderId.
-  /// This assumes the commerce app has uploaded the order info to the 'order_data' collection.
+  FirebaseOrderService(this._firestore);
+
   Future<Map<String, dynamic>?> getUserDataByOrderId(String orderId) async {
     try {
       final doc = await _firestore.collection('order_data').doc(orderId).get();
@@ -20,7 +20,6 @@ class FirebaseOrderService {
     }
   }
 
-  /// Uploads or updates the tracking information for an active order.
   Future<void> uploadTrackingOrder(
     String orderId,
     Map<String, dynamic> trackingData,

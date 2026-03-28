@@ -20,6 +20,7 @@ class AcceptOrderUseCase {
   final LocationService _locationService;
   final GetDriverProfileUseCase _getDriverProfileUseCase;
   final SharedPreferences _prefs;
+  final PushNotificationService _pushNotificationService;
 
   AcceptOrderUseCase(
     this._startOrderUseCase,
@@ -28,6 +29,7 @@ class AcceptOrderUseCase {
     this._locationService,
     this._getDriverProfileUseCase,
     this._prefs,
+    this._pushNotificationService
   );
 
   Future<BaseResponse<OrderEntity>> call(OrderEntity order) async {
@@ -83,7 +85,7 @@ class AcceptOrderUseCase {
               : null,
           'driverPhone': driver?.phone,
           'vehicleNumber': driver?.vehicleNumber,
-          'driverToken': PushNotificationService.deviceToken,
+          'driverToken': _pushNotificationService.deviceToken,
         },
         trackingLocation: {
           'lat': position?.latitude,
