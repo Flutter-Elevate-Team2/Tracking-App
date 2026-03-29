@@ -12,37 +12,37 @@ import 'package:tracking_app/core/services/active_order_firestore_service.dart';
 class CompleteOrderUseCase {
   final TrackOrderRepoContract _trackOrderRepoContract;
   final ActiveOrderFirestoreService _activeOrderFirestoreService;
+  final FirebaseFirestore _firestore; // أضفت ده
+  final SharedPreferences _prefs;      // أضفت ده
 
   CompleteOrderUseCase(
-    this._trackOrderRepoContract,
-    this._activeOrderFirestoreService,
-  );
+      this._trackOrderRepoContract,
+      this._activeOrderFirestoreService,
+      this._firestore, // تمرير من برا
+      this._prefs,     // تمرير من برا
+      );
+
   Future<BaseResponse<CompleteOrderEntity>> call(String orderId) async {
     final response = await _trackOrderRepoContract.changeOrderState(orderId);
 
     if (response is SuccessResponse<CompleteOrderEntity>) {
       try {
-        await FirebaseFirestore.instance
-            .collection('active_orders')
-            .doc(orderId)
-            .update({
+        // نستخدم _firestore الممررة بدل الـ instance الثابتة
+        await _firestore.collection('active_orders').doc(orderId).update({
           'status': 'completed',
           'updatedAt': FieldValue.serverTimestamp(),
         });
 
-        final prefs = await SharedPreferences.getInstance();
-        final driverId = prefs.getString(ApiConstants.driverIdKey) ?? '';
+        final driverId = _prefs.getString(ApiConstants.driverIdKey) ?? '';
 
         if (driverId.isNotEmpty) {
           await _activeOrderFirestoreService.clearActiveOrder(driverId);
         }
-        await prefs.remove(ApiConstants.currentOrderIdKey);
-
+        await _prefs.remove(ApiConstants.currentOrderIdKey);
       } catch (e) {
-        debugPrint("Failed to sync Firebase or Local Storage after API success: $e");
+        debugPrint("Failed to sync Firebase or Local Storage: $e");
       }
     }
-
     return response;
   }
 }

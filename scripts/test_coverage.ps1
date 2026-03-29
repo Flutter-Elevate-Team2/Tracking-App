@@ -26,6 +26,7 @@ if (Test-Path $lcovFile) {
                 $path -match "\.freezed\.dart$" -or
                 $path -match "\.config\.dart$" -or
                 $path -match "firebase_module\.dart$" -or
+                $path -match "firebase_options.dart" -or
                 $path -match "lib[\\/]gen[\\/]" -or
                 $path -match "lib[\\/]core[\\/]l10n[\\/]" -or
                 $path -match "lib[\\/]l10n[\\/]" -or

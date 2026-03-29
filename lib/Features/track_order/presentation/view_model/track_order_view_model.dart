@@ -184,7 +184,7 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
           );
 
           if (isClosed) return;
-          _lastCalculatedDriverPos = driverPos; // حفظ المكان الجديد
+          _lastCalculatedDriverPos = driverPos;
 
           emit(
             state.copyWith(
@@ -203,7 +203,6 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
         }
       } else {
         if (isClosed) return;
-        // تحديث حالة الأوردر في ה- UI بدون رسم خط سير جديد (توفير فلوس Mapbox)
         emit(
           state.copyWith(
             orderState: BaseState(isLoading: false, data: orderEntity),
@@ -245,7 +244,6 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
       emit(
         state.copyWith(updateStatusState: const BaseState(isLoading: false)),
       );
-      // _fetchOrderDetails(orderId); // 🛑 شلناها لأن الـ watchOrderChanges بتعمل التحديث أوتوماتيك دلوقتي
     } catch (e) {
       emit(
         state.copyWith(
@@ -305,7 +303,6 @@ class OrderStatusViewModel extends Cubit<TrackOrderStatusState> {
               'updatedAt': DateTime.now().toIso8601String(),
             });
             emit(state.copyWith(currentDriverPosition: position));
-            // _updateRoute(position); 🛑 الـ watchOrderChanges هي اللي هتهندل ده دلوقتي عشان نمنع التكرار
           }
         },
         onError: (error) {
