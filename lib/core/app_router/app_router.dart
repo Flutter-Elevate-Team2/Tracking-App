@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tracking_app/Features/auth/presentation/forget_password/views/forget_password_screen_flow.dart';
 import 'package:tracking_app/Features/auth/presentation/login/views/login_screen.dart';
+import 'package:tracking_app/Features/order/presentation/my_orders/views/my_orders_screen.dart';
 import 'package:tracking_app/Features/auth/presentation/apply/views/apply_screen.dart';
 import 'package:tracking_app/Features/auth/presentation/apply/views/success_apply_screen.dart';
 import 'package:tracking_app/Features/auth/presentation/on_boarding/views/on_boarding_screen.dart';
@@ -62,6 +63,20 @@ class AppRouter {
     navigatorKey: rootNavigatorKey,
     initialLocation: Routes.ordersPath, // "/orders"
     routes: [
+      GoRoute(
+        path: Routes.ordersPath,
+        name: Routes.ordersName,
+        builder: (context, state) =>  MyOrdersScreen(),
+      ),
+      // final authRepo = getIt<AuthRepoContract>();
+      // final bool isLoggedIn = await authRepo.isLoggedIn();
+      // final bool isLoggingIn = state.uri.toString() == Routes.signInPath;
+      //
+      // if (isLoggedIn && isLoggingIn) {
+      //   return Routes.homePath;
+      // }
+      // return null;
+
       GoRoute(
         path: Routes.ordersPath,
         name: Routes.ordersName,
