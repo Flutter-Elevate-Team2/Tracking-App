@@ -631,6 +631,7 @@
   "changeLanguage": "Change Language",
   "@changeLanguage": { "description": "Title for language selection bottom sheet" },
    "profileUpdatedSuccess": "Profile updated successfully",
+   "selectVehicleType": "Choose your vehicle type",
   "@profileUpdatedSuccess": { "description": "Success message after profile update" },
   "photoUploadedSuccessfully":"Photo uploaded successfully",
   "passwordChangedSuccess": "Password changed successfully",

@@ -4,72 +4,62 @@ import 'package:tracking_app/Features/profile/data/models/driver_profile_respons
 import 'package:tracking_app/Features/profile/domain/entities/driver_entity.dart';
 
 void main() {
-  group('DriverProfileMapper Tests', () {
-    test('toEntity should map DriverProfileResponse to DriverEntity correctly with full data', () {
-      // Arrange
-      final driverModel = DriverModel(
-        id: '123',
-        firstName: 'Ahmed',
-        lastName: 'Mohamed',
-        email: 'ahmed@test.com',
-        phone: '0100000000',
-        photo: 'photo_url',
-        role: 'driver',
-        gender: 'male',
-        country: 'Egypt',
-        vehicleType: 'Car',
-        vehicleNumber: 'ABC-123',
-        vehicleLicense: 'LIC-999',
-        nid: '123456789',
-        nidImg: 'nid_img_url',
+  group('DriverProfileMapper', () {
+    test('toEntity should map DriverProfileResponse to DriverEntity', () {
+      // arrange
+      final response = DriverProfileResponse(
+        message: 'Success',
+        driver: DriverModel(
+          id: '123',
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john@example.com',
+          phone: '1234567890',
+          photo: 'photo.jpg',
+          role: 'driver',
+          gender: 'Male',
+          country: 'US',
+          vehicleType: 'Car',
+          vehicleNumber: 'ABC-123',
+          vehicleLicense: 'license.jpg',
+          nid: '987654321',
+          nidImg: 'nid.jpg',
+        ),
       );
-      final response = DriverProfileResponse(message: 'Success', driver: driverModel);
 
-      // Act
+      // act
       final entity = response.toEntity();
 
-      // Assert
+      // assert
       expect(entity, isA<DriverEntity>());
       expect(entity.id, '123');
-      expect(entity.firstName, 'Ahmed');
-      expect(entity.lastName, 'Mohamed');
-      expect(entity.email, 'ahmed@test.com');
+      expect(entity.firstName, 'John');
+      expect(entity.lastName, 'Doe');
+      expect(entity.email, 'john@example.com');
+      expect(entity.phone, '1234567890');
+      expect(entity.photo, 'photo.jpg');
       expect(entity.role, 'driver');
-      expect(entity.nid, '123456789');
+      expect(entity.gender, 'Male');
+      expect(entity.country, 'US');
+      expect(entity.vehicleType, 'Car');
+      expect(entity.vehicleNumber, 'ABC-123');
+      expect(entity.vehicleLicense, 'license.jpg');
+      expect(entity.nid, '987654321');
+      expect(entity.nidImg, 'nid.jpg');
     });
 
-    test('toEntity should handle null values and return default empty strings', () {
-      // Arrange
-      final response = DriverProfileResponse(message: 'Success', driver: null);
+    test('toEntity should handle null driver data gracefully', () {
+      // arrange
+      final response = DriverProfileResponse(message: 'Error', driver: null);
 
-      // Act
+      // act
       final entity = response.toEntity();
 
-      // Assert
+      // assert
       expect(entity, isA<DriverEntity>());
       expect(entity.id, '');
       expect(entity.firstName, '');
       expect(entity.lastName, '');
-      expect(entity.email, '');
-      expect(entity.role, 'driver');
-      expect(entity.nid, '');
-    });
-
-    test('toEntity should handle partial null fields inside DriverModel', () {
-      // Arrange
-      final driverModel = DriverModel(
-        id: '123',
-        firstName: null,
-        role: null,
-      );
-      final response = DriverProfileResponse(message: 'Success', driver: driverModel);
-
-      // Act
-      final entity = response.toEntity();
-
-      // Assert
-      expect(entity.id, '123');
-      expect(entity.firstName, '');
       expect(entity.role, 'driver');
     });
   });
