@@ -209,6 +209,10 @@
   "@home": { "description": "تسمية لزر التنقل الرئيسية" },
   "cart": "الطلبات",
   "@cart": { "description": "تسمية لزر التنقل الطلبات" },
+  "myOrders": "طلباتي",
+  "@myOrders": {
+    "description": "Label for the My Orders navigation tab"
+  },
   "profile": "الملف الشخصي",
   "@profile": { "description": "تسمية لزر التنقل الملف الشخصي" },
 
@@ -445,5 +449,8 @@
   "deliveredOn": "تم التوصيل في",
   "@deliveredOn": { "description": "تسمية لحالة التوصيل" },
   "noOrdersFound": "لا توجد طلبات",
-  "@noOrderFound": { "description": "رسالة عند عدم العثور على طلبات" }
+  "@noOrderFound": { "description": "رسالة عند عدم العثور على طلبات" },
+  "floweryStore": "متجر الزهور",
+  "sampleUserName": "نور محمد",
+  "sampleAddress": "شارع 20، الشيخ زايد، الجيزة"
 }
