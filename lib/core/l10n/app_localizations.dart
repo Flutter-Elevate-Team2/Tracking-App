@@ -200,6 +200,18 @@ abstract class AppLocalizations {
   /// **'First legal name'**
   String get firstNameLabel;
 
+  /// Label for the first name input field
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get firstNamelabel;
+
+  /// Label for the last name input field
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get lastNameLabel;
+
   /// Hint text for the first name input field
   ///
   /// In en, this message translates to:
@@ -1079,13 +1091,13 @@ abstract class AppLocalizations {
   /// Success message after profile update
   ///
   /// In en, this message translates to:
-  /// **'Profile updated successfully'**
+  /// **'Profile updated successfully!'**
   String get profileUpdatedSuccess;
 
-  /// No description provided for @photoUploadedSuccessfully.
+  /// Success message after uploading profile photo
   ///
   /// In en, this message translates to:
-  /// **'Photo uploaded successfully'**
+  /// **'Photo uploaded successfully!'**
   String get photoUploadedSuccessfully;
 
   /// Success message after password change
@@ -1237,6 +1249,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No orders found'**
   String get noOrdersFound;
+
+  /// Title for image source selection bottom sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Image Source'**
+  String get chooseImageSource;
+
+  /// Label for camera option
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get camera;
+
+  /// Label for gallery option
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get gallery;
 }
 
 class _AppLocalizationsDelegate
