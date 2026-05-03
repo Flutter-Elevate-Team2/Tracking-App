@@ -7,7 +7,7 @@ class StoreEntity extends Equatable  {
   final String? phoneNumber;
   final String? latLong;
 
-  StoreEntity ({
+  const StoreEntity ({
     this.name,
     this.image,
     this.address,

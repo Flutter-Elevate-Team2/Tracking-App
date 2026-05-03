@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tracking_app/Features/auth/presentation/apply/widgets/password_row.dart';
 import 'package:tracking_app/core/helpers/form_validators.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:tracking_app/core/l10n/app_localizations.dart';
 

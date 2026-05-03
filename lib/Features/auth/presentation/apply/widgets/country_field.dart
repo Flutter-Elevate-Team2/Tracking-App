@@ -37,7 +37,7 @@ class _CountryDropdownLoaderState extends State<CountryField> {
         .toList();
     final List<CountryEntity> countryEntities = countryModels.toEntityList();
 
-    final CountryEntity? egypt = countryEntities.firstWhere(
+    final CountryEntity egypt = countryEntities.firstWhere(
           (c) => c.name?.toLowerCase() == 'egypt',
       orElse: () => countryEntities.first,
     );
