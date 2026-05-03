@@ -14,7 +14,9 @@ void main() {
   late GetPendingOrdersUseCase useCase;
 
   setUpAll(() {
-    provideDummy<BaseResponse<List<OrderEntity>>>(SuccessResponse(data: []));
+    provideDummy<BaseResponse<HomeOrdersEntity>>(
+      SuccessResponse(data: const HomeOrdersEntity(orders: [], totalPages: 1)),
+    );
   });
 
   setUp(() {
@@ -24,33 +26,34 @@ void main() {
 
   group('GetPendingOrdersUseCase Tests', () {
     test('should return SuccessResponse from the repository', () async {
-      final tOrders = [const OrderEntity(id: '1', orderNumber: '#1')];
+      const tOrders = [OrderEntity(id: '1', orderNumber: '#1')];
+      const tHomeOrders = HomeOrdersEntity(orders: tOrders, totalPages: 1);
       when(
-        mockRepo.getPendingOrders(),
-      ).thenAnswer((_) async => SuccessResponse(data: tOrders));
+        mockRepo.getPendingOrders(1),
+      ).thenAnswer((_) async => SuccessResponse(data: tHomeOrders));
 
-      final result = await useCase.call();
+      final result = await useCase.call(1);
 
-      expect(result, isA<SuccessResponse<List<OrderEntity>>>());
-      expect((result as SuccessResponse<List<OrderEntity>>).data, tOrders);
-      verify(mockRepo.getPendingOrders()).called(1);
+      expect(result, isA<SuccessResponse<HomeOrdersEntity>>());
+      expect((result as SuccessResponse<HomeOrdersEntity>).data, tHomeOrders);
+      verify(mockRepo.getPendingOrders(1)).called(1);
       verifyNoMoreInteractions(mockRepo);
     });
 
     test('should return ErrorResponse from the repository', () async {
       const errorMessage = 'An error occurred';
       when(
-        mockRepo.getPendingOrders(),
+        mockRepo.getPendingOrders(1),
       ).thenAnswer((_) async => ErrorResponse(errorMessage: errorMessage));
 
-      final result = await useCase.call();
+      final result = await useCase.call(1);
 
-      expect(result, isA<ErrorResponse<List<OrderEntity>>>());
+      expect(result, isA<ErrorResponse<HomeOrdersEntity>>());
       expect(
-        (result as ErrorResponse<List<OrderEntity>>).errorMessage,
+        (result as ErrorResponse<HomeOrdersEntity>).errorMessage,
         errorMessage,
       );
-      verify(mockRepo.getPendingOrders()).called(1);
+      verify(mockRepo.getPendingOrders(1)).called(1);
       verifyNoMoreInteractions(mockRepo);
     });
   });

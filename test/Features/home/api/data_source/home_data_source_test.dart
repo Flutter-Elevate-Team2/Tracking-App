@@ -22,13 +22,13 @@ void main() {
     test('getPendingOrders returns OrdersResponseDto on success', () async {
       final mockResponse = OrdersResponseDto(message: 'success', orders: []);
       when(
-        mockApiClient.getPendingOrders(),
+        mockApiClient.getPendingOrders(1),
       ).thenAnswer((_) async => mockResponse);
 
-      final result = await dataSource.getPendingOrders();
+      final result = await dataSource.getPendingOrders(1);
 
       expect(result, mockResponse);
-      verify(mockApiClient.getPendingOrders()).called(1);
+      verify(mockApiClient.getPendingOrders(1)).called(1);
     });
 
     test('startOrder returns StartOrderResponseDto on success', () async {

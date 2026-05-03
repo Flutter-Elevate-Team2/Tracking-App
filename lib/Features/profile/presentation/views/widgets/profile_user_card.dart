@@ -1,7 +1,8 @@
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tracking_app/Features/profile/domain/entities/driver_entity.dart';
 import 'package:tracking_app/core/constants/app_colors.dart';
+import 'package:tracking_app/core/extension/string_extension.dart';
 import 'package:tracking_app/gen/assets.gen.dart';
 
 class ProfileUserCard extends StatelessWidget {
@@ -12,8 +13,6 @@ class ProfileUserCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasImage = driver.photo.isNotEmpty;
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -38,13 +37,27 @@ class ProfileUserCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.lightGray, width: 1),
               ),
-              child: CircleAvatar(
-                radius: 32,
-                backgroundImage: hasImage ? NetworkImage(driver.photo) : null,
-                backgroundColor: AppColors.lightGray.withOpacity(0.3),
-                child: !hasImage
-                    ? const Icon(Icons.person, color: AppColors.gray, size: 32)
-                    : null,
+              child: CachedNetworkImage(
+                imageUrl: driver.photo.toImageUrl,
+                imageBuilder: (context, imageProvider) =>
+                    CircleAvatar(radius: 32, backgroundImage: imageProvider),
+                placeholder: (context, url) => const CircleAvatar(
+                  radius: 32,
+                  backgroundColor: AppColors.lightGray,
+                  child: SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.gray,
+                    ),
+                  ),
+                ),
+                errorWidget: (context, url, error) => const CircleAvatar(
+                  radius: 32,
+                  backgroundColor: AppColors.lightGray,
+                  child: Icon(Icons.person, color: AppColors.gray, size: 32),
+                ),
               ),
             ),
             const SizedBox(width: 16),

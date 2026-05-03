@@ -1,80 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:tracking_app/Features/home/domain/entities/order_entity.dart';
+import 'package:tracking_app/Features/home/presentation/view_model/home_state.dart';
+import 'package:tracking_app/Features/home/presentation/view_model/home_view_model.dart';
 import 'package:tracking_app/Features/home/presentation/views/widgets/home_header.dart';
 import 'package:tracking_app/Features/home/presentation/views/widgets/home_shimmer_loading.dart';
 import 'package:tracking_app/Features/home/presentation/views/widgets/home_view_body.dart';
 import 'package:tracking_app/Features/home/presentation/views/widgets/order_card.dart';
+import 'package:tracking_app/core/base_states/base_states.dart';
 import 'package:tracking_app/core/l10n/app_localizations.dart';
 
+import 'home_view_test.mocks.dart';
+
+@GenerateMocks([HomeViewModel])
 void main() {
-  Widget createWidgetUnderTest({bool isLoading = false}) {
+  late MockHomeViewModel mockViewModel;
+
+  setUp(() {
+    mockViewModel = MockHomeViewModel();
+    // Default stubs
+    when(mockViewModel.state).thenReturn(const HomeState());
+    when(mockViewModel.stream).thenAnswer((_) => const Stream.empty());
+  });
+
+  Widget createWidgetUnderTest() {
     return MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('en'),
-      home: Scaffold(body: HomeViewBody(isLoading: isLoading)),
+      home: BlocProvider<HomeViewModel>.value(
+        value: mockViewModel,
+        child: const Scaffold(body: HomeViewBody()),
+      ),
     );
   }
 
-  group('HomeView Widget Tests', () {
-    testWidgets('renders HomeView and HomeHeader', (WidgetTester tester) async {
-      await mockNetworkImagesFor(() async {
-        await tester.pumpWidget(createWidgetUnderTest());
-        await tester.pumpAndSettle();
-
-        expect(find.byType(HomeHeader), findsOneWidget);
-        expect(find.text('Flowery rider'), findsOneWidget);
-      });
-    });
-
-    testWidgets('renders multiple OrderCards when not loading', (
+  group('HomeViewBody Widget Tests', () {
+    testWidgets('renders HomeHeader and No pending orders when list is empty', (
       WidgetTester tester,
     ) async {
       await mockNetworkImagesFor(() async {
-        await tester.pumpWidget(createWidgetUnderTest(isLoading: false));
-        await tester.pumpAndSettle();
+        when(mockViewModel.state).thenReturn(
+          const HomeState(ordersState: BaseState(isLoading: false, data: [])),
+        );
 
-        expect(find.byType(OrderCard), findsWidgets);
+        await tester.pumpWidget(createWidgetUnderTest());
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(find.byType(HomeHeader), findsOneWidget);
+        expect(find.text('No pending orders'), findsOneWidget);
       });
     });
 
     testWidgets('renders HomeShimmerLoading when loading', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(createWidgetUnderTest(isLoading: true));
-      await tester.pump(); // Shimmer might not need pumpAndSettle
+      when(
+        mockViewModel.state,
+      ).thenReturn(const HomeState(ordersState: BaseState(isLoading: true)));
+
+      await tester.pumpWidget(createWidgetUnderTest());
+      await tester.pump();
 
       expect(find.byType(HomeShimmerLoading), findsOneWidget);
-      expect(find.byType(OrderCard), findsNothing);
     });
 
-    testWidgets('OrderCard displays correct information', (
+    testWidgets('renders OrderCards when data is present', (
       WidgetTester tester,
     ) async {
+      final tOrders = [
+        const OrderEntity(id: '1', orderNumber: '#1', totalPrice: 100),
+      ];
+      when(mockViewModel.state).thenReturn(
+        HomeState(ordersState: BaseState(isLoading: false, data: tOrders)),
+      );
+
       await mockNetworkImagesFor(() async {
         await tester.pumpWidget(createWidgetUnderTest());
-        await tester.pumpAndSettle();
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
 
-        // Check for recurring texts in English (based on app_en.arb)
-        expect(find.text('Flower order'), findsWidgets);
-        expect(find.text('Pickup address'), findsWidgets);
-        expect(find.text('User address'), findsWidgets);
-        expect(find.text('EGP 3000'), findsWidgets);
-        expect(find.text('Accept'), findsWidgets);
-        expect(find.text('Reject'), findsWidgets);
-      });
-    });
-
-    testWidgets('OrderCard has Accept and Reject buttons', (
-      WidgetTester tester,
-    ) async {
-      await mockNetworkImagesFor(() async {
-        await tester.pumpWidget(createWidgetUnderTest());
-        await tester.pumpAndSettle();
-
-        expect(find.byType(ElevatedButton), findsWidgets); // Accept button
-        expect(find.byType(OutlinedButton), findsWidgets); // Reject button
+        expect(find.byType(OrderCard), findsNWidgets(1));
+        expect(find.text('Flower order #1'), findsOneWidget);
       });
     });
   });

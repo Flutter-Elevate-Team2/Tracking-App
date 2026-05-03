@@ -18,7 +18,11 @@ class ProfileViewModel extends Cubit<ProfileStates> {
     this._editVehicleUseCase,
     this._getVehiclesUseCase,
     this._sessionController,
-  ) : super(const ProfileStates());
+  ) : super(const ProfileStates()) {
+    _sessionController.onLogin.listen((_) {
+      _getProfile();
+    });
+  }
 
   final GetDriverProfileUseCase _getDriverProfileUseCase;
   final LogoutUseCase _logoutUseCase;

@@ -9,7 +9,7 @@ class GetPendingOrdersUseCase {
 
   GetPendingOrdersUseCase(this._repo);
 
-  Future<BaseResponse<List<OrderEntity>>> call() async {
-    return await _repo.getPendingOrders();
+  Future<BaseResponse<HomeOrdersEntity>> call(int page) async {
+    return await _repo.getPendingOrders(page);
   }
 }

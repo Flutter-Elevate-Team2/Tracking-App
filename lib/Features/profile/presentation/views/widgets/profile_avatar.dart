@@ -1,14 +1,15 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/edit_profile/edit_profile_events.dart';
-import 'package:tracking_app/Features/profile/presentation/view_model/edit_profile/edit_profile_view_model.dart';
 import 'package:tracking_app/Features/profile/presentation/view_model/edit_profile/edit_profile_states.dart';
+import 'package:tracking_app/Features/profile/presentation/view_model/edit_profile/edit_profile_view_model.dart';
 import 'package:tracking_app/core/constants/app_colors.dart';
-
 import 'package:tracking_app/core/extension/context_extension.dart';
+import 'package:tracking_app/core/extension/string_extension.dart';
 
 class ProfileAvatar extends StatefulWidget {
   final String? photoUrl;
@@ -131,15 +132,11 @@ class ProfileImageContent extends StatelessWidget {
     }
 
     if (networkImageUrl != null && networkImageUrl!.isNotEmpty) {
-      return Image.network(
-        networkImageUrl!,
+      return CachedNetworkImage(
+        imageUrl: networkImageUrl!.toImageUrl,
         fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) =>
-            const ProfilePlaceholder(),
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return const ProfilePlaceholder();
-        },
+        placeholder: (context, url) => const ProfilePlaceholder(),
+        errorWidget: (context, url, error) => const ProfilePlaceholder(),
       );
     }
 

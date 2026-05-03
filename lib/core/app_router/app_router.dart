@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracking_app/Features/auth/domain/auth_repo_contract/auth_repo_contract.dart';
 import 'package:tracking_app/Features/auth/presentation/apply/views/apply_screen.dart';
 import 'package:tracking_app/Features/auth/presentation/apply/views/success_apply_screen.dart';
@@ -15,6 +16,8 @@ import 'package:tracking_app/Features/profile/presentation/views/screens/edit_pr
 import 'package:tracking_app/Features/profile/presentation/views/screens/edit_vehicle_screen.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/profile_screen.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/reset_password_screen.dart';
+import 'package:tracking_app/Features/track_order/presentation/views/track_order_screen.dart';
+import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/di/di.dart';
 // coverage:ignore-file
 
@@ -55,6 +58,9 @@ class Routes {
 
   static const String ordersPath = '/orders';
   static const String ordersName = 'orders';
+
+  static const String trackOrderPath = '/trackorder';
+  static const String trackOrderName = 'trackOrder';
 }
 
 class AppRouter {
@@ -72,13 +78,28 @@ class AppRouter {
     initialLocation: Routes.onBoardingPath,
     redirect: (context, state) async {
       final authRepo = getIt<AuthRepoContract>();
+      final prefs = await SharedPreferences.getInstance();
+
       final bool isLoggedIn = await authRepo.isLoggedIn();
+      final String? currentOrderId = prefs.getString(
+        ApiConstants.currentOrderIdKey,
+      );
 
       final isAuthRoute =
           state.uri.toString() == Routes.onBoardingPath ||
           state.uri.toString() == Routes.loginPath;
 
+      final isTrackingRoute = state.uri.toString().startsWith(
+        Routes.trackOrderPath,
+      );
+      if (!isLoggedIn) {
+        return isAuthRoute ? null : Routes.loginPath;
+      }
+
       if (isLoggedIn) {
+        if (currentOrderId != null && !isTrackingRoute) {
+          return '${Routes.trackOrderPath}/$currentOrderId';
+        }
         if (isAuthRoute) {
           return Routes.homePath;
         }
@@ -176,6 +197,15 @@ class AppRouter {
             create: (context) => getIt<ChangePasswordViewModel>(),
             child: const ResetPasswordScreen(),
           );
+        },
+      ),
+      GoRoute(
+        path: '${Routes.trackOrderPath}/:orderId',
+        name: Routes.trackOrderName,
+        builder: (context, state) {
+          final orderId = state.pathParameters['orderId'] ?? '';
+
+          return TrackOrderScreen(orderId: orderId);
         },
       ),
     ],

@@ -1,4 +1,6 @@
 import 'dart:async';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -9,12 +11,17 @@ import 'package:tracking_app/core/controller/session_controller.dart';
 import 'package:tracking_app/core/di/di.dart';
 import 'package:tracking_app/core/helpers/session_expired_handler.dart';
 import 'package:tracking_app/core/l10n/app_localizations.dart';
+import 'package:tracking_app/core/services/push_notification_service.dart';
 import 'package:tracking_app/core/theming/app_theming.dart';
 
 import 'core/l10n/view_model/language_cubit.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await PushNotificationService.init();
 
   await dotenv.load(fileName: ".env");
   await configureDependencies();

@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiConstants {
   static String apiBaseUrl = dotenv.env['BASE_URL'] ?? "";
+  static String googleMapsApiKey = dotenv.env['GOOGLE_MAPS_API_KEY'] ?? "";
 
   // ================= Auth Endpoints =================
   static const String login = "/drivers/signin";

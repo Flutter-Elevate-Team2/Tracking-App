@@ -25,15 +25,17 @@ void main() {
       final mockDto = OrdersResponseDto(
         message: 'success',
         orders: [OrderDto(id: '1', orderNumber: '#123')],
+        metadata: MetadataDto(totalPages: 1),
       );
-      when(mockDataSource.getPendingOrders()).thenAnswer((_) async => mockDto);
+      when(mockDataSource.getPendingOrders(1)).thenAnswer((_) async => mockDto);
 
-      final result = await repo.getPendingOrders();
+      final result = await repo.getPendingOrders(1);
 
-      expect(result, isA<SuccessResponse<List<OrderEntity>>>());
-      final data = (result as SuccessResponse<List<OrderEntity>>).data;
-      expect(data.length, 1);
-      expect(data[0].id, '1');
+      expect(result, isA<SuccessResponse<HomeOrdersEntity>>());
+      final data = (result as SuccessResponse<HomeOrdersEntity>).data;
+      expect(data.orders.length, 1);
+      expect(data.orders[0].id, '1');
+      expect(data.totalPages, 1);
     });
 
     test('startOrder returns SuccessResponse on success', () async {
@@ -51,11 +53,11 @@ void main() {
     });
 
     test('getPendingOrders returns ErrorResponse on failure', () async {
-      when(mockDataSource.getPendingOrders()).thenThrow(Exception('error'));
+      when(mockDataSource.getPendingOrders(1)).thenThrow(Exception('error'));
 
-      final result = await repo.getPendingOrders();
+      final result = await repo.getPendingOrders(1);
 
-      expect(result, isA<ErrorResponse<List<OrderEntity>>>());
+      expect(result, isA<ErrorResponse<HomeOrdersEntity>>());
     });
   });
 }
