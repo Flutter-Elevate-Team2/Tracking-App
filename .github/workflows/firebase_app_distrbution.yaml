@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - development
-      - feature/TEAM2-72-edit-profile-presentation
+      - feature/TEAM2-72-edit-profile-testing
       
   pull_request:
     branches:
@@ -46,8 +46,8 @@ jobs:
         run: echo "${{ secrets.ENV_FILE }}" > .env
 
       # # 6️⃣ Run tests
-      # - name: Run Tests
-      #   run: flutter test --coverage
+      - name: Run Tests
+        run: flutter test --coverage
 
       # 7️⃣ Build APK release
       - name: Build APK
