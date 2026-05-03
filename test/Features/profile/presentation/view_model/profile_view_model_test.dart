@@ -44,6 +44,7 @@ void main() {
     mockEditVehicleUseCase = MockEditVehicleUseCase();
     mockGetVehiclesUseCase = MockGetVehiclesUseCase();
     mockSessionController = MockSessionController();
+    when(mockSessionController.onLogin).thenAnswer((_) => const Stream.empty());
 
     viewModel = ProfileViewModel(
       mockGetDriverProfileUseCase,
