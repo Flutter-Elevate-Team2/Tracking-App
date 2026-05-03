@@ -1082,6 +1082,12 @@ abstract class AppLocalizations {
   /// **'Profile updated successfully'**
   String get profileUpdatedSuccess;
 
+  /// No description provided for @selectVehicleType.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your vehicle type'**
+  String get selectVehicleType;
+
   /// No description provided for @photoUploadedSuccessfully.
   ///
   /// In en, this message translates to:
