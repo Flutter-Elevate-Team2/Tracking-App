@@ -9,7 +9,7 @@ enum SessionEndReason { logout, guest, passwordChanged }
 @singleton
 class SessionController {
   final SharedPreferences _prefs;
-  
+
   DriverEntity? _currentUser;
 
   SessionController(this._prefs);
@@ -38,14 +38,12 @@ class SessionController {
 
   Future<void> updateSessionAuth(String newToken) async {
     await _prefs.setString(ApiConstants.tokenKey, newToken);
-    
-   
   }
 
   Future<void> expireSession() async {
     await _prefs.remove(ApiConstants.tokenKey);
     _currentUser = null;
-    
+
     if (!_sessionExpiredController.isClosed) {
       _sessionExpiredController.add(null);
     }
@@ -59,8 +57,8 @@ class SessionController {
 
   Future<void> notifyLogout(SessionEndReason reason) async {
     await _prefs.remove(ApiConstants.tokenKey);
-    _currentUser = null; 
-    
+    _currentUser = null;
+
     if (!_logoutController.isClosed) {
       _logoutController.add(reason);
     }

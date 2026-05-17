@@ -1,36 +1,34 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:tracking_app/Features/profile/domain/entities/driver_entity.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
-import 'package:tracking_app/core/di/di.dart'; 
+import 'package:tracking_app/core/constants/api_constants.dart';
+import 'package:tracking_app/core/controller/session_controller.dart';
+import 'package:tracking_app/core/di/di.dart';
+import 'package:tracking_app/core/helpers/session_expired_handler.dart';
 import 'package:tracking_app/core/l10n/app_localizations.dart';
 import 'package:tracking_app/core/theming/app_theming.dart';
-import 'package:tracking_app/core/controller/session_controller.dart'; 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:tracking_app/firebase_options.dart';
+
+import 'core/l10n/view_model/language_cubit.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await dotenv.load(fileName: ".env");
 
+  await dotenv.load(fileName: ".env");
   await configureDependencies();
-  final mockUser = DriverEntity(
-    id: "",
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    phone:"+201234567890",
-    gender:"male",
-    photoUrl: '',
-     role: '',
-  );
-  getIt<SessionController>().saveUser(mockUser);
+  final prefs = getIt<SharedPreferences>();
+
+  const String fixedToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcml2ZXIiOiI2OTg4ZDY2N2UzNjRlZjYxNDA1MWQyYjMiLCJpYXQiOjE3NzA4Njk0NzR9.wV-apuz9pSLycvVUCaODoHfCNuHKwTnTxz2w4c7k5SI";
+
+  await prefs.setString(ApiConstants.tokenKey, fixedToken);
+
   runApp(const MyApp());
 }
 
-// 1. حولناها لـ StatefulWidget
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -39,35 +37,45 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
-  // 2. بنعرف المتغير عشان نقفله في الآخر
-  late final SessionController _sessionController;
-
+  final _sessionController = getIt<SessionController>();
+  late StreamSubscription? _subscription;
   @override
   void initState() {
     super.initState();
-    // بنجيب النسخة من GetIt
-    _sessionController = getIt<SessionController>();
+    _subscription = _sessionController.onSessionExpired.listen((_) {
+      SessionExpiredHandler.handle();
+    });
 
-    // 🔥 3. هنا اللوجيك الحقيقي!
-    // اسمع لانتهاء السيشن
-    _sessionController.onSessionExpired.listen((_) {
-      print("🚨 Session Expired! Redirecting to Login...");
-      
-      AppRouter.router.goNamed(Routes.editProfileName); 
-      
+    _sessionController.onLogout.listen((_) {
+      AppRouter.router.goNamed(Routes.loginName);
     });
   }
 
   @override
+  void dispose() {
+    // Fix: Safe cancel
+    _subscription?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: AppRouter.router, 
-      debugShowCheckedModeBanner: false,
-      onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
-      supportedLocales: AppLocalizations.supportedLocales,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      theme: AppTheme.lightTheme,
+    return MultiBlocProvider(
+      providers: [BlocProvider(create: (_) => LanguageCubit())],
+      child: BlocBuilder<LanguageCubit, Locale>(
+        builder: (context, locale) {
+          return MaterialApp.router(
+            locale: locale,
+            routerConfig: AppRouter.router,
+            debugShowCheckedModeBanner: false,
+            onGenerateTitle: (context) =>
+                AppLocalizations.of(context)!.appTitle,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            theme: AppTheme.lightTheme,
+          );
+        },
+      ),
     );
   }
 }

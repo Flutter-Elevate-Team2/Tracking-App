@@ -60,12 +60,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get firstNameLabel => 'الاسم الأول القانوني';
 
   @override
-  String get firstNamelabel => 'First Name';
-
-  @override
-  String get lastNameLabel => 'Last Name';
-
-  @override
   String get firstNameHint => 'أدخل الاسم الأول القانوني';
 
   @override
@@ -516,6 +510,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileUpdatedSuccess => 'تم تحديث الملف الشخصي بنجاح';
 
   @override
+  String get selectVehicleType => 'اختر نوع المركبة';
+
+  @override
   String get photoUploadedSuccessfully => 'تم رفع الصورة بنجاح';
 
   @override
@@ -595,13 +592,4 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noOrdersFound => 'لا توجد طلبات';
-
-  @override
-  String get chooseImageSource => 'Choose Image Source';
-
-  @override
-  String get camera => 'Camera';
-
-  @override
-  String get gallery => 'Gallery';
 }

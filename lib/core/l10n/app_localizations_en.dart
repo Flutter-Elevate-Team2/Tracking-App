@@ -60,12 +60,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get firstNameLabel => 'First legal name';
 
   @override
-  String get firstNamelabel => 'First Name';
-
-  @override
-  String get lastNameLabel => 'Last Name';
-
-  @override
   String get firstNameHint => 'Enter first legal name';
 
   @override
@@ -514,10 +508,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get changeLanguage => 'Change Language';
 
   @override
-  String get profileUpdatedSuccess => 'Profile updated successfully!';
+  String get profileUpdatedSuccess => 'Profile updated successfully';
 
   @override
-  String get photoUploadedSuccessfully => 'Photo uploaded successfully!';
+  String get selectVehicleType => 'Choose your vehicle type';
+
+  @override
+  String get photoUploadedSuccessfully => 'Photo uploaded successfully';
 
   @override
   String get passwordChangedSuccess => 'Password changed successfully';
@@ -597,13 +594,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noOrdersFound => 'No orders found';
-
-  @override
-  String get chooseImageSource => 'Choose Image Source';
-
-  @override
-  String get camera => 'Camera';
-
-  @override
-  String get gallery => 'Gallery';
 }

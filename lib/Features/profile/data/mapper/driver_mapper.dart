@@ -11,9 +11,15 @@ extension DriverMapper on EditProfileResponse{
       lastName: driverData?.lastName ?? '',
       email: driverData?.email ?? '',
       phone: driverData?.phone ?? '',
-      photoUrl: driverData?.photo ?? '',
+      photo: driverData?.photo ?? '',
       role: driverData?.role ?? 'driver',
-       gender: driverData?.gender ?? '',
-);
+      gender: driverData?.gender ?? '',
+      country: driverData?.country ?? '',
+      vehicleType: driverData?.vehicleType ?? '',
+      vehicleNumber: driverData?.vehicleNumber ?? '',
+      vehicleLicense: driverData?.vehicleLicense ?? '',
+      nid: driverData?.nid ?? '',
+      nidImg: driverData?.nidImg ?? '',
+    );
   }
 }

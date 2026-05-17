@@ -6,6 +6,8 @@ import 'package:tracking_app/Features/profile/presentation/view_model/change_pas
 import 'package:tracking_app/Features/profile/presentation/view_model/edit_profile/edit_profile_view_model.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/edit_profile_screen.dart';
 import 'package:tracking_app/Features/profile/presentation/views/screens/reset_password_screen.dart';
+import 'package:tracking_app/Features/profile/presentation/views/screens/edit_vehicle_screen.dart';
+import 'package:tracking_app/Features/profile/presentation/views/screens/profile_screen.dart';
 import 'package:tracking_app/core/di/di.dart';
 
 class Routes {
@@ -33,6 +35,9 @@ class Routes {
   // Home Tabs Paths
   static const String homePath = '/home';
   static const String homeName = 'home';
+
+  static const String mainProfilePath = '/mainprofile';
+  static const String mainProfileName = 'mainProfile';
 
   static const String profilePath = '/profile';
   static const String profileName = 'profile';
@@ -62,15 +67,6 @@ class AppRouter {
     initialLocation: Routes.homePath,
     redirect: (context, state) async {
       return null;
-
-      // final authRepo = getIt<AuthRepoContract>();
-      // final bool isLoggedIn = await authRepo.isLoggedIn();
-      // final bool isLoggingIn = state.uri.toString() == Routes.signInPath;
-      //
-      // if (isLoggedIn && isLoggingIn) {
-      //   return Routes.homePath;
-      // }
-      // return null;
     },
     routes: [
       GoRoute(
@@ -127,7 +123,13 @@ class AppRouter {
       GoRoute(
         path: Routes.editVehiclePath,
         name: Routes.editVehicleName,
-        builder: (context, state) => Container(),
+        builder: (context, state) => const EditVehicleScreen(),
+      ),
+
+      GoRoute(
+        path: Routes.mainProfilePath,
+        name: Routes.mainProfileName,
+        builder: (context, state) => ProfileScreen(),
       ),
 
       // / ====== MAIN SHELL ROUTE (BOTTOM NAV BAR) ======
@@ -148,9 +150,6 @@ class AppRouter {
             ],
           ),
         
-      
-        
-      
           // Branch 2: Orders
           StatefulShellBranch(
             navigatorKey: _ordersNavigatorKey,
@@ -177,11 +176,5 @@ class AppRouter {
         ]
       )
     ]
-        
-      );
-    
-  
-    
-  
-
+  );
 }
