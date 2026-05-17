@@ -39,10 +39,33 @@ jobs:
         run: flutter pub get
 
       - name: Create .env file from secrets
-        run: echo "${{ secrets.ENV_FILE }}" > .env
+        run: |
+          if [ -z "${{ secrets.ENV_FILE }}" ]; then
+            echo "DUMMY=1" > .env
+          else
+            echo "${{ secrets.ENV_FILE }}" > .env
+          fi
 
       - name: Create firebase_options.dart from secrets
-        run: echo "${{ secrets.FIREBASE_OPTIONS_DART }}" > lib/firebase_options.dart
+        run: |
+          mkdir -p lib
+          if [ -z "${{ secrets.FIREBASE_OPTIONS_DART }}" ]; then
+            cat > lib/firebase_options.dart << 'DART'
+          import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+          class DefaultFirebaseOptions {
+            static FirebaseOptions get currentPlatform => const FirebaseOptions(
+              apiKey: 'stub',
+              appId: 'stub',
+              messagingSenderId: 'stub',
+              projectId: 'stub',
+            );
+          }
+          DART
+          else
+            cat << 'EOF' > lib/firebase_options.dart
+          ${{ secrets.FIREBASE_OPTIONS_DART }}
+          EOF
+          fi
 
       # 5️⃣ Generate code (JSON Serializable, Retrofit, Mockito)
       - name: Generate code
