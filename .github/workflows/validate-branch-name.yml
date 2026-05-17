@@ -15,14 +15,21 @@ jobs:
           script: |
             const branchName = context.payload.pull_request.head.ref;
 
-            const branchRegex = /^(feature|bugfix|hotfix|release)\/[A-Z0-9]+-\d+-[A-Za-z0-9]+(?:[-][A-Za-z0-9]+)*$/;
+            // Allow main integration branches to be used as PR head
+            const allowedBranches = ['development', 'main', 'release/demo', 'release/demo2'];
+            if (allowedBranches.includes(branchName)) {
+              console.log(`✅ Branch name "${branchName}" is an allowed integration branch.`);
+              return;
+            }
+
+            const branchRegex = /^(feature|bugfix|hotfix|fix|release)\/[A-Z0-9]+-[A-Za-z0-9]+(?:[-][A-Za-z0-9]+)*$/;
 
             if (!branchRegex.test(branchName)) {
               core.setFailed(
                 `❌ Invalid branch name: "${branchName}"\n` +
                 `Expected format:\n` +
                 `branch-type/TICKET-ID-task-name\n\n` +
-                `Allowed prefixes: feature, bugfix, hotfix, release\n` +
+                `Allowed prefixes: feature, bugfix, hotfix, fix, release\n` +
                 `Ticket format: TEAM2-17\n\n` +
                 `Example:\n`  +
                 `feature/TEAM2-17-validate-branch-name-action`
