@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tracking_app/Features/order/presentation/my_orders/view_model/my_orders_view_model.dart';
+import 'package:tracking_app/Features/order/presentation/my_orders/widget/my_orders_body.dart';
+import 'package:tracking_app/core/app_router/app_router.dart';
+import 'package:tracking_app/core/di/di.dart';
+import 'package:tracking_app/core/extension/context_extension.dart';
+
+class MyOrdersScreen extends StatelessWidget {
+  const MyOrdersScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leadingWidth: 50,
+        titleSpacing: 0,
+        title: Text((context).l10n.myOrders),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (GoRouter.of(context).canPop()) {
+              context.pop();
+            } else {
+              context.go(Routes.homePath);
+            }
+          },
+        ),
+      ),
+
+      body: BlocProvider.value(
+        value: getIt<MyOrdersViewModel>(),
+        child: const MyOrdersBody(),
+      ),
+    );
+  }
+}

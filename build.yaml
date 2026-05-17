@@ -1,0 +1,23 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        generate_for:
+          exclude:
+            - lib/firebase_options.dart
+      retrofit_generator:
+        generate_for:
+          exclude:
+            - lib/firebase_options.dart
+      injectable_generator|injectable_builder:
+        generate_for:
+          exclude:
+            - lib/firebase_options.dart
+      injectable_generator|injectable_config_builder:
+        generate_for:
+          exclude:
+            - lib/firebase_options.dart
+      mockito|mockBuilder:
+        generate_for:
+          exclude:
+            - lib/firebase_options.dart

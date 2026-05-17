@@ -1,0 +1,101 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - development
+      - release/demo
+      - fix/TEAM2-track-order-screen-logic
+
+  pull_request:
+    branches:
+      - main
+      - development
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout My Code
+        uses: actions/checkout@v3
+
+      # :two: Setup Java (required for Android build)
+      - name: Setup Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      # :three: Install Flutter
+      - name: Install Flutter Version 3.38.6
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.38.6"
+
+      # :four: Install dependencies
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Create .env file from secrets
+        run: |
+          if [ -z "${{ secrets.ENV_FILE }}" ]; then
+            echo "DUMMY=1" > .env
+          else
+            echo "${{ secrets.ENV_FILE }}" > .env
+          fi
+
+      - name: Create firebase_options.dart from secrets
+        run: |
+          mkdir -p lib
+          if [ -z "${{ secrets.FIREBASE_OPTIONS_DART }}" ]; then
+            cat > lib/firebase_options.dart << 'DART'
+          import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+          class DefaultFirebaseOptions {
+            static FirebaseOptions get currentPlatform => const FirebaseOptions(
+              apiKey: 'stub',
+              appId: 'stub',
+              messagingSenderId: 'stub',
+              projectId: 'stub',
+            );
+          }
+          DART
+          else
+            cat << 'EOF' > lib/firebase_options.dart
+          ${{ secrets.FIREBASE_OPTIONS_DART }}
+          EOF
+          fi
+
+      # :five: Generate code (JSON Serializable, Retrofit, Mockito)
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs --force-jit
+
+      # :six: Run tests
+      - name: Run Tests
+        run: flutter test --coverage
+
+      - name: Create google-services.json
+        run: |
+          cat << 'EOF' > android/app/google-services.json
+          ${{ secrets.GOOGLE_SERVICES }}
+          EOF
+
+      # :seven: Build APK release
+      - name: Build APK
+        run: flutter build apk --release --no-tree-shake-icons
+
+      # :eight: List APK output (optional, for debug)
+      - name: List APK
+        run: ls build/app/outputs/flutter-apk
+
+      # :nine: Upload APK to Firebase App Distribution
+      - name: Upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.APP_ID}}
+          serviceCredentialsFileContent: ${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}
+          groups: Testers
+          file:
+            build/app/outputs/flutter-apk/app-release.apk
+            # :nine: Test APK to Firebase App Distribution
