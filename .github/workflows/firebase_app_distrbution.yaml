@@ -1,4 +1,4 @@
-cname: Flutter CI/CD
+name: Flutter CI/CD
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - main
       - development
       - release/demo
+      - fix/TEAM2-track-order-screen-logic
 
   pull_request:
     branches:
@@ -17,7 +18,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout My Code
         uses: actions/checkout@v3
 
@@ -25,14 +25,14 @@ jobs:
       - name: Setup Java 17
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: "temurin"
+          java-version: "17"
 
       # :three: Install Flutter
       - name: Install Flutter Version 3.38.6
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.38.6'
+          flutter-version: "3.38.6"
 
       # :four: Install dependencies
       - name: Install Dependencies
@@ -96,4 +96,6 @@ jobs:
           appId: ${{secrets.APP_ID}}
           serviceCredentialsFileContent: ${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}
           groups: Testers
-          file: build/app/outputs/flutter-apk/app-release.apk
+          file:
+            build/app/outputs/flutter-apk/app-release.apk
+            # :nine: Test APK to Firebase App Distribution
