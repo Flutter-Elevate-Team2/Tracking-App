@@ -6,6 +6,7 @@ on:
       - main
       - development
       - release/demo
+      - fix/TEAM2-track-order-screen-logic
 
   pull_request:
     branches:
@@ -97,3 +98,5 @@ jobs:
           serviceCredentialsFileContent: ${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}
           groups: Testers
           file: build/app/outputs/flutter-apk/app-release.apk
+                # :nine: Test APK to Firebase App Distribution
+
