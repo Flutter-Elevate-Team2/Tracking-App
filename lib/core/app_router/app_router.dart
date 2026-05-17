@@ -131,11 +131,7 @@ class AppRouter {
       return null;
     },
     routes: [
-      GoRoute(
-        path: Routes.ordersPath,
-        name: Routes.ordersName,
-        builder: (context, state) =>  Container(),
-      ),
+
       // final authRepo = getIt<AuthRepoContract>();
       // final bool isLoggedIn = await authRepo.isLoggedIn();
       // final bool isLoggingIn = state.uri.toString() == Routes.signInPath;

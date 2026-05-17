@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create Dummy .env
-        run: touch .env
+        run: echo "DUMMY=1" > .env
 
       - name: Create firebase_options.dart stub
         run: |
