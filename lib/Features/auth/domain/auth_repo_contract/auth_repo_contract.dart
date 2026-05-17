@@ -31,4 +31,6 @@ abstract class AuthRepoContract {
   Future<BaseResponse<ResetPasswordEntity>> resetPassword(
     ResetPasswordRequest request,
   );
+
+  void clearSession();
 }

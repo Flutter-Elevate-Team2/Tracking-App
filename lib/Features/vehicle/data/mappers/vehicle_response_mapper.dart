@@ -4,8 +4,12 @@ import 'package:tracking_app/Features/vehicle/domain/entities/vehicle_entity.dar
 
 extension VehicleResponseMapper on VehicleResponse {
   VehicleEntity toEntity() {
-    return vehicle!.toEntity();
-
+    return vehicle?.toEntity() ?? VehicleEntity(
+      id: '',
+      type: '',
+      image: '',
+      createdAt: '',
+      updatedAt: '',
+    );
   }
 }
-

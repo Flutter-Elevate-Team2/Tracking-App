@@ -79,6 +79,7 @@ void main() {
     final state = tester.state<FormFieldState<String>>(field);
 
     state.didChange('');
+    state.validate();
     await tester.pump();
 
     expect(state.errorText, isNotNull);
@@ -91,6 +92,7 @@ void main() {
     final state = tester.state<FormFieldState<String>>(field);
 
     state.didChange('Valid123');
+    state.validate();
     await tester.pump();
 
     expect(state.errorText, null);

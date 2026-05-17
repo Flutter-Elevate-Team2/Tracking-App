@@ -1,3 +1,7 @@
+plugins {
+    // السطر ده هو اللي بيربط الجوجل سيرفسز بالمشروع كله
+    id("com.google.gms.google-services") version "4.3.15" apply false
+}
 allprojects {
     repositories {
         google()

@@ -1,10 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracking_app/core/app_router/app_router.dart';
 import 'package:tracking_app/core/constants/api_constants.dart';
 import 'package:tracking_app/core/di/di.dart';
-import 'package:tracking_app/core/l10n/app_localizations.dart';
+import 'package:tracking_app/core/extension/context_extension.dart';
 import 'package:tracking_app/core/theming/app_theming.dart';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionExpiredHandler {
   static bool _isShowing = false;
@@ -22,27 +22,18 @@ class SessionExpiredHandler {
 
     _isShowing = true;
 
-    final localizations = AppLocalizations.of(context);
-
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
-        title: Text(
-          localizations?.sessionExpiredTitle ?? "Session Expired",
-        ),
-        content: Text(
-          localizations?.sessionExpiredMessage ??
-              "Your session has expired. Please login again.",
-        ),
+        title: Text(context.l10n.sessionExpiredTitle),
+        content: Text(context.l10n.sessionExpiredMessage),
         actions: [
           TextButton(
             onPressed: _onLoginPressed,
             child: Text(
-              localizations?.loginTitle ?? "Login",
-              style: TextStyle(
-                color: AppTheme.lightTheme.primaryColor,
-              ),
+              context.l10n.loginTitle,
+              style: TextStyle(color: AppTheme.lightTheme.primaryColor),
             ),
           ),
         ],

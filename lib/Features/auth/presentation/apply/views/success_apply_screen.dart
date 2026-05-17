@@ -25,7 +25,7 @@ class SuccessApplyScreen extends StatelessWidget {
                 child: Lottie.asset(
                   repeat: false,
                   height: MediaQuery.of(context).size.height * 0.35,
-                  key: Key("successApplyLottie"),
+                  key: const Key("successApplyLottie"),
                   Assets.lottie.checkAnimation,
                   fit: BoxFit.contain,
                 ),
@@ -39,14 +39,14 @@ class SuccessApplyScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      key: Key("successApplySubTitle"),
+                      key: const Key("successApplySubTitle"),
                       context.l10n.successApplySubTitle,
                       style: Theme.of(context).textTheme.bodyLarge,
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 25),
+                    const SizedBox(height: 25),
                     Text(
-                      key: Key("successApplyDescription"),
+                      key: const Key("successApplyDescription"),
                       context.l10n.successApplyDescription,
                       style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center,

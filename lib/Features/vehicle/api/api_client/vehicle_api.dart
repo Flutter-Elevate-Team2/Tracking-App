@@ -16,7 +16,7 @@ abstract class VehicleApi {
 
   /// === Vehicle Endpoint ===
 
-  @GET(ApiConstants.vehicle)
+  @GET("${ApiConstants.vehicle}/{vehicleId}")
   Future<VehicleResponse> getVehicle(@Path("vehicleId") String vehicleId);
 
   /// === All Vehicles Endpoints ===

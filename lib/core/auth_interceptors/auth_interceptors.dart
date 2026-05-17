@@ -1,17 +1,22 @@
 import 'package:dio/dio.dart';
-import 'package:tracking_app/core/constants/api_constants.dart';
-import 'package:tracking_app/core/controller/session_controller.dart';
+import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/foundation.dart';
+import 'package:tracking_app/core/constants/api_constants.dart';
+import 'package:tracking_app/core/controller/session_controller.dart';
 
 @injectable
 class AuthInterceptor extends Interceptor {
   final SharedPreferences _prefs;
-  final SessionController _sessionController;
   bool _isLoggingOut = false;
 
-  AuthInterceptor(this._prefs, this._sessionController);
+  AuthInterceptor(this._prefs);
+
+  // Lazily resolve SessionController to break the circular dependency:
+  // AuthInterceptor -> SessionController -> AuthRepoContract -> AuthRemoteDataSource -> AuthApi -> Dio -> AuthInterceptor
+  SessionController get _sessionController =>
+      GetIt.instance<SessionController>();
 
   final _publicPaths = [
     ApiConstants.login,
@@ -23,9 +28,10 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
-    bool isPublicPath =
-        _publicPaths.any((path) => options.path.endsWith(path));
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    bool isPublicPath = _publicPaths.any((path) => options.path.endsWith(path));
 
     if (!isPublicPath) {
       await _prefs.reload();
@@ -34,7 +40,9 @@ class AuthInterceptor extends Interceptor {
 
       if (kDebugMode) {
         print("🚀 AuthInterceptor: Sending Request to ${options.path}");
-        print("🔑 Token being sent: ${token != null ? '${token.substring(0, 10)}...' : 'NULL'}");
+        print(
+          "🔑 Token being sent: ${token != null ? '${token.substring(0, 10)}...' : 'NULL'}",
+        );
       }
 
       if (token != null && token.isNotEmpty) {
@@ -52,7 +60,7 @@ class AuthInterceptor extends Interceptor {
       );
 
       bool isChangePassword = err.requestOptions.path.endsWith(
-        ApiConstants.changePassword,
+        ApiConstants.changeDriverPassword,
       );
 
       if (!isPublicPath && !isChangePassword) {

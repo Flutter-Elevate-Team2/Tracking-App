@@ -39,28 +39,22 @@ class _IdImageFieldState extends State<IdImageField> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 36),
-      child: Column(
-        children: [
-          TextFormField(
-            controller: _controller,
-            readOnly: true,
-            onTap: _pickImage,
-            decoration: InputDecoration(
-              labelText: context.l10n.idImageLabel,
-              hintText: context.l10n.uploadIdImage,
-              prefixIcon: (_image != null)
-                  ?  Icon(Icons.check_circle_outline_rounded , color: AppColors.green,)
-                  :const SizedBox(height: 12),
-              suffixIcon: const Icon(
-                Icons.file_upload_outlined,
-                color: AppColors.gray,
-              ),
-              border: const OutlineInputBorder(),
-            ),
-          ),
-        ],
+    return TextFormField(
+      controller: _controller,
+      readOnly: true,
+      onTap: _pickImage,
+      style: Theme.of(context).textTheme.bodySmall,
+      decoration: InputDecoration(
+        labelText: context.l10n.idImageLabel,
+        hintText: context.l10n.uploadIdImage,
+        prefixIcon: (_image != null)
+            ? Icon(Icons.check_circle_outline_rounded, color: AppColors.green)
+            : null,
+        suffixIcon: const Icon(
+          Icons.file_upload_outlined,
+          color: AppColors.gray,
+        ),
+        border: const OutlineInputBorder(),
       ),
     );
   }

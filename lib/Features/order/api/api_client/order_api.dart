@@ -15,13 +15,13 @@ abstract class OrderApi {
   factory OrderApi(Dio dio) = _OrderApi;
 
   @GET(ApiConstants.driverOrders)
-  Future<DriverOrdersResponse> getAllDriverOrders();
+  Future<DriverOrdersResponse> getAllDriverOrders({
+    @Query("limit") int limit = 100,
+  });
 
   @PUT("${ApiConstants.updateOrderState}{id}")
   Future<UpdateOrderResponse> updateOrderState(
     @Path("id") String itemId,
     @Body() String orderState,
   );
-
-
 }

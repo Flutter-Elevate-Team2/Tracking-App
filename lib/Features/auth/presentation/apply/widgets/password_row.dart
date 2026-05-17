@@ -32,14 +32,12 @@ class _PasswordRowState extends State<PasswordRow> {
   @override
   void initState() {
     super.initState();
-    // بنخلي الحقول تسمع لأي تغيير في النص عشان تظهر/تخفي العين لحظياً
     widget.passwordController.addListener(_updateState);
     widget.confirmPasswordController.addListener(_updateState);
   }
 
   @override
   void dispose() {
-    // مهم جداً نشيل الـ listeners لما الويدجيت تتمسح
     widget.passwordController.removeListener(_updateState);
     widget.confirmPasswordController.removeListener(_updateState);
     super.dispose();

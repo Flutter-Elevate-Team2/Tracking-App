@@ -36,13 +36,13 @@ class _ApplyFormState extends State<ApplyForm> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _vehicleNumberController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _nidController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-  TextEditingController();
+      TextEditingController();
 
   VehicleEntity? _selectedVehicle;
   CountryEntity? _selectedCountry;
@@ -81,12 +81,12 @@ class _ApplyFormState extends State<ApplyForm> {
               final applyState = state.applyState;
               if (applyState?.data != null) {
                 context.pushNamed(Routes.successApplyName);
-              } else if (state.applyState?.isLoading == true){
+              } else if (state.applyState?.isLoading == true) {
                 const Padding(
                   padding: EdgeInsets.only(top: 24),
                   child: CircularProgressIndicator(),
                 );
-              }else if (applyState?.errorMessage != null) {
+              } else if (applyState?.errorMessage != null) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(applyState!.errorMessage!),
@@ -106,13 +106,16 @@ class _ApplyFormState extends State<ApplyForm> {
                   },
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 25),
 
-                // First & Second name
+                // First & Last name
                 NameFields(
                   firstNameController: _firstNameController,
                   lastNameController: _lastNameController,
                 ),
+
+                const SizedBox(height: 25),
+
                 // Vehicle Type
                 VehicleTypeField(
                   selectedVehicle: _selectedVehicle,
@@ -122,20 +125,24 @@ class _ApplyFormState extends State<ApplyForm> {
                     });
                   },
                 ),
-                SizedBox(height: 35),
+
+                const SizedBox(height: 25),
 
                 // Vehicle Number
                 TextFormField(
                   controller: _vehicleNumberController,
                   validator: (value) =>
                       FormValidators.validateVehicleNumber(context, value),
+                  style: Theme.of(context).textTheme.bodySmall,
                   decoration: InputDecoration(
                     labelText: context.l10n.vehicleNumber,
                     hintText: context.l10n.vehicleNumber,
                   ),
                 ),
 
-                // Vehicle license file upload (placeholder button)
+                const SizedBox(height: 25),
+
+                // Vehicle license file upload
                 LicenseField(
                   onFileSelected: (file) {
                     setState(() {
@@ -144,25 +151,34 @@ class _ApplyFormState extends State<ApplyForm> {
                   },
                 ),
 
+                const SizedBox(height: 25),
+
                 // Email
                 EmailField(controller: _emailController),
+
+                const SizedBox(height: 25),
 
                 // Phone
                 PhoneField(
                   controller: _phoneController,
-                  countryCode: _selectedCountry?.phoneCode,
+                  countryCode: _selectedCountry?.phoneCode ?? "20",
                 ),
+
+                const SizedBox(height: 25),
 
                 // National ID
                 TextFormField(
                   controller: _nidController,
                   validator: (value) =>
                       FormValidators.validateNationalId(context, value),
+                  style: Theme.of(context).textTheme.bodySmall,
                   decoration: InputDecoration(
                     labelText: context.l10n.idNumberLabel,
                     hintText: context.l10n.idNumberHint,
                   ),
                 ),
+
+                const SizedBox(height: 25),
 
                 // ID image upload
                 IdImageField(
@@ -172,6 +188,8 @@ class _ApplyFormState extends State<ApplyForm> {
                     });
                   },
                 ),
+
+                const SizedBox(height: 25),
 
                 // Password & Confirm Password
                 PasswordRow(
@@ -184,12 +202,13 @@ class _ApplyFormState extends State<ApplyForm> {
                   },
                   toggleConfirmPasswordVisibility: () {
                     setState(
-                          () => _isConfirmPasswordVisible =
-                      !_isConfirmPasswordVisible,
+                      () => _isConfirmPasswordVisible =
+                          !_isConfirmPasswordVisible,
                     );
                   },
                   formKey: _formKey,
                 ),
+
                 // Gender radio
                 GenderRadioRow(
                   selectedGender: _selectedGender,
@@ -200,42 +219,44 @@ class _ApplyFormState extends State<ApplyForm> {
                   },
                 ),
 
+                const SizedBox(height: 16),
+
                 // Continue button
                 SizedBox(
                   width: double.infinity,
                   child: CustomButton(
-                      title: context.l10n.continueButton,
-                      onPressed: isLoading
-                          ? null
-                          : () {
-                        setState(
+                    title: context.l10n.continueButton,
+                    onPressed: isLoading
+                        ? null
+                        : () {
+                            setState(
                               () => _autovalidateMode = AutovalidateMode.always,
-                        );
-                        if (_formKey.currentState!.validate()) {
-                          context.read<ApplyViewModel>().doIntent(
-                            OnApplyClickEvent(
-                              applyRequest: ApplyRequest(
-                                country: _selectedCountry!.name!,
-                                firstName: _firstNameController.text,
-                                lastName: _lastNameController.text,
-                                vehicleType: _selectedVehicle!.id ?? "",
-                                vehicleNumber:
-                                _vehicleNumberController.text,
-                                email: _emailController.text,
-                                phone:
-                                "+${_selectedCountry?.phoneCode}${_phoneController
-                                    .text}",
-                                nid: _nidController.text,
-                                password: _passwordController.text,
-                                rePassword: _confirmPasswordController.text,
-                                gender: _selectedGender!.name,
-                                vehicleLicense: _vehicleLicenseFile!,
-                                nidImg: _nidImageFile!,
-                              ),
-                            ),
-                          );
-                        }
-                      }),
+                            );
+                            if (_formKey.currentState!.validate()) {
+                              context.read<ApplyViewModel>().doIntent(
+                                OnApplyClickEvent(
+                                  applyRequest: ApplyRequest(
+                                    country: _selectedCountry!.name!,
+                                    firstName: _firstNameController.text,
+                                    lastName: _lastNameController.text,
+                                    vehicleType: _selectedVehicle!.id ?? "",
+                                    vehicleNumber:
+                                        _vehicleNumberController.text,
+                                    email: _emailController.text,
+                                    phone:
+                                        "+${_selectedCountry?.phoneCode ?? "20"}${_phoneController.text}",
+                                    nid: _nidController.text,
+                                    password: _passwordController.text,
+                                    rePassword: _confirmPasswordController.text,
+                                    gender: _selectedGender!.name,
+                                    vehicleLicense: _vehicleLicenseFile!,
+                                    nidImg: _nidImageFile!,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                  ),
                 ),
               ],
             ),

@@ -25,23 +25,15 @@ import 'package:tracking_app/Features/auth/domain/entities/login_entity/login_en
 import 'package:tracking_app/core/base_response/base_response.dart';
 import 'package:tracking_app/core/helpers/api_execution_mixin.dart';
 
-@Injectable(as: AuthRepoContract)
+@LazySingleton(as: AuthRepoContract)
 class AuthRepoImpl with ApiExecutionMixin implements AuthRepoContract {
   final AuthRemoteDataSourceContract _remoteDataSource;
   final AuthLocalDataSourceContract _localDataSource;
 
+  bool _isCurrentSessionActive = false;
+
   AuthRepoImpl(this._remoteDataSource, this._localDataSource);
 
-  /// --- Apply ---
-  @override
-  Future<BaseResponse<ApplyEntity>> apply(ApplyRequest request) async {
-    return execute<ApplyResponse, ApplyEntity>(
-      action: () async => await _remoteDataSource.apply(request),
-      mapper: (response) => response.toEntity(),
-    );
-  }
-
-  /// --- Login ---
   @override
   Future<BaseResponse<LoginEntity>> login(
     LoginRequest request,
@@ -55,6 +47,7 @@ class AuthRepoImpl with ApiExecutionMixin implements AuthRepoContract {
     if (result is SuccessResponse<LoginEntity>) {
       final token = result.data.token;
       if (token != null && token.isNotEmpty) {
+        _isCurrentSessionActive = true;
         await _localDataSource.saveToken(token);
         await _localDataSource.saveRememberMe(isRememberMe);
       }
@@ -64,13 +57,31 @@ class AuthRepoImpl with ApiExecutionMixin implements AuthRepoContract {
 
   @override
   Future<bool> isLoggedIn() async {
+    if (_isCurrentSessionActive) return true;
+
     final token = await _localDataSource.getToken();
     final isRememberMe = await _localDataSource.getRememberMe();
 
-    return (token != null && token.isNotEmpty) && isRememberMe;
+    if (token != null && token.isNotEmpty) {
+      if (isRememberMe) {
+        _isCurrentSessionActive = true;
+        return true;
+      } else {
+        await _localDataSource.clearUserData();
+        return false;
+      }
+    }
+    return false;
   }
 
-  /// --- Forget Password ---
+  @override
+  Future<BaseResponse<ApplyEntity>> apply(ApplyRequest request) async {
+    return execute<ApplyResponse, ApplyEntity>(
+      action: () async => await _remoteDataSource.apply(request),
+      mapper: (response) => response.toEntity(),
+    );
+  }
+
   @override
   Future<BaseResponse<ForgetPasswordEntity>> forgetPassword(
     ForgetPasswordRequest request,
@@ -81,7 +92,6 @@ class AuthRepoImpl with ApiExecutionMixin implements AuthRepoContract {
     );
   }
 
-  /// --- Verify Reset Password ---
   @override
   Future<BaseResponse<VerifyResetPasswordEntity>> verifyPassword(
     VerifyResetPasswordRequest request,
@@ -92,7 +102,6 @@ class AuthRepoImpl with ApiExecutionMixin implements AuthRepoContract {
     );
   }
 
-  /// --- Reset Password ---
   @override
   Future<BaseResponse<ResetPasswordEntity>> resetPassword(
     ResetPasswordRequest request,
@@ -101,5 +110,10 @@ class AuthRepoImpl with ApiExecutionMixin implements AuthRepoContract {
       action: () async => await _remoteDataSource.resetPassword(request),
       mapper: (response) => response.toEntity(),
     );
+  }
+
+  @override
+  void clearSession() {
+    _isCurrentSessionActive = false;
   }
 }

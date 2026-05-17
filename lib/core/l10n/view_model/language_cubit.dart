@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:tracking_app/core/di/di.dart';
 
+@singleton
 class LanguageCubit extends Cubit<Locale> {
   LanguageCubit() : super(const Locale('en')) {
     _loadSavedLanguage();

@@ -7,24 +7,27 @@ class PhoneField extends StatelessWidget {
   final TextEditingController controller;
   final String? countryCode;
 
-  const PhoneField({super.key, required this.controller, this.countryCode = "+2"});
+  const PhoneField({
+    super.key,
+    required this.controller,
+    this.countryCode = "20",
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsGeometry.symmetric(vertical: 6),
-      child: TextFormField(
-        textInputAction: TextInputAction.done,
-        keyboardType: TextInputType.phone,
-        controller: controller,
-        validator: (value) => FormValidators.validatePhone(context, value),
-        decoration: InputDecoration(
-          prefixText:"+$countryCode",
-          prefixStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.mainColor),
-          labelText: context.l10n.phoneLabel,
-          hintText: context.l10n.phoneHint,
-          helperText: "",
-        ),
+    return TextFormField(
+      textInputAction: TextInputAction.done,
+      keyboardType: TextInputType.phone,
+      controller: controller,
+      style: Theme.of(context).textTheme.bodySmall,
+      validator: (value) => FormValidators.validatePhone(context, value),
+      decoration: InputDecoration(
+        prefixText: "+$countryCode ",
+        prefixStyle: Theme.of(
+          context,
+        ).textTheme.bodySmall?.copyWith(color: AppColors.mainColor),
+        labelText: context.l10n.phoneLabel,
+        hintText: context.l10n.phoneHint,
       ),
     );
   }

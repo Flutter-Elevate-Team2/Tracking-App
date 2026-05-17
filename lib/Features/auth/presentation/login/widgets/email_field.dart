@@ -18,7 +18,6 @@ class EmailField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 24),
       child: TextFormField(
         key: Key('emailField'),
-        autovalidateMode: AutovalidateMode.onUserInteraction,
         textInputAction: TextInputAction.next,
         keyboardType: TextInputType.emailAddress,
         validator: (value) => FormValidators.validateEmail(context, value),

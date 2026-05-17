@@ -10,16 +10,12 @@ class OrderRemoteDataSourceImple implements OrderRemoteDataSourceContract {
   OrderRemoteDataSourceImple(this._orderApi);
 
   @override
-  Future<DriverOrdersResponse> getAllDriverOrders() {
-    return _orderApi.getAllDriverOrders();
+  Future<DriverOrdersResponse> getAllDriverOrders({int limit = 100}) {
+    return _orderApi.getAllDriverOrders(limit: limit);
   }
 
   @override
-  Future<UpdateOrderResponse> updateOrderState(
-    String id,
-    String orderState,
-  ) {
+  Future<UpdateOrderResponse> updateOrderState(String id, String orderState) {
     return _orderApi.updateOrderState(id, orderState);
   }
-
 }

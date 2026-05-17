@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tracking_app/Features/vehicle/domain/entities/vehicle_entity.dart';
 import 'package:tracking_app/core/constants/app_colors.dart';
 import 'package:tracking_app/core/extension/context_extension.dart';
+import 'package:tracking_app/core/extension/string_extension.dart';
 
 class VehiclesDropDownList extends StatelessWidget {
   final List<VehicleEntity> vehicles;
@@ -33,18 +35,26 @@ class VehiclesDropDownList extends StatelessWidget {
           child: Row(
             children: [
               v.image != null && v.image!.isNotEmpty
-                  ? Image.network(
-                v.image!,
-                key: Key("vehicleImage_${v.id}"),
-                width: 50,
-                fit: BoxFit.fill,
-              )
+                  ? CachedNetworkImage(
+                      imageUrl: v.image!.toImageUrl,
+                      key: Key("vehicleImage_${v.id}"),
+                      width: 50,
+                      fit: BoxFit.fill,
+                      placeholder: (context, url) => const SizedBox(
+                        width: 50,
+                        child: Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    )
                   : Icon(
-                Icons.directions_car,
-                key: Key("vehicleIcon_${v.id}"),
-                size: 40,
-                color: AppColors.gray,
-              ),
+                      Icons.directions_car,
+                      key: Key("vehicleIcon_${v.id}"),
+                      size: 40,
+                      color: AppColors.gray,
+                    ),
               const SizedBox(width: 6),
               Text(v.type ?? ''),
             ],
