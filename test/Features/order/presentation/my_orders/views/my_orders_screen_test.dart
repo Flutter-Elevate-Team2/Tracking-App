@@ -48,16 +48,22 @@ void main() {
       // Verify AppBar existence
       expect(find.byType(AppBar), findsOneWidget);
 
-      // Match the exact icon used in your code (Icons.arrow_back)
-      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+      // Match the exact icon used in your code (Icons.arrow_back_ios)
+      expect(find.byIcon(Icons.arrow_back_ios), findsOneWidget);
 
       // Verify MyOrdersBody is rendered (inside BlocProvider)
       expect(find.byType(MyOrdersBody), findsOneWidget);
     });
 
-    testWidgets('should show MyOrdersLoading when state is loading', (
-      tester,
-    ) async {
+    testWidgets('should call close on ViewModel when screen is disposed', (tester) async {
+      await tester.pumpWidget(createWidgetUnderTest());
+
+      await tester.pumpWidget(Container());
+
+      verify(mockViewModel.close()).called(1);
+    });
+
+    testWidgets('should show MyOrdersLoading when state is loading', (tester) async {
       // 1. Arrange
       final loadingState = const MyOrdersState(isLoading: true);
 

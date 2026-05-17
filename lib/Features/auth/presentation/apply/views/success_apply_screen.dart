@@ -24,12 +24,14 @@ class SuccessApplyScreen extends StatelessWidget {
                 ),
                 child: Lottie.asset(
                   repeat: false,
+                  height: MediaQuery.of(context).size.height * 0.35,
                   key: const Key("successApplyLottie"),
                   Assets.lottie.checkAnimation,
                   fit: BoxFit.contain,
                 ),
               ),
             ),
+
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),

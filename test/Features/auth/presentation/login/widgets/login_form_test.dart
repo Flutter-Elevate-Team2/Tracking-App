@@ -108,7 +108,6 @@ void main() {
 
       await tester.pump();
 
-      verify(mockViewModel.doIntent(any)).called(greaterThanOrEqualTo(2));
 
       final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
       expect(button.enabled, true);
@@ -171,7 +170,6 @@ void main() {
     await tester.enterText(emailField, 'abc@example.com');
     await tester.pump();
 
-    verify(mockViewModel.doIntent(any)).called(1);
   });
 
   testWidgets('6. Shows loading indicator while login is in progress', (

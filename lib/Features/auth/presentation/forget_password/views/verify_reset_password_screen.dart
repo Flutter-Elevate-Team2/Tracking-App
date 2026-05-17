@@ -24,8 +24,8 @@ class VerifyResetPasswordScreen extends StatelessWidget {
 
         titleSpacing: 0,
         leading: IconButton(
-          icon: Padding(
-            padding: const EdgeInsets.only(left: 8.0),
+          icon: const Padding(
+            padding: EdgeInsets.only(left: 8.0),
             child: Icon(Icons.arrow_back_ios),
           ),
           onPressed: onPreviousPage,

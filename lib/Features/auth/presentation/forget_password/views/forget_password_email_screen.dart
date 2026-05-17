@@ -22,7 +22,7 @@ class ForgetPasswordEmailScreen extends StatelessWidget {
         leading: IconButton(
           icon: Padding(
             padding: const EdgeInsets.only(left: 8.0),
-            child: const Icon(Icons.arrow_back_ios),
+            child: Icon(Icons.arrow_back_ios),
           ),
           onPressed: () {
             Navigator.pop(context);

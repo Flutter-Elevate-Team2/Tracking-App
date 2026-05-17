@@ -15,11 +15,11 @@ import 'package:tracking_app/Features/auth/data/models/login_models/login_respon
 import 'package:tracking_app/core/constants/api_constants.dart';
 // coverage:ignore-file
 
+
 part 'auth_api.g.dart';
 
 @lazySingleton
 @RestApi()
-@injectable
 abstract class AuthApi {
   @factoryMethod
   factory AuthApi(Dio dio) = _AuthApi;

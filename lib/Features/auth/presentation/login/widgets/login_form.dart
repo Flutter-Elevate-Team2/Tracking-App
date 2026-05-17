@@ -24,7 +24,7 @@ class _LoginFormState extends State<LoginForm> {
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
 
   /// Button is enabled only when both fields have text typed in them.
-  bool get _isFilled =>
+  bool get _isFormValid =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
 
   @override
@@ -45,20 +45,8 @@ class _LoginFormState extends State<LoginForm> {
         builder: (context, state) {
           return Column(
             children: [
-              EmailField(
-                controller: _emailController,
-                onChanged: () {
-                  setState(() {});
-                  viewModel.doIntent(UserTypingEvent());
-                },
-              ),
-              PasswordField(
-                controller: _passwordController,
-                onChanged: () {
-                  setState(() {});
-                  viewModel.doIntent(UserTypingEvent());
-                },
-              ),
+              EmailField(controller: _emailController, onChanged: () {}),
+              PasswordField(controller: _passwordController, onChanged: () {}),
               RememberMeRow(
                 rememberMe: state.isRememberMe,
                 onChanged: (value) {
@@ -69,22 +57,29 @@ class _LoginFormState extends State<LoginForm> {
                 },
               ),
               const SizedBox(height: 16),
-              LoginSubmitButton(
-                isLoading: state.loginState?.isLoading == true,
-                enabled: _isFilled,
-                onPressed: () {
-                  // First tap activates real-time validation on all fields.
-                  setState(() {
-                    _autovalidateMode = AutovalidateMode.always;
-                  });
-                  if (_formKey.currentState?.validate() ?? false) {
-                    viewModel.doIntent(
-                      LoginButtonClickedEvent(
-                        email: _emailController.text,
-                        password: _passwordController.text,
-                      ),
-                    );
-                  }
+              ListenableBuilder(
+                listenable: Listenable.merge([
+                  _emailController,
+                  _passwordController,
+                ]),
+                builder: (context, child) {
+                  return LoginSubmitButton(
+                    isLoading: state.loginState?.isLoading == true,
+                    enabled: _isFormValid,
+                    onPressed: () {
+                      setState(() {
+                        _autovalidateMode = AutovalidateMode.always;
+                      });
+                      if (_formKey.currentState?.validate() ?? false) {
+                        viewModel.doIntent(
+                          LoginButtonClickedEvent(
+                            email: _emailController.text,
+                            password: _passwordController.text,
+                          ),
+                        );
+                      }
+                    },
+                  );
                 },
               ),
             ],
